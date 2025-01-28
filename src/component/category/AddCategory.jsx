@@ -90,30 +90,30 @@ const AddCategory = () => {
                 >
                   Add Sub-Sub Category
                 </div>
+                <div>
+                  {subsubcategory && (
+                    <form className="flex flex-row gap-4">
+                      <div className="flex flex-col gap-4 w-[80%]">
+                        <input
+                          type="text"
+                          placeholder="Select Sub Category Name"
+                          className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md"
+                        />
+                        <input
+                          type="text"
+                          placeholder="Enter Sub Sub Category Name"
+                          className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md"
+                        />
+                      </div>
+                      <div className="w-[20%] ">
+                        <button className="h-[3rem] flex justify-center items-center w-full bg-custom-blue text-base font-medium text-white rounded-md">
+                          Add
+                        </button>
+                      </div>
+                    </form>
+                  )}
+                </div>
               </div>
-            )}
-          </div>
-          <div>
-            {subsubcategory && (
-              <form className="flex flex-row gap-4">
-                <div className="flex flex-col gap-4 w-[80%]">
-                  <input
-                    type="text"
-                    placeholder="Select Sub Category Name"
-                    className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md"
-                  />
-                  <input
-                    type="text"
-                    placeholder="Enter Sub Sub Category Name"
-                    className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md"
-                  />
-                </div>
-                <div className="w-[20%] ">
-                  <button className="h-[3rem] flex justify-center items-center w-full bg-custom-blue text-base font-medium text-white rounded-md">
-                    Add
-                  </button>
-                </div>
-              </form>
             )}
           </div>
         </div>
