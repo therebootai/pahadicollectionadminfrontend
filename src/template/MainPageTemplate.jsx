@@ -14,7 +14,7 @@ const MainPageTemplate = ({ children }) => {
           </div>
         </div>
 
-        <div className=" sm:mt-[5rem] md:mt-[6rem] lg:mt-[5rem] xlg:mt-[6rem]">
+        <div className="">
           {children}
         </div>
       </div>

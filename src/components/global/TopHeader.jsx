@@ -4,16 +4,16 @@ import { IoSearchSharp } from "react-icons/io5";
 import { LuMessageSquareText } from "react-icons/lu";
 import { PiUserCircleFill } from "react-icons/pi";
 import { NavLinkData } from "../../lib/NavLink";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { IoIosArrowDown } from "react-icons/io";
 
 const TopHeader = () => {
   return (
     <nav className="flex flex-col shadow-custom">
       <div className="h-[4.5rem] flex flex-row justify-between items-center px-8 gap-8 border-b">
-        <div className="">
+        <Link to="/" className="">
           <img src="/images/pahadicollectionlogo.png" className="h-[2rem]" />
-        </div>
+        </Link>
         <div className="border border-custom-border flex justify-between flex-1 items-center px-6 py-3 rounded-full">
           <input
             placeholder="Search"
@@ -40,7 +40,11 @@ const TopHeader = () => {
           <NavLink
             key={index}
             to={link.path}
-            className={`inline-flex gap-4 items-center hover:text-custom-violet text-custom-black font-medium text-base lg:text-xl`}
+            className={({ isActive }) =>
+              `inline-flex gap-4 items-center hover:text-custom-violet font-medium text-base lg:text-xl ${
+                isActive ? "text-custom-violet" : "text-custom-black"
+              }`
+            }
           >
             {<link.icon />}
             {link.label}

@@ -3,20 +3,19 @@ import "./App.css";
 import Dashboard from "./pages/Dashboard";
 import AddAndManageCategory from "./pages/AddAndManageCategory";
 import AddAndManageCoupon from "./pages/AddAndManageCoupon";
-import Products from "./pages/Products";
+import Products from "./pages/products/Products";
+import AddProduct from "./pages/products/AddProduct";
 
 function App() {
   return (
     <>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route
-            path="/add-manage-category"
-            element={<AddAndManageCategory />}
-          />
-        </Routes>
-      </BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/add-manage-category" element={<AddAndManageCategory />} />
+        <Route path="/add-manage-coupon" element={<AddAndManageCoupon />} />
+        <Route path="/products/add" element={<AddProduct />} />
+        <Route path="/products" element={<Products />} />
+      </Routes>
     </>
   );
 }

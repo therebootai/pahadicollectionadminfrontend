@@ -10,7 +10,7 @@ const allNavLinks = [
   {
     icon: LuPanelsTopLeft,
     label: "Dashboard",
-    path: "/dashboard",
+    path: "/",
   },
   {
     icon: FaBox,
@@ -25,7 +25,7 @@ const allNavLinks = [
   {
     icon: MdOutlineCategory,
     label: "Category",
-    path: "/category",
+    path: "/add-manage-category",
   },
   {
     icon: FaBoxArchive,
