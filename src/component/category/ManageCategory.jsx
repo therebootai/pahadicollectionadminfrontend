@@ -7,7 +7,7 @@ import {
 const ManageCategory = () => {
   return (
     <div className="p-4 flex flex-col gap-6">
-      <div className="flex flex-col border border-custom-gray-border rounded-md shadow-custom">
+      <div className="flex flex-col border border-custom-gray-border rounded-md shadow-custom-lite">
         <div className="flex flex-row p-2 bg-custom-offwhite  rounded-t-md text-base font-medium">
           <div className="w-[25%]">Main Category Name</div>
           <div className="w-[25%]">Sub Category Name</div>
@@ -17,7 +17,7 @@ const ManageCategory = () => {
         </div>
         <div className="p-2 bg-white rounded-b-md"></div>
       </div>
-      <div className="p-4 px-6 flex justify-end items-center shadow-custom bg-white border border-custom-gray-border rounded-md">
+      <div className="p-4 px-6 flex justify-end items-center shadow-custom-lite bg-white border border-custom-gray-border rounded-md">
         <div className="flex flex-row gap-6 items-center justify-end">
           <div className="flex items-center gap-1">
             <MdOutlineKeyboardDoubleArrowLeft /> Prev

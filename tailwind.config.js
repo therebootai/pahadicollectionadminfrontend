@@ -23,6 +23,7 @@ export default {
       },
       boxShadow: {
         custom: "rgba(0, 0, 0, 0.35) 0px 2px 7px",
+        "custom-lite": "rgba(0, 0, 0, 0.35) 0px 1px 5px",
       },
 
       fontFamily: {
