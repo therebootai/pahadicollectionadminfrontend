@@ -17,6 +17,8 @@ export default {
         "custom-gray": "#999999",
         "custom-black": "#1C273C",
         "custom-lite-gray": "#EDEDED",
+        "custom-gray-border": "#CCCCCC",
+        "custom-offwhite": "#F7F7F7",
         "custom-border": "#cccccc",
       },
       boxShadow: {
