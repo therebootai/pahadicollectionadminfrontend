@@ -17,12 +17,15 @@ export default {
         "custom-gray": "#999999",
         "custom-black": "#1C273C",
         "custom-lite-gray": "#EDEDED",
+        "custom-border": "#cccccc",
       },
       boxShadow: {
         custom: "rgba(0, 0, 0, 0.35) 0px 2px 7px",
       },
 
-      fontFamily: {},
+      fontFamily: {
+        spartan: ["League Spartan", "serif"],
+      },
     },
   },
   plugins: [],

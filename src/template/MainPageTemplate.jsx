@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import TopHeader from "../component/TopHeader";
+import TopHeader from "../components/global/TopHeader";
 
 const MainPageTemplate = ({ children }) => {
   useEffect(() => {
