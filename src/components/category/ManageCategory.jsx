@@ -122,96 +122,105 @@ const ManageCategory = () => {
         </div>
         {/* Table Body */}
         <div className="p-2 bg-white rounded-b-md">
-          {categories.map((category) => (
-            <div
-              key={category._id}
-              className="flex flex-col p-2 border-b border-custom-gray-border"
-            >
-              <div className="flex flex-row p-2">
-                <div className="w-[25%] flex flex-row gap-2 items-center">
-                  {category.mainCategory}
-                  <label className="switch">
-                    <input
-                      type="checkbox"
-                      checked={category.isActive}
-                      onChange={() =>
-                        handleToggleActive(
-                          category.categoryId,
-                          null,
-                          null,
-                          category.isActive
-                        )
-                      }
-                    />
-                    <span className="slider"></span>
-                  </label>
-                </div>
-                <div className="w-[50%]">
-                  {category.subcategories.map((sub) => (
-                    <div key={sub._id} className="flex flex-row border-b py-2">
-                      <div className="font-semibold w-[50%] flex items-center gap-2">
-                        {sub.subcategoriesname}
-                        <label className="switch">
-                          <input
-                            type="checkbox"
-                            checked={sub.isActive}
-                            onChange={() =>
-                              handleToggleActive(
-                                category.categoryId,
-                                sub._id,
-                                null,
-                                sub.isActive
-                              )
-                            }
-                          />
-                          <span className="slider"></span>
-                        </label>
-                      </div>
+          {categories && categories.length > 0 ? (
+            categories.map((category) => (
+              <div
+                key={category._id}
+                className="flex flex-col p-2 border-b border-custom-gray-border"
+              >
+                <div className="flex flex-row p-2">
+                  <div className="w-[25%] flex flex-row gap-2 items-center">
+                    {category.mainCategory}
+                    <label className="switch">
+                      <input
+                        type="checkbox"
+                        checked={category.isActive}
+                        onChange={() =>
+                          handleToggleActive(
+                            category.categoryId,
+                            null,
+                            null,
+                            category.isActive
+                          )
+                        }
+                      />
+                      <span className="slider"></span>
+                    </label>
+                  </div>
+                  <div className="w-[50%]">
+                    {category.subcategories.map((sub) => (
+                      <div
+                        key={sub._id}
+                        className="flex flex-row border-b py-2"
+                      >
+                        <div className="font-semibold w-[50%] flex items-center gap-2">
+                          {sub.subcategoriesname}
+                          <label className="switch">
+                            <input
+                              type="checkbox"
+                              checked={sub.isActive}
+                              onChange={() =>
+                                handleToggleActive(
+                                  category.categoryId,
+                                  sub._id,
+                                  null,
+                                  sub.isActive
+                                )
+                              }
+                            />
+                            <span className="slider"></span>
+                          </label>
+                        </div>
 
-                      <div className="w-[50%] ">
-                        <div className="flex flex-col gap-4">
-                          {sub.subsubcategories.map((ssc) => (
-                            <div
-                              key={ssc._id}
-                              className="flex gap-2 items-center"
-                            >
-                              {ssc.subsubcategoriesname}{" "}
-                              <label className="switch">
-                                <input
-                                  type="checkbox"
-                                  checked={ssc.isActive}
-                                  onChange={() =>
-                                    handleToggleActive(
-                                      category.categoryId,
-                                      sub._id,
-                                      ssc._id,
-                                      ssc.isActive
-                                    )
-                                  }
-                                />
-                                <span className="slider"></span>
-                              </label>
-                            </div>
-                          ))}
+                        <div className="w-[50%] ">
+                          <div className="flex flex-col gap-4">
+                            {sub.subsubcategories.map((ssc) => (
+                              <div
+                                key={ssc._id}
+                                className="flex gap-2 items-center"
+                              >
+                                {ssc.subsubcategoriesname}{" "}
+                                <label className="switch">
+                                  <input
+                                    type="checkbox"
+                                    checked={ssc.isActive}
+                                    onChange={() =>
+                                      handleToggleActive(
+                                        category.categoryId,
+                                        sub._id,
+                                        ssc._id,
+                                        ssc.isActive
+                                      )
+                                    }
+                                  />
+                                  <span className="slider"></span>
+                                </label>
+                              </div>
+                            ))}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
 
-                {/* Empty column for Sub-Sub Category Name */}
-                <div className="w-[15%] flex flex-row gap-2 font-medium">
-                  <button className="text-custom-blue rounded-md">Edit</button>
-                  <button
-                    className="text-red-700 rounded-md"
-                    onClick={() => handleDeleteConfirm(category.categoryId)}
-                  >
-                    Delete
-                  </button>
+                  {/* Empty column for Sub-Sub Category Name */}
+                  <div className="w-[15%] flex flex-row gap-2 font-medium">
+                    <button className="text-custom-blue rounded-md">
+                      Edit
+                    </button>
+                    <button
+                      className="text-red-700 rounded-md"
+                      onClick={() => handleDeleteConfirm(category.categoryId)}
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))
+          ) : (
+            <div className="text-center text-2xl">Not found</div>
+          )}
         </div>
       </div>
     </div>
