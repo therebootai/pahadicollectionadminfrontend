@@ -1,0 +1,61 @@
+/* active deactive button */
+
+.switch {
+  --secondary-container: #348dcb;
+  --primary: white;
+  font-size: 13px;
+  position: relative;
+  display: inline-block;
+  width: 3.2em;
+  height: 1.2em;
+}
+
+.switch input {
+  display: none;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: white;
+  transition: 0.2s;
+  border-radius: 30px;
+  border: 1px solid #348dcb;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 1em;
+  width: 1em;
+  border-radius: 20px;
+  left: 0.1em;
+  bottom: 0.05em;
+  background-color: #348dcb;
+  transition: 0.4s;
+}
+
+input:checked + .slider::before {
+  background-color: var(--primary);
+}
+
+input:checked + .slider {
+  background-color: var(--secondary-container);
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px var(--secondary-container);
+}
+
+input:checked + .slider:before {
+  transform: translateX(1.9em);
+}
+
+/* end actiove deactive button */
