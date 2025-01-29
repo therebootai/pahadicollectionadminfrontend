@@ -1,25 +1,137 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+
+// Base API URL from VITE environment variables
+const API_URL = import.meta.env.VITE_API_BASE_URL;
 
 const AddCategory = () => {
   const [thumbnail, setThumbnail] = useState(null);
   const [subcategory, setSubcategory] = useState(false);
   const [subsubcategory, setSubSubcategory] = useState(false);
+  const [mainCategory, setMainCategory] = useState("");
+  const [categories, setCategories] = useState([]);
+  const [selectedCategoryId, setSelectedCategoryId] = useState("");
+  const [isActive, setIsActive] = useState(true);
+  const [subCategoryName, setSubCategoryName] = useState("");
+  const [subSubCategoryName, setSubSubCategoryName] = useState("");
+  const [subCategoryId, setSubCategoryId] = useState("");
+
+  // Fetch all main categories for the dropdown
+  const fetchCategories = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/category/get`);
+      setCategories(response.data.categories);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    }
+  };
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
-      setThumbnail(URL.createObjectURL(file)); // Create a URL for the selected file
+      setThumbnail(URL.createObjectURL(file));
     }
   };
-  const opensubcategory = () => setSubcategory(!subcategory);
-  const opensubsubcategory = () => setSubSubcategory(!subsubcategory);
+
+  // Create main category
+  const handleCreateCategory = async (e) => {
+    e.preventDefault();
+
+    try {
+      const fileInput = document.querySelector("#file-input");
+      const categoryData = { mainCategory };
+      const file = fileInput.files[0];
+
+      const formData = new FormData();
+      formData.append("mainCategory", categoryData.mainCategory);
+      formData.append("categoryImage", file);
+
+      const response = await axios.post(
+        `${API_URL}/category/create`,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+
+      setMainCategory("");
+      setThumbnail(null);
+      fetchCategories();
+      alert("Main Category created successfully!");
+      // Optionally, redirect or update UI
+    } catch (error) {
+      console.error("Error creating category:", error);
+      alert("Error creating category.");
+    }
+  };
+
+  // Add subcategory to the selected main category
+  const handleAddSubCategory = async (e) => {
+    e.preventDefault();
+    try {
+      const newSubcategory = {
+        subcategoriesname: subCategoryName,
+        isActive: true, // Assuming new subcategories are active by default
+      };
+
+      const response = await axios.put(`${API_URL}/category/update`, {
+        categoryId: selectedCategoryId,
+        subcategories: [newSubcategory],
+      });
+
+      alert("Subcategory added successfully!");
+      setSubCategoryName("");
+      fetchCategories();
+    } catch (error) {
+      console.error("Error adding subcategory:", error);
+      alert("Error adding subcategory.");
+    }
+  };
+
+  // Add sub-subcategory to the selected subcategory
+  const handleAddSubSubCategory = async (e) => {
+    e.preventDefault();
+    try {
+      const newSubSubCategory = {
+        subsubcategoriesname: subSubCategoryName,
+        isActive: true, // Assuming new subsubcategories are active by default
+      };
+
+      const response = await axios.put(`${API_URL}/category/update`, {
+        categoryId: selectedCategoryId,
+        subcategories: [
+          {
+            subcategoriesname: subCategoryId,
+            subsubcategories: [newSubSubCategory],
+          },
+        ],
+      });
+
+      alert("Sub-Subcategory added successfully!");
+      setSubSubCategoryName("");
+      fetchCategories();
+    } catch (error) {
+      console.error("Error adding sub-subcategory:", error);
+      alert("Error adding sub-subcategory.");
+    }
+  };
+
   return (
     <div className="">
       <div className="p-4 bg-white rounded-md flex flex-col gap-8 shadow-custom">
         <h1 className="text-xl font-medium text-custom-black">Add Category</h1>
-        <form className="flex flex-row gap-3 items-center">
-          <div className="w-[60%] flex  flex-col gap-8 ">
+        <form
+          className="flex flex-row gap-3 items-center"
+          onSubmit={handleCreateCategory}
+        >
+          <div className="w-[60%] flex flex-col gap-8">
             <input
               type="text"
+              value={mainCategory}
+              onChange={(e) => setMainCategory(e.target.value)}
               placeholder="Enter Main Category Name"
               className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md"
             />
@@ -49,73 +161,108 @@ const AddCategory = () => {
               <div className="w-full h-[8rem] bg-gray-200 rounded-md flex items-center justify-center text-custom-gray"></div>
             )}
           </div>
-          <div className="w-[20%] ">
-            <button className="h-[3rem] flex justify-center items-center w-full bg-custom-blue text-base font-medium text-white rounded-md">
+          <div className="w-[20%]">
+            <button
+              type="submit"
+              className="h-[3rem] flex justify-center items-center w-full bg-custom-blue text-base font-medium text-white rounded-md"
+            >
               Add
             </button>
           </div>
         </form>
+
         <div className="flex flex-col gap-4">
           <div
-            onClick={opensubcategory}
+            onClick={() => setSubcategory(!subcategory)}
             className="text-xl font-semibold cursor-pointer text-custom-blue"
           >
             Add Sub Category
           </div>
-          <div>
-            {subcategory && (
-              <div className="flex flex-col gap-6">
+          {subcategory && (
+            <div className="flex flex-col gap-6">
+              <form className="flex flex-row gap-4">
+                <div className="flex flex-col gap-4 w-[80%]">
+                  <select
+                    className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md"
+                    onChange={(e) => setSelectedCategoryId(e.target.value)}
+                  >
+                    <option>Select Main Category</option>
+                    {categories.map((category) => (
+                      <option
+                        key={category.categoryId}
+                        value={category.categoryId}
+                      >
+                        {category.mainCategory}
+                      </option>
+                    ))}
+                  </select>
+                  <input
+                    type="text"
+                    value={subCategoryName}
+                    onChange={(e) => setSubCategoryName(e.target.value)}
+                    placeholder="Enter Sub Category Name"
+                    className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md"
+                  />
+                </div>
+                <div className="w-[20%]">
+                  <button
+                    type="button"
+                    onClick={handleAddSubCategory}
+                    className="h-[3rem] flex justify-center items-center w-full bg-custom-blue text-base font-medium text-white rounded-md"
+                  >
+                    Add
+                  </button>
+                </div>
+              </form>
+              <div
+                onClick={() => setSubSubcategory(!subsubcategory)}
+                className="text-xl font-semibold cursor-pointer text-custom-blue"
+              >
+                Add Sub-Sub Category
+              </div>
+              {subsubcategory && (
                 <form className="flex flex-row gap-4">
                   <div className="flex flex-col gap-4 w-[80%]">
+                    <select
+                      className="px-2 h-[3rem] border border-[#CCSSCC] outline-none placeholder:text-custom-gray rounded-md"
+                      onChange={(e) => setSubCategoryId(e.target.value)}
+                    >
+                      <option>Select Sub Category</option>
+                      {categories
+                        .find(
+                          (category) =>
+                            category.categoryId === selectedCategoryId
+                        )
+                        ?.subcategories.map((sub) => (
+                          <option
+                            key={sub.subcategoriesname}
+                            value={sub.subcategoriesname}
+                          >
+                            {sub.subcategoriesname}
+                          </option>
+                        ))}
+                    </select>
                     <input
                       type="text"
-                      placeholder="Select Main Category Name"
-                      className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md"
-                    />
-                    <input
-                      type="text"
-                      placeholder="Enter Sub Category Name"
+                      value={subSubCategoryName}
+                      onChange={(e) => setSubSubCategoryName(e.target.value)}
+                      placeholder="Enter Sub Sub Category Name"
                       className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md"
                     />
                   </div>
-                  <div className="w-[20%] ">
-                    <button className="h-[3rem] flex justify-center items-center w-full bg-custom-blue text-base font-medium text-white rounded-md">
+                  <div className="w-[20%]">
+                    <button
+                      type="button"
+                      onClick={handleAddSubSubCategory}
+                      className="h-[3rem] flex justify-center items-center w-full bg-custom-blue text-base font-medium text-white rounded-md"
+                    >
                       Add
                     </button>
                   </div>
                 </form>
-                <div
-                  onClick={opensubsubcategory}
-                  className="text-xl font-semibold cursor-pointer text-custom-blue"
-                >
-                  Add Sub-Sub Category
-                </div>
-                <div>
-                  {subsubcategory && (
-                    <form className="flex flex-row gap-4">
-                      <div className="flex flex-col gap-4 w-[80%]">
-                        <input
-                          type="text"
-                          placeholder="Select Sub Category Name"
-                          className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md"
-                        />
-                        <input
-                          type="text"
-                          placeholder="Enter Sub Sub Category Name"
-                          className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md"
-                        />
-                      </div>
-                      <div className="w-[20%] ">
-                        <button className="h-[3rem] flex justify-center items-center w-full bg-custom-blue text-base font-medium text-white rounded-md">
-                          Add
-                        </button>
-                      </div>
-                    </form>
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>
