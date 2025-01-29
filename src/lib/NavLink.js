@@ -1,7 +1,8 @@
-import { FaBox, FaRegStickyNote } from "react-icons/fa";
-import { FaBoxArchive } from "react-icons/fa6";
+import { BsBox2 } from "react-icons/bs";
+import { FaRegStickyNote } from "react-icons/fa";
 import { FiUser } from "react-icons/fi";
 import { GiProgression } from "react-icons/gi";
+import { HiOutlineArchiveBox } from "react-icons/hi2";
 import { LuLayoutPanelLeft, LuPanelsTopLeft } from "react-icons/lu";
 import { MdOutlineCategory } from "react-icons/md";
 import { PiCalendarHeartDuotone } from "react-icons/pi";
@@ -13,7 +14,7 @@ const allNavLinks = [
     path: "/",
   },
   {
-    icon: FaBox,
+    icon: BsBox2,
     label: "Orders",
     path: "/orders",
   },
@@ -28,14 +29,14 @@ const allNavLinks = [
     path: "/add-manage-category",
   },
   {
-    icon: FaBoxArchive,
+    icon: HiOutlineArchiveBox,
     label: "Products",
     path: "/products",
   },
   {
     icon: GiProgression,
     label: "Marketing",
-    path: "/marketing",
+    path: "/add-manage-coupon",
   },
   {
     icon: PiCalendarHeartDuotone,
@@ -45,7 +46,16 @@ const allNavLinks = [
   {
     icon: LuLayoutPanelLeft,
     label: "Masters",
-    path: "/masters",
+    dropdown: [
+      {
+        label: "Pick Up",
+        path: "/masters/pick-up",
+      },
+      {
+        label: "Coupon",
+        path: "/masters/add-manage-coupon",
+      },
+    ],
   },
   {
     icon: FaRegStickyNote,

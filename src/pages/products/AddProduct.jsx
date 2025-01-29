@@ -6,7 +6,7 @@ const AddProduct = () => {
   return (
     <MainPageTemplate>
       <div className="">
-        <div className="p-4 bg-white flex flex-col gap-8 shadow-custom">
+        <div className="py-4 px-8 bg-white flex flex-col gap-8 shadow-custom">
           <h1 className="text-xl font-medium text-custom-black">Add Product</h1>
           <AddProductForm />
         </div>

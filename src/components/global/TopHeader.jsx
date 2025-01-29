@@ -4,10 +4,18 @@ import { IoSearchSharp } from "react-icons/io5";
 import { LuMessageSquareText } from "react-icons/lu";
 import { PiUserCircleFill } from "react-icons/pi";
 import { NavLinkData } from "../../lib/NavLink";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import { IoIosArrowDown } from "react-icons/io";
 
 const TopHeader = () => {
+  const pathname = useLocation().pathname;
+
+  const isActive = (path) => {
+    return pathname === path || pathname.includes(path.split("/")[1])
+      ? true
+      : false;
+  };
+
   return (
     <nav className="flex flex-col shadow-custom">
       <div className="h-[4.5rem] flex flex-row justify-between items-center px-8 gap-8 border-b">
@@ -35,21 +43,50 @@ const TopHeader = () => {
           </button>
         </div>
       </div>
-      <div className="h-[4.5rem] flex justify-between px-8 gap-8">
+      <div className="h-[4.5rem] items-center flex justify-between px-8 gap-8">
         {NavLinkData.map((link, index) => (
-          <NavLink
-            key={index}
-            to={link.path}
-            className={({ isActive }) =>
-              `inline-flex gap-4 items-center hover:text-custom-violet font-medium text-base lg:text-xl ${
-                isActive ? "text-custom-violet" : "text-custom-black"
-              }`
-            }
-          >
-            {<link.icon />}
-            {link.label}
-            <IoIosArrowDown />
-          </NavLink>
+          <div className="group">
+            {!link.dropdown ? (
+              <NavLink
+                key={index}
+                to={link.path}
+                className={({ isActive }) =>
+                  `inline-flex gap-4 items-center hover:text-custom-violet font-medium text-base lg:text-xl ${
+                    isActive ? "text-custom-violet" : "text-custom-black"
+                  }`
+                }
+              >
+                {<link.icon />}
+                {link.label}
+                <IoIosArrowDown />
+              </NavLink>
+            ) : (
+              <div className="relative">
+                <h3
+                  className={`inline-flex gap-4 items-center hover:text-custom-violet font-medium text-base lg:text-xl ${
+                    isActive(link.dropdown[0].path)
+                      ? "text-custom-violet"
+                      : "text-custom-black"
+                  }`}
+                >
+                  {<link.icon />}
+                  {link.label}
+                  <IoIosArrowDown />
+                </h3>
+                <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-full bg-custom-violet/70 hidden group-hover:flex p-2 rounded-md flex-col gap-2">
+                  {link.dropdown.map((item, index) => (
+                    <Link
+                      key={index}
+                      to={item.path}
+                      className="flex gap-4 items-center font-medium text-sm lg:text-lg text-white"
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
         ))}
       </div>
     </nav>
