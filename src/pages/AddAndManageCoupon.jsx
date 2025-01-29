@@ -1,5 +1,5 @@
 import React from "react";
-import AddCoupon from "../component/coupon/AddCoupon";
+import AddCoupon from "../components/coupon/AddCoupon";
 import {
   MdOutlineKeyboardDoubleArrowLeft,
   MdOutlineKeyboardDoubleArrowRight,

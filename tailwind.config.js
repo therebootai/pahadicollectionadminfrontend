@@ -19,13 +19,16 @@ export default {
         "custom-lite-gray": "#EDEDED",
         "custom-gray-border": "#CCCCCC",
         "custom-offwhite": "#F7F7F7",
+        "custom-border": "#cccccc",
       },
       boxShadow: {
         custom: "rgba(0, 0, 0, 0.35) 0px 2px 7px",
         "custom-lite": "rgba(0, 0, 0, 0.35) 0px 1px 5px",
       },
 
-      fontFamily: {},
+      fontFamily: {
+        spartan: ["League Spartan", "serif"],
+      },
     },
   },
   plugins: [],

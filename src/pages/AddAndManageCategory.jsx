@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { AiOutlineClose, AiOutlineCloseCircle } from "react-icons/ai";
-import AddCategory from "../component/category/AddCategory";
-import ManageCategory from "../component/category/ManageCategory";
+import { AiOutlineCloseCircle } from "react-icons/ai";
+import AddCategory from "../components/category/AddCategory";
+import ManageCategory from "../components/category/ManageCategory";
 
 const AddAndManageCategory = () => {
   const [showAddCategory, setShowAddCategory] = useState(false);
