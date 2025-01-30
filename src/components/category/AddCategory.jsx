@@ -4,27 +4,17 @@ import axios from "axios";
 // Base API URL from VITE environment variables
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 
-const AddCategory = () => {
+const AddCategory = ({ fetchCategories, categories, setCategories }) => {
   const [thumbnail, setThumbnail] = useState(null);
   const [subcategory, setSubcategory] = useState(false);
   const [subsubcategory, setSubSubcategory] = useState(false);
   const [mainCategory, setMainCategory] = useState("");
-  const [categories, setCategories] = useState([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState("");
   const [isActive, setIsActive] = useState(true);
   const [subCategoryName, setSubCategoryName] = useState("");
   const [subSubCategoryName, setSubSubCategoryName] = useState("");
   const [subCategoryId, setSubCategoryId] = useState("");
 
-  // Fetch all main categories for the dropdown
-  const fetchCategories = async () => {
-    try {
-      const response = await axios.get(`${API_URL}/category/get`);
-      setCategories(response.data.categories);
-    } catch (error) {
-      console.error("Error fetching categories:", error);
-    }
-  };
   useEffect(() => {
     fetchCategories();
   }, []);
@@ -74,7 +64,7 @@ const AddCategory = () => {
     try {
       const newSubcategory = {
         subcategoriesname: subCategoryName,
-        isActive: true, // Assuming new subcategories are active by default
+        isActive: true,
       };
 
       const response = await axios.put(`${API_URL}/category/update`, {
@@ -97,14 +87,15 @@ const AddCategory = () => {
     try {
       const newSubSubCategory = {
         subsubcategoriesname: subSubCategoryName,
-        isActive: true, // Assuming new subsubcategories are active by default
+        isActive: true,
       };
 
+      // Ensure the correct structure for subcategory
       const response = await axios.put(`${API_URL}/category/update`, {
         categoryId: selectedCategoryId,
         subcategories: [
           {
-            subcategoriesname: subCategoryId,
+            _id: subCategoryId,
             subsubcategories: [newSubSubCategory],
           },
         ],
@@ -224,7 +215,7 @@ const AddCategory = () => {
                 <form className="flex flex-row gap-4">
                   <div className="flex flex-col gap-4 w-[80%]">
                     <select
-                      className="px-2 h-[3rem] border border-[#CCSSCC] outline-none placeholder:text-custom-gray rounded-md"
+                      className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md"
                       onChange={(e) => setSubCategoryId(e.target.value)}
                     >
                       <option>Select Sub Category</option>
@@ -234,14 +225,14 @@ const AddCategory = () => {
                             category.categoryId === selectedCategoryId
                         )
                         ?.subcategories.map((sub) => (
-                          <option
-                            key={sub.subcategoriesname}
-                            value={sub.subcategoriesname}
-                          >
+                          <option key={sub._id} value={sub._id}>
+                            {" "}
+                            {/* Use _id here */}
                             {sub.subcategoriesname}
                           </option>
                         ))}
                     </select>
+
                     <input
                       type="text"
                       value={subSubCategoryName}
