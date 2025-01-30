@@ -3,9 +3,11 @@ import { AiOutlineCloseCircle } from "react-icons/ai";
 import AddCategory from "../components/category/AddCategory";
 import ManageCategory from "../components/category/ManageCategory";
 import MainPageTemplate from "../template/MainPageTemplate";
+import axios from "axios";
 
 const AddAndManageCategory = () => {
   const [showAddCategory, setShowAddCategory] = useState(false);
+  const [categories, setCategories] = useState([]);
 
   const handleAddCategory = () => {
     setShowAddCategory(true);
@@ -13,6 +15,16 @@ const AddAndManageCategory = () => {
 
   const handleClose = () => {
     setShowAddCategory(false);
+  };
+  const fetchCategories = async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/category/get`
+      );
+      setCategories(response.data.categories);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    }
   };
   return (
     <MainPageTemplate>
@@ -29,7 +41,11 @@ const AddAndManageCategory = () => {
           </button>
         </div>
         <div>
-          <ManageCategory />
+          <ManageCategory
+            categories={categories}
+            setCategories={setCategories}
+            fetchCategories={fetchCategories}
+          />
         </div>
 
         <div
@@ -44,7 +60,10 @@ const AddAndManageCategory = () => {
           </div>
 
           <div className="p-4">
-            <AddCategory />
+            <AddCategory
+              fetchCategories={fetchCategories}
+              categories={categories}
+            />
           </div>
         </div>
       </div>
