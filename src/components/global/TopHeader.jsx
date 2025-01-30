@@ -45,10 +45,9 @@ const TopHeader = () => {
       </div>
       <div className="h-[4.5rem] items-center flex justify-between px-8 gap-8">
         {NavLinkData.map((link, index) => (
-          <div className="group">
+          <div className="group" key={index}>
             {!link.dropdown ? (
               <NavLink
-                key={index}
                 to={link.path}
                 className={({ isActive }) =>
                   `inline-flex gap-4 items-center hover:text-custom-violet font-medium text-base lg:text-xl ${
@@ -61,7 +60,7 @@ const TopHeader = () => {
                 <IoIosArrowDown />
               </NavLink>
             ) : (
-              <div className="relative">
+              <div className="relative" key={index}>
                 <h3
                   className={`inline-flex gap-4 items-center hover:text-custom-violet font-medium text-base lg:text-xl ${
                     isActive(link.dropdown[0].path)
