@@ -1,3 +1,4 @@
+import PaginationBox from "../../components/global/PaginationBox";
 import AddPickUpForm from "../../components/masters/pickup/AddPickUpForm";
 import PickUpTable from "../../components/masters/pickup/PickUpTable";
 import MainPageTemplate from "../../template/MainPageTemplate";
@@ -16,6 +17,9 @@ export default function PickUp() {
         </h1>
         <AddPickUpForm />
         <PickUpTable />
+      </div>
+      <div className="m-6">
+        <PaginationBox />
       </div>
     </MainPageTemplate>
   );

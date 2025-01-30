@@ -2,10 +2,11 @@ import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import Dashboard from "./pages/Dashboard";
 import AddAndManageCategory from "./pages/AddAndManageCategory";
-import AddAndManageCoupon from "./pages/AddAndManageCoupon";
+import AddAndManageCoupon from "./pages/masters/AddAndManageCoupon";
 import Products from "./pages/products/Products";
 import AddProduct from "./pages/products/AddProduct";
 import PickUp from "./pages/masters/PickUp";
+import WebComponents from "./pages/components/WebComponents";
 
 function App() {
   return (
@@ -24,6 +25,9 @@ function App() {
           path="/masters/add-manage-coupon"
           element={<AddAndManageCoupon />}
         />
+
+        {/* Components Routes */}
+        <Route path="/components" element={<WebComponents />} />
       </Routes>
     </>
   );
