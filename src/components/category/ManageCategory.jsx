@@ -5,18 +5,6 @@ import DisplayTable from "../global/DisplayTable";
 const ManageCategory = ({ categories, setCategories, fetchCategories }) => {
   const [editingCategory, setEditingCategory] = useState(null);
 
-  // Fetch categories on page load
-  const fetchCategories = async () => {
-    try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/category/get`
-      );
-      setCategories(response.data.categories);
-    } catch (error) {
-      console.error("Error fetching categories:", error);
-    }
-  };
-
   useEffect(() => {
     fetchCategories();
   }, []);
