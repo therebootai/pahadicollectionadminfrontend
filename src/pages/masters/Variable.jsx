@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import MainPageTemplate from "../../template/MainPageTemplate";
 import AddNewVariable from "../../components/masters/variable/AddNewVariable";
 import SidePopUpSlider from "../../components/global/SidePopUpSlider";
@@ -9,6 +9,9 @@ import axios from "axios";
 const Variable = () => {
   const [showAddVariable, setShowAddVariable] = useState(false);
   const [variableData, setVariableData] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(false);
 
   const handleAddVariable = () => {
     setShowAddVariable(true);
@@ -18,16 +21,27 @@ const Variable = () => {
     setShowAddVariable(false);
   };
 
-  const fetchVariables = async () => {
+  const fetchVariables = async (page = 1) => {
+    setLoading(true);
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/variables/get`
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/variables/get?page=${page}&limit=20`
       );
       setVariableData(response.data.variabledata);
+      setTotalPages(response.data.totalPages);
+      setCurrentPage(response.data.currentPage);
     } catch (error) {
-      console.error("Error Fatching Variables", error);
+      console.error("Error Fetching Variables", error);
+    } finally {
+      setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchVariables(currentPage);
+  }, [currentPage]);
 
   return (
     <MainPageTemplate>
@@ -41,16 +55,26 @@ const Variable = () => {
       </div>
       <div className="m-6 p-6 flex flex-col gap-6 bg-white rounded border border-custom-gray-border">
         <h1 className="text-2xl font-medium text-custom-black">Variable</h1>
-        <VariableTable
-          fetchVariables={fetchVariables}
-          variableData={variableData}
-          setVariableData={setVariableData}
+        {loading ? (
+          <div className="flex justify-center items-center p-4">
+            <div className="spinner-border animate-spin border-4 border-t-4 border-custom-violet rounded-full w-10 h-10"></div>
+          </div>
+        ) : (
+          <VariableTable
+            fetchVariables={fetchVariables}
+            variableData={variableData}
+            setVariableData={setVariableData}
+          />
+        )}
+        <PaginationBox
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
         />
-        <PaginationBox />
       </div>
       <SidePopUpSlider handleClose={handleClose} showPopUp={showAddVariable}>
         <div className="p-4">
-          <AddNewVariable />
+          <AddNewVariable fetchVariables={fetchVariables} />
         </div>
       </SidePopUpSlider>
     </MainPageTemplate>

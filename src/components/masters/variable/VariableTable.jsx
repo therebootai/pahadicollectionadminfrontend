@@ -1,12 +1,63 @@
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import DisplayTable from "../../global/DisplayTable";
+import axios from "axios";
+import SidePopUpSlider from "../../global/SidePopUpSlider";
+import AddNewVariable from "./AddNewVariable";
 
 const VariableTable = ({ variableData, setVariableData, fetchVariables }) => {
   const tableHeader = ["Variable Name", "Variable Value", "Status", "Actions"];
+  const [showAddVariable, setShowAddVariable] = useState(false);
+  const [variableToEdit, setVariableToEdit] = useState(null);
 
-  useEffect(() => {
-    fetchVariables();
-  }, []);
+  const handleToggle = async (variableId, isActive) => {
+    try {
+      const updatedPickup = { isActive: !isActive };
+      await axios.put(
+        `${import.meta.env.VITE_API_BASE_URL}/variables/update/${variableId}`,
+        updatedPickup
+      );
+
+      setVariableData(
+        variableData.map((variable) =>
+          variable.variableId === variableId
+            ? { ...variable, isActive: !variable.isActive }
+            : variable
+        )
+      );
+    } catch (error) {
+      console.error("Error updating variable status", error);
+      alert("Failed to update variable status. Please try again.");
+    }
+  };
+
+  const handleDeleteConfirm = async (variableId) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this category?"
+    );
+    if (!confirmDelete) return;
+
+    try {
+      await axios.delete(
+        `${import.meta.env.VITE_API_BASE_URL}/variables/delete/${variableId}`
+      );
+
+      setVariableData(
+        variableData.filter((variable) => variable.variableId !== variableId)
+      );
+    } catch (error) {
+      console.error("Error deleting variable", error);
+      alert("Failed to delete variable. Please try again.");
+    }
+  };
+
+  const handleClose = () => {
+    setShowAddVariable(false);
+  };
+
+  const handleEdit = (variable) => {
+    setVariableToEdit(variable);
+    setShowAddVariable(true);
+  };
 
   return (
     <div className="flex flex-col gap-6">
@@ -28,16 +79,28 @@ const VariableTable = ({ variableData, setVariableData, fetchVariables }) => {
                 </div>
                 <div className="flex-1">
                   <label className="switch">
-                    <input type="checkbox" checked={variable.isActive} />
+                    <input
+                      type="checkbox"
+                      checked={variable.isActive}
+                      onChange={() =>
+                        handleToggle(variable.variableId, variable.isActive)
+                      }
+                    />
                     <span className="slider"></span>
                   </label>
                 </div>
                 <div className="flex-1">
                   <div className="flex  items-center gap-3">
-                    <button className="text-base font-medium text-custom-blue">
+                    <button
+                      onClick={() => handleEdit(variable)}
+                      className="text-base font-medium text-custom-blue"
+                    >
                       Edit
                     </button>
-                    <button className="text-base font-medium text-red-500">
+                    <button
+                      onClick={() => handleDeleteConfirm(variable.variableId)}
+                      className="text-base font-medium text-red-500"
+                    >
                       Delete
                     </button>
                   </div>
@@ -49,6 +112,15 @@ const VariableTable = ({ variableData, setVariableData, fetchVariables }) => {
           )}
         </div>
       </DisplayTable>
+
+      <SidePopUpSlider handleClose={handleClose} showPopUp={showAddVariable}>
+        <div className="p-4">
+          <AddNewVariable
+            fetchVariables={fetchVariables}
+            variableToEdit={variableToEdit}
+          />
+        </div>
+      </SidePopUpSlider>
     </div>
   );
 };

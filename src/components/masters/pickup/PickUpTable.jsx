@@ -5,6 +5,7 @@ const PickUpTable = ({ fetchPickups, pickups, setPickups }) => {
   const [editingPickup, setEditingPickup] = useState(null);
   const [updatedPickup, setUpdatedPickup] = useState({});
   const [formErrors, setFormErrors] = useState({});
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchPickups();
@@ -88,6 +89,7 @@ const PickUpTable = ({ fetchPickups, pickups, setPickups }) => {
   const handleSave = async () => {
     const isValid = await validateForm();
     if (!isValid) return;
+    setLoading(true);
 
     try {
       await axios.put(
@@ -108,6 +110,8 @@ const PickUpTable = ({ fetchPickups, pickups, setPickups }) => {
     } catch (error) {
       console.error("Error updating Pickup", error);
       alert("Failed to save Pickup. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -245,7 +249,7 @@ const PickUpTable = ({ fetchPickups, pickups, setPickups }) => {
                           onClick={handleSave}
                           className="text-base font-medium text-custom-blue"
                         >
-                          Save
+                          {loading ? "Saving...." : "Save"}
                         </button>
                         <button
                           onClick={handleCancel}
@@ -255,20 +259,21 @@ const PickUpTable = ({ fetchPickups, pickups, setPickups }) => {
                         </button>
                       </>
                     ) : (
-                      <button
-                        onClick={() => handleEdit(pickup)}
-                        className="text-base font-medium text-custom-blue"
-                      >
-                        Edit
-                      </button>
+                      <>
+                        <button
+                          onClick={() => handleEdit(pickup)}
+                          className="text-base font-medium text-custom-blue"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDeleteConfirm(pickup.pickupId)}
+                          className="text-base font-medium text-red-500"
+                        >
+                          Delete
+                        </button>
+                      </>
                     )}
-
-                    <button
-                      onClick={() => handleDeleteConfirm(pickup.pickupId)}
-                      className="text-base font-medium text-red-500"
-                    >
-                      Delete
-                    </button>
                   </div>
                 </div>
               </div>
