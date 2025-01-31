@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=League+Spartan:wght@100..900&display=swap");
+@import "react-datepicker/dist/react-datepicker.css";
 
 @tailwind base;
 @tailwind components;
@@ -18,6 +19,7 @@
 
 body {
   font-family: "League Spartan", serif;
+  background: #f1f1f1;
 }
 
 input[type="number"]::-webkit-inner-spin-button,

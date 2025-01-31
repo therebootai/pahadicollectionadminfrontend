@@ -1,4 +1,6 @@
+
 import { useState } from "react";
+
 import AddPickUpForm from "../../components/masters/pickup/AddPickUpForm";
 import PickUpTable from "../../components/masters/pickup/PickUpTable";
 import MainPageTemplate from "../../template/MainPageTemplate";
@@ -34,6 +36,9 @@ export default function PickUp() {
           pickups={pickups}
           setPickups={setPickups}
         />
+      </div>
+      <div className="m-6">
+        <PaginationBox />
       </div>
     </MainPageTemplate>
   );
