@@ -29,7 +29,7 @@ function App() {
         <Route path="/masters/variable" element={<Variable />} />
 
         {/* Components Routes */}
-        <Route path="/components" element={<WebComponents />} />
+        <Route path="/components/:type" element={<WebComponents />} />
       </Routes>
     </>
   );
