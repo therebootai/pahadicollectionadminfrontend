@@ -20,7 +20,7 @@ const PaginationBox = () => {
           </div>
         </div>
         <div className="flex items-center gap-1">
-          next <MdOutlineKeyboardDoubleArrowRight />
+          Next <MdOutlineKeyboardDoubleArrowRight />
         </div>
       </div>
     </div>

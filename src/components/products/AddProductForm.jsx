@@ -1,16 +1,30 @@
 import React, { useState } from "react";
-import { FaChevronRight } from "react-icons/fa";
 
 const AddProductForm = () => {
   const [productImage, setProductImage] = useState(null);
   const [hoverImage, setHoverImage] = useState(null);
   const [productType, setProductType] = useState("single");
+  const [productSpecification, setProductSpecification] = useState([{}]);
 
   const handleFileChange = (event, setFunc) => {
     const file = event.target.files[0];
     if (file) {
       setFunc(URL.createObjectURL(file)); // Create a URL for the selected file
     }
+  };
+
+  const handleAddValue = () => {
+    setProductSpecification([...productSpecification, {}]);
+  };
+
+  const handleRemoveValue = (index) => {
+    setProductSpecification(productSpecification.filter((_, i) => i !== index));
+  };
+
+  const handleChangeValue = (index, newValue) => {
+    setProductSpecification(
+      productSpecification.map((val, i) => (i === index ? newValue : val))
+    );
   };
 
   return (
@@ -67,7 +81,9 @@ const AddProductForm = () => {
         />
       </div>
       <div className="flex flex-col gap-3">
-        <h2 className="text-base font-medium text-custom-black">Other Details &#40;Product Types&#41;</h2>
+        <h2 className="text-base font-medium text-custom-black">
+          Other Details &#40;Product Types&#41;
+        </h2>
         {productType === "single" ? (
           <div className="flex flex-wrap gap-8 w-full">
             <input
@@ -141,23 +157,46 @@ const AddProductForm = () => {
         <h3 className="text-base font-medium text-custom-black">
           Main Specifications
         </h3>
-        <div className="grid grid-cols-3 gap-8">
-          <input
-            type="text"
-            placeholder="Type"
-            className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md"
-          />
-          <input
-            type="text"
-            placeholder="Value"
-            className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md"
-          />
-          <button
-            type="button"
-            className="bg-custom-lite-gray border border-custom-gray-border text-custom-black h-12 rounded-md"
-          >
-            Add Specification
-          </button>
+        <div className=" gap-8">
+          {productSpecification.map((value, index) => (
+            <div key={index} className="grid grid-cols-4 gap-4">
+              <input
+                type="text"
+                value={value.type}
+                onChange={(e) =>
+                  handleChangeValue(index, { type: e.target.value })
+                }
+                placeholder="Type"
+                className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md"
+              />
+              <input
+                type="text"
+                placeholder="Value"
+                value={value.value}
+                onChange={(e) =>
+                  handleChangeValue(index, { value: e.target.value })
+                }
+                className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md"
+              />
+              <button
+                type="button"
+                onClick={handleAddValue}
+                className="bg-custom-lite-gray border border-custom-gray-border text-custom-black h-12 rounded-md"
+              >
+                Add Specification
+              </button>
+
+              {productSpecification.length > 1 && (
+                <button
+                  type="button"
+                  onClick={() => handleRemoveValue(index)}
+                  className="bg-custom-lite-gray border border-custom-gray-border text-custom-black h-12 rounded-md"
+                >
+                  Remove Specification
+                </button>
+              )}
+            </div>
+          ))}
         </div>
       </div>
       <div className="flex gap-8">
@@ -239,3 +278,8 @@ const AddProductForm = () => {
 };
 
 export default AddProductForm;
+
+
+
+
+

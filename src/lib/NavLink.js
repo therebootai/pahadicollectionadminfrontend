@@ -55,6 +55,10 @@ const allNavLinks = [
         label: "Coupon",
         path: "/masters/add-manage-coupon",
       },
+      {
+        label: "Variable",
+        path: "/masters/variable",
+      },
     ],
   },
   {
