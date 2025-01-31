@@ -64,7 +64,24 @@ const allNavLinks = [
   {
     icon: FaRegStickyNote,
     label: "Components",
-    path: "/components",
+    dropdown: [
+      {
+        label: "Slider",
+        path: "/components/slider",
+      },
+      {
+        label: "Banner",
+        path: "/components/banner",
+      },
+      {
+        label: "Logo",
+        path: "/components/logo",
+      },
+      {
+        label: "Popup",
+        path: "/components/pop-up",
+      },
+    ],
   },
 ];
 
