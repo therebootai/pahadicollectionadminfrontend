@@ -15,7 +15,7 @@ export default function PickUp() {
       );
       setPickups(response.data.pickupdata);
     } catch (error) {
-      console.error("Error fetching categories:", error);
+      console.error("Error fetching Pickup Data:", error);
     }
   };
   return (
