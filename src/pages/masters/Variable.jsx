@@ -4,9 +4,11 @@ import AddNewVariable from "../../components/masters/variable/AddNewVariable";
 import SidePopUpSlider from "../../components/global/SidePopUpSlider";
 import VariableTable from "../../components/masters/variable/VariableTable";
 import PaginationBox from "../../components/global/PaginationBox";
+import axios from "axios";
 
 const Variable = () => {
   const [showAddVariable, setShowAddVariable] = useState(false);
+  const [variableData, setVariableData] = useState([]);
 
   const handleAddVariable = () => {
     setShowAddVariable(true);
@@ -14,6 +16,17 @@ const Variable = () => {
 
   const handleClose = () => {
     setShowAddVariable(false);
+  };
+
+  const fetchVariables = async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/variables/get`
+      );
+      setVariableData(response.data.variabledata);
+    } catch (error) {
+      console.error("Error Fatching Variables", error);
+    }
   };
 
   return (
@@ -28,7 +41,11 @@ const Variable = () => {
       </div>
       <div className="m-6 p-6 flex flex-col gap-6 bg-white rounded border border-custom-gray-border">
         <h1 className="text-2xl font-medium text-custom-black">Variable</h1>
-        <VariableTable />
+        <VariableTable
+          fetchVariables={fetchVariables}
+          variableData={variableData}
+          setVariableData={setVariableData}
+        />
         <PaginationBox />
       </div>
       <SidePopUpSlider handleClose={handleClose} showPopUp={showAddVariable}>
