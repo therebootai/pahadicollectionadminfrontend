@@ -62,7 +62,6 @@ const PickUpTable = ({ fetchPickups, pickups, setPickups }) => {
     });
   };
 
-  // Validate all required fields and check if mobile number is unique
   const validateForm = async () => {
     const errors = {};
     if (!updatedPickup.pickupPointName)
