@@ -11,8 +11,9 @@ const AddPickUpForm = ({ fetchPickups }) => {
     formState: { errors },
   } = useForm();
   const [serverError, setServerError] = useState("");
-
+  const [loading, setLoading] = useState(false);
   const onSubmit = async (data) => {
+    setLoading(true);
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_API_BASE_URL}/pickups/create`,
@@ -36,6 +37,8 @@ const AddPickUpForm = ({ fetchPickups }) => {
       } else {
         setServerError("Something went wrong. Please try again.");
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -128,8 +131,9 @@ const AddPickUpForm = ({ fetchPickups }) => {
       <button
         className="h-[3rem] px-6 flex justify-center items-center bg-custom-violet rounded-md text-lg font-medium text-white"
         type="submit"
+        disabled={loading}
       >
-        Submit
+        {loading ? "Saving..." : "Submit"}
       </button>
     </form>
   );

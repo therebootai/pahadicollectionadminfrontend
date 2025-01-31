@@ -1,16 +1,27 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaMinus, FaPlus } from "react-icons/fa";
 import axios from "axios";
 import { useForm } from "react-hook-form";
 
-const AddNewVariable = () => {
+const AddNewVariable = ({ fetchVariables, variableToEdit }) => {
   const [variableValues, setVariableValues] = useState([""]);
   const {
     handleSubmit,
     register,
     reset,
+    setValue,
     formState: { errors },
   } = useForm();
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (variableToEdit) {
+      setValue("variableName", variableToEdit.variableName);
+      setVariableValues(
+        variableToEdit.variableType.map((item) => item.varType)
+      );
+    }
+  }, [variableToEdit, setValue]);
 
   const handleAddValue = () => {
     setVariableValues([...variableValues, ""]);
@@ -34,19 +45,30 @@ const AddNewVariable = () => {
         .map((val) => ({ varType: val })),
     };
 
-    try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/variables/create`,
-        variableData
-      );
+    setLoading(true);
 
-      if (response.status === 200) {
-        reset();
-        setVariableValues([""]);
+    try {
+      if (variableToEdit) {
+        await axios.put(
+          `${import.meta.env.VITE_API_BASE_URL}/variables/update/${
+            variableToEdit.variableId
+          }`,
+          variableData
+        );
+      } else {
+        await axios.post(
+          `${import.meta.env.VITE_API_BASE_URL}/variables/create`,
+          variableData
+        );
       }
+      reset();
+      setVariableValues([""]);
+      fetchVariables();
     } catch (error) {
-      console.error("Error creating variable:", error);
+      console.error("Error saving variable:", error);
       alert("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -58,7 +80,7 @@ const AddNewVariable = () => {
   return (
     <div className="flex flex-col bg-white gap-4 p-4 rounded-md shadow-custom-lite">
       <h1 className="text-xl font-medium text-custom-black">
-        Add New Variable
+        {variableToEdit ? "Edit Variable" : "Add New Variable"}
       </h1>
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3">
         <div className="w-full flex flex-col ">
@@ -114,8 +136,9 @@ const AddNewVariable = () => {
         <button
           className="h-[3rem] px-6 flex justify-center items-center bg-custom-violet rounded-md text-lg font-medium text-white"
           type="submit"
+          disabled={loading}
         >
-          Submit
+          {loading ? "Saving..." : variableToEdit ? "Update" : "Submit"}
         </button>
       </form>
     </div>

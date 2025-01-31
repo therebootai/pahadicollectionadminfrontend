@@ -14,6 +14,7 @@ const AddCategory = ({ fetchCategories, categories, setCategories }) => {
   const [subCategoryName, setSubCategoryName] = useState("");
   const [subSubCategoryName, setSubSubCategoryName] = useState("");
   const [subCategoryId, setSubCategoryId] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchCategories();
@@ -29,6 +30,7 @@ const AddCategory = ({ fetchCategories, categories, setCategories }) => {
   // Create main category
   const handleCreateCategory = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     try {
       const fileInput = document.querySelector("#file-input");
@@ -55,12 +57,15 @@ const AddCategory = ({ fetchCategories, categories, setCategories }) => {
     } catch (error) {
       console.error("Error creating category:", error);
       alert("Error creating category.");
+    } finally {
+      setLoading(false);
     }
   };
 
   // Add subcategory to the selected main category
   const handleAddSubCategory = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const newSubcategory = {
         subcategoriesname: subCategoryName,
@@ -78,12 +83,15 @@ const AddCategory = ({ fetchCategories, categories, setCategories }) => {
     } catch (error) {
       console.error("Error adding subcategory:", error);
       alert("Error adding subcategory.");
+    } finally {
+      setLoading(false);
     }
   };
 
   // Add sub-subcategory to the selected subcategory
   const handleAddSubSubCategory = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const newSubSubCategory = {
         subsubcategoriesname: subSubCategoryName,
@@ -107,6 +115,8 @@ const AddCategory = ({ fetchCategories, categories, setCategories }) => {
     } catch (error) {
       console.error("Error adding sub-subcategory:", error);
       alert("Error adding sub-subcategory.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -155,9 +165,10 @@ const AddCategory = ({ fetchCategories, categories, setCategories }) => {
           <div className="w-[20%]">
             <button
               type="submit"
+              disabled={loading}
               className="h-[3rem] flex justify-center items-center w-full bg-custom-blue text-base font-medium text-white rounded-md"
             >
-              Add
+              {loading ? "Saving..." : "Add"}
             </button>
           </div>
         </form>
@@ -199,9 +210,10 @@ const AddCategory = ({ fetchCategories, categories, setCategories }) => {
                   <button
                     type="button"
                     onClick={handleAddSubCategory}
+                    disabled={loading}
                     className="h-[3rem] flex justify-center items-center w-full bg-custom-blue text-base font-medium text-white rounded-md"
                   >
-                    Add
+                    {loading ? "Saving..." : "Add"}
                   </button>
                 </div>
               </form>
@@ -245,9 +257,10 @@ const AddCategory = ({ fetchCategories, categories, setCategories }) => {
                     <button
                       type="button"
                       onClick={handleAddSubSubCategory}
+                      disabled={loading}
                       className="h-[3rem] flex justify-center items-center w-full bg-custom-blue text-base font-medium text-white rounded-md"
                     >
-                      Add
+                      {loading ? "Saving..." : "Add"}
                     </button>
                   </div>
                 </form>
