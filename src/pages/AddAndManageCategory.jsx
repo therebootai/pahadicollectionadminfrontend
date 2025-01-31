@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { AiOutlineCloseCircle } from "react-icons/ai";
 import AddCategory from "../components/category/AddCategory";
 import ManageCategory from "../components/category/ManageCategory";
 import MainPageTemplate from "../template/MainPageTemplate";
 import axios from "axios";
+import SidePopUpSlider from "../components/global/SidePopUpSlider";
 
 const AddAndManageCategory = () => {
   const [showAddCategory, setShowAddCategory] = useState(false);
@@ -48,24 +48,14 @@ const AddAndManageCategory = () => {
           />
         </div>
 
-        <div
-          className={`fixed top-0 right-0 h-screen w-[60%] overflow-scroll no-scrollbar bg-[#EDF4F7] shadow-lg transform transition-transform duration-300 ease-in-out ${
-            showAddCategory ? "translate-x-0" : "translate-x-full"
-          }`}
-        >
-          <div className="flex justify-end p-4 text-custom-violet ">
-            <button onClick={handleClose}>
-              <AiOutlineCloseCircle size={24} className="text-xl font-bold" />
-            </button>
-          </div>
-
+        <SidePopUpSlider handleClose={handleClose} showPopUp={showAddCategory}>
           <div className="p-4">
             <AddCategory
               fetchCategories={fetchCategories}
               categories={categories}
             />
           </div>
-        </div>
+        </SidePopUpSlider>
       </div>
     </MainPageTemplate>
   );

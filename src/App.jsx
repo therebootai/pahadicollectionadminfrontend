@@ -7,6 +7,7 @@ import Products from "./pages/products/Products";
 import AddProduct from "./pages/products/AddProduct";
 import PickUp from "./pages/masters/PickUp";
 import WebComponents from "./pages/components/WebComponents";
+import Variable from "./pages/masters/Variable";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           path="/masters/add-manage-coupon"
           element={<AddAndManageCoupon />}
         />
+        <Route path="/masters/variable" element={<Variable />} />
 
         {/* Components Routes */}
         <Route path="/components" element={<WebComponents />} />

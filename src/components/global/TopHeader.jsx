@@ -17,15 +17,15 @@ const TopHeader = () => {
   };
 
   return (
-    <nav className="flex flex-col shadow-custom">
-      <div className="h-[4.5rem] flex flex-row justify-between items-center px-8 gap-8 border-b">
+    <nav className="flex flex-col shadow-custom bg-white">
+      <div className="h-[4.5rem] flex flex-row justify-between items-center px-4 xl:px-8 gap-8 border-b">
         <Link to="/" className="">
           <img src="/images/pahadicollectionlogo.png" className="h-[2rem]" />
         </Link>
         <div className="border border-custom-border flex justify-between flex-1 items-center px-6 py-3 rounded-full">
           <input
             placeholder="Search"
-            className="flex-1 focus-within:outline-none"
+            className="flex-1 focus-within:outline-none bg-transparent"
           />
           <button type="button" className="text-2xl text-custom-border">
             <IoSearchSharp />
@@ -43,14 +43,14 @@ const TopHeader = () => {
           </button>
         </div>
       </div>
-      <div className="h-[4.5rem] items-center flex justify-between px-8 gap-8">
+      <div className="h-[4.5rem] items-center flex justify-between xl:px-8 xl:gap-4 flex-wrap xlg:flex-nowrap">
         {NavLinkData.map((link, index) => (
           <div className="group" key={index}>
             {!link.dropdown ? (
               <NavLink
                 to={link.path}
                 className={({ isActive }) =>
-                  `inline-flex gap-4 items-center hover:text-custom-violet font-medium text-base lg:text-xl ${
+                  `inline-flex gap-2 items-center hover:text-custom-violet font-medium text-base lg:text-xl ${
                     isActive ? "text-custom-violet" : "text-custom-black"
                   }`
                 }
@@ -62,7 +62,7 @@ const TopHeader = () => {
             ) : (
               <div className="relative" key={index}>
                 <h3
-                  className={`inline-flex gap-4 items-center hover:text-custom-violet font-medium text-base lg:text-xl ${
+                  className={`inline-flex gap-2 items-center hover:text-custom-violet font-medium text-base lg:text-xl ${
                     isActive(link.dropdown[0].path)
                       ? "text-custom-violet"
                       : "text-custom-black"
