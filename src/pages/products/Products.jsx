@@ -20,7 +20,10 @@ const Products = () => {
       </div>
       <div className="p-4 flex flex-col gap-6">
         <ProductTable />
-        <PaginationBox />
+        <PaginationBox
+          pagination={{ totalPages: 1, currentPage: 1 }}
+          prefix="/products"
+        />
       </div>
     </MainPageTemplate>
   );

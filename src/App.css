@@ -1,7 +1,7 @@
 /* active deactive button */
 
 .switch {
-  --secondary-container: #348dcb;
+  --secondary-container: #6542c1;
   --primary: white;
   font-size: 13px;
   position: relative;
@@ -27,7 +27,7 @@
   background-color: white;
   transition: 0.2s;
   border-radius: 30px;
-  border: 1px solid #348dcb;
+  border: 1px solid #6542c1;
 }
 
 .slider:before {
@@ -38,7 +38,7 @@
   border-radius: 20px;
   left: 0.1em;
   bottom: 0.05em;
-  background-color: #348dcb;
+  background-color: #6542c1;
   transition: 0.4s;
 }
 
