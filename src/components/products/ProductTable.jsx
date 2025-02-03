@@ -1,6 +1,15 @@
 import React from "react";
 
 const ProductTable = () => {
+  const tableHeader = [
+    "Product Name",
+    "Product ID",
+    "Price/MRP",
+    "Product Category Name",
+    "In-Stock",
+    "Status",
+    "Action",
+  ];
   return (
     <div className="flex flex-col border border-custom-gray-border rounded-md shadow-custom-lite h-80 overflow-hidden overflow-y-scroll">
       <div className="flex flex-row p-2 bg-custom-offwhite  rounded-t-md text-base font-medium">

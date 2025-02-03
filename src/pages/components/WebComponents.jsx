@@ -1,11 +1,44 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import MainPageTemplate from "../../template/MainPageTemplate";
 import PaginationBox from "../../components/global/PaginationBox";
 import AddNewComponent from "../../components/webcomponents/AddNewComponent";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
+import ComponentTable from "../../components/webcomponents/ComponentTable";
+import axios from "axios";
 
 const WebComponents = () => {
   const { type } = useParams();
+
+  const [components, setComponents] = useState([]);
+  const [pagination, setPagiantion] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+
+  const [searchParams] = useSearchParams();
+
+  const currentPage = searchParams.get("page") || 1;
+
+  const fetchComponents = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get(
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/component/get?type=${type}&page=${currentPage}`
+      );
+      const { data, pagination } = response.data;
+      setComponents(data);
+      setPagiantion(pagination);
+    } catch (error) {
+      console.error("Error fetching components:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchComponents();
+  }, [type, currentPage]);
 
   return (
     <MainPageTemplate>
@@ -18,11 +51,19 @@ const WebComponents = () => {
         <h1 className="text-2xl font-medium text-custom-black capitalize">
           {type}
         </h1>
-        <AddNewComponent pageType={type} />
-        
+        <AddNewComponent pageType={type} fetchComponents={fetchComponents} />
+        {loading ? (
+          <p className="text-center text-2xl font-bold">Loading...</p>
+        ) : (
+          <ComponentTable
+            components={components}
+            fetchComponents={fetchComponents}
+            setComponents={setComponents}
+          />
+        )}
       </div>
       <div className="m-6">
-        <PaginationBox />
+        <PaginationBox pagination={pagination} prefix={`/components/${type}`} />
       </div>
     </MainPageTemplate>
   );

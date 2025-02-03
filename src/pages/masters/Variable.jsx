@@ -5,13 +5,17 @@ import SidePopUpSlider from "../../components/global/SidePopUpSlider";
 import VariableTable from "../../components/masters/variable/VariableTable";
 import PaginationBox from "../../components/global/PaginationBox";
 import axios from "axios";
+import { useSearchParams } from "react-router-dom";
 
 const Variable = () => {
   const [showAddVariable, setShowAddVariable] = useState(false);
   const [variableData, setVariableData] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const [pagination, setPagination] = useState({});
   const [loading, setLoading] = useState(false);
+
+  const [searchParams] = useSearchParams();
+
+  const currentPage = searchParams.get("page") || 1;
 
   const handleAddVariable = () => {
     setShowAddVariable(true);
@@ -21,17 +25,17 @@ const Variable = () => {
     setShowAddVariable(false);
   };
 
-  const fetchVariables = async (page = 1) => {
+  const fetchVariables = async () => {
     setLoading(true);
     try {
       const response = await axios.get(
         `${
           import.meta.env.VITE_API_BASE_URL
-        }/variables/get?page=${page}&limit=20`
+        }/variables/get?page=${currentPage}&limit=20`
       );
-      setVariableData(response.data.variabledata);
-      setTotalPages(response.data.totalPages);
-      setCurrentPage(response.data.currentPage);
+      const { data, pagination } = response.data;
+      setVariableData(data);
+      setPagination(pagination);
     } catch (error) {
       console.error("Error Fetching Variables", error);
     } finally {
@@ -40,7 +44,7 @@ const Variable = () => {
   };
 
   useEffect(() => {
-    fetchVariables(currentPage);
+    fetchVariables();
   }, [currentPage]);
 
   return (
@@ -66,11 +70,7 @@ const Variable = () => {
             setVariableData={setVariableData}
           />
         )}
-        <PaginationBox
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={setCurrentPage}
-        />
+        <PaginationBox pagination={pagination} prefix="/masters/variable" />
       </div>
       <SidePopUpSlider handleClose={handleClose} showPopUp={showAddVariable}>
         <div className="p-4">

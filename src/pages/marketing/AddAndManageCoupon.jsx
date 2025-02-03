@@ -1,5 +1,5 @@
 import React from "react";
-import AddCoupon from "../../components/masters/coupon/AddCoupon";
+import AddCoupon from "../../components/marketing/coupon/AddCoupon";
 import MainPageTemplate from "../../template/MainPageTemplate";
 import PaginationBox from "../../components/global/PaginationBox";
 import DisplayTable from "../../components/global/DisplayTable";
@@ -33,7 +33,10 @@ const AddAndManageCoupon = () => {
               </DisplayTable>
             </div>
           </div>
-          <PaginationBox />
+          <PaginationBox
+            pagination={{ totalPages: 1, currentPage: 1 }}
+            prefix="/marketing/add-manage-coupon"
+          />
         </div>
       </div>
     </MainPageTemplate>
