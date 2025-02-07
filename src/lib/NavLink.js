@@ -31,7 +31,7 @@ const allNavLinks = [
   {
     icon: HiOutlineArchiveBox,
     label: "Products",
-    path: "/products",
+    path: "/products?page=1",
   },
   {
     icon: GiProgression,

@@ -32,7 +32,7 @@ const VariableTable = ({ variableData, setVariableData, fetchVariables }) => {
 
   const handleDeleteConfirm = async (variableId) => {
     const confirmDelete = window.confirm(
-      "Are you sure you want to delete this category?"
+      "Are you sure you want to delete this variable?"
     );
     if (!confirmDelete) return;
 
