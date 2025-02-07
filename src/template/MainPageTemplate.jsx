@@ -7,7 +7,7 @@ const MainPageTemplate = ({ children }) => {
   }, []);
   return (
     <div>
-      <div className="flex w-full h-full flex-col font-roboto overflow-x-hidden ">
+      <div className="flex w-full h-full flex-col overflow-x-hidden ">
         <div className="flex flex-col">
           <div>
             <TopHeader />

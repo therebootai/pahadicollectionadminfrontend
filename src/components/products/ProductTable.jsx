@@ -1,27 +1,125 @@
 import React from "react";
+import DisplayTable from "../global/DisplayTable";
+import axios from "axios";
+import { Link } from "react-router-dom";
 
-const ProductTable = () => {
+const ProductTable = ({
+  products,
+  setProducts,
+  setSelectedProduct,
+  handelView,
+}) => {
   const tableHeader = [
+    "id",
     "Product Name",
-    "Product ID",
-    "Price/MRP",
-    "Product Category Name",
+    "Discount",
+    "MRP",
+    "Price",
     "In-Stock",
     "Status",
     "Action",
   ];
+
+  const handleDeleteConfirm = async (productId) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this product?"
+    );
+    if (!confirmDelete) return;
+
+    try {
+      await axios.delete(
+        `${import.meta.env.VITE_API_BASE_URL}/products/${productId}`
+      );
+
+      setProducts(
+        products.filter((product) => product.productId !== productId)
+      );
+    } catch (error) {
+      console.error("Error deleting product", error);
+      alert("Failed to delete product. Please try again.");
+    }
+  };
+
+  const handelToggleStatus = async (productId, status) => {
+    try {
+      const response = await axios.put(
+        `${import.meta.env.VITE_API_BASE_URL}/products/${productId}`,
+        { isActive: !status }
+      );
+      const { data } = response.data;
+      setProducts(
+        products.map((product) =>
+          product.productId === productId
+            ? { ...product, isActive: !status }
+            : product
+        )
+      );
+    } catch (error) {
+      console.error("Error update status product", error);
+      alert("Failed to update product. Please try again.");
+    }
+  };
+
   return (
-    <div className="flex flex-col border border-custom-gray-border rounded-md shadow-custom-lite h-80 overflow-hidden overflow-y-scroll">
-      <div className="flex flex-row p-2 bg-custom-offwhite  rounded-t-md text-base font-medium">
-        <div className="w-[25%]">Product Name</div>
-        <div className="w-[25%]">Product ID</div>
-        <div className="w-[10%]">Price/MRP</div>
-        <div className="w-[25%]">Product Category Name</div>
-        <div className="w-[10%]">In-Stock</div>
-        <div className="w-[10%]">Status</div>
-        <div className="w-[10%]">Action</div>
-      </div>
-      <div className="p-2 bg-white rounded-b-md"></div>
+    <div className="flex flex-col gap-6">
+      <DisplayTable tableData={{ tableHeader }}>
+        <div className="p-2 bg-white rounded-b-md">
+          {products.length <= 0 ? (
+            <div className="text-center text-2xl">No Data</div>
+          ) : (
+            products.map((product) => (
+              <div
+                className="flex flex-row p-2 border-b border-custom-gray-border text-base"
+                key={product.productId}
+              >
+                <div className="flex-1">{product.productId}</div>
+                <div className="flex-1">{product.title}</div>
+                <div className="flex-1">{product.discount} %</div>
+                <div className="flex-1">{product.mrp}</div>
+                <div className="flex-1">{product.price}</div>
+                <div className="flex-1">{product.in_stock}</div>
+                <div className="flex-1">
+                  <label className="switch">
+                    <input
+                      type="checkbox"
+                      checked={product.isActive}
+                      onChange={() =>
+                        handelToggleStatus(product.productId, product.isActive)
+                      }
+                    />
+                    <span className="slider"></span>
+                  </label>
+                </div>
+                <div className="flex-1">
+                  <div className="flex  items-center gap-3">
+                    <button
+                      onClick={() => {
+                        handelView();
+                        setSelectedProduct(product);
+                      }}
+                      className="text-base font-medium text-custom-violet"
+                    >
+                      View
+                    </button>
+                    <Link
+                      to={`/products/edit/${product.productId}`}
+                      className="text-base font-medium text-custom-blue"
+                    >
+                      Edit
+                    </Link>
+                    <button
+                      onClick={() => handleDeleteConfirm(product.productId)}
+                      className="text-base font-medium text-red-500"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      </DisplayTable>
     </div>
   );
 };

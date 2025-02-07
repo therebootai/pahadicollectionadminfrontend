@@ -8,6 +8,7 @@ import AddProduct from "./pages/products/AddProduct";
 import PickUp from "./pages/masters/PickUp";
 import WebComponents from "./pages/components/WebComponents";
 import Variable from "./pages/masters/Variable";
+import EditProduct from "./pages/products/EditProduct";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
         {/* Product Routes */}
         <Route path="/products/add" element={<AddProduct />} />
         <Route path="/products" element={<Products />} />
+        <Route path="/products/edit/:id" element={<EditProduct />} />
 
         {/* Master Routes */}
         <Route path="/masters/pick-up" element={<PickUp />} />
