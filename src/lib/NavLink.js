@@ -21,7 +21,7 @@ const allNavLinks = [
   {
     icon: FiUser,
     label: "Customers",
-    path: "/customers",
+    path: "/customers?page=1",
   },
   {
     icon: MdOutlineCategory,
@@ -36,7 +36,7 @@ const allNavLinks = [
   {
     icon: GiProgression,
     label: "Marketing",
-    path: "/marketing/add-manage-coupon",
+    path: "/marketing/add-manage-coupon?page=1",
   },
   {
     icon: PiCalendarHeartDuotone,

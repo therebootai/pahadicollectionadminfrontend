@@ -9,6 +9,8 @@ import PickUp from "./pages/masters/PickUp";
 import WebComponents from "./pages/components/WebComponents";
 import Variable from "./pages/masters/Variable";
 import EditProduct from "./pages/products/EditProduct";
+import Customers from "./pages/customers/Customers";
+import Orders from "./pages/orders/Orders";
 
 function App() {
   return (
@@ -34,6 +36,12 @@ function App() {
 
         {/* Components Routes */}
         <Route path="/components/:type" element={<WebComponents />} />
+
+        {/* Customer Routes */}
+        <Route path="/customers" element={<Customers />} />
+
+        {/* Order Routes */}
+        <Route path="/orders" element={<Orders />} />
       </Routes>
     </>
   );
