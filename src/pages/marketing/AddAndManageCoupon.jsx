@@ -1,29 +1,57 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AddCoupon from "../../components/marketing/coupon/AddCoupon";
 import MainPageTemplate from "../../template/MainPageTemplate";
 import PaginationBox from "../../components/global/PaginationBox";
-import DisplayTable from "../../components/global/DisplayTable";
 import SidePopUpSlider from "../../components/global/SidePopUpSlider";
+import { useSearchParams } from "react-router-dom";
+import axios from "axios";
+import CouponTable from "../../components/marketing/coupon/CouponTable";
+import ViewCoupon from "../../components/marketing/coupon/ViewCoupon";
 
 const AddAndManageCoupon = () => {
-  const [showAddCoupon, setShowAddCoupon] = useState(false);
-  const tableHeader = [
-    "coupon name",
-    "start date",
-    "end date",
-    "discount value",
-    "minimum value",
-    "status",
-    "action",
-  ];
+  const [searchParams] = useSearchParams();
 
-  const handleAddCoupon = () => {
-    setShowAddCoupon(true);
+  const currentPage = searchParams.get("page") || 1;
+  const [showAddCoupon, setShowAddCoupon] = useState(false);
+  const [coupons, setCoupons] = useState([]);
+  const [pagination, setPagination] = useState({});
+  const [modalFor, setModalFor] = useState("add-coupon");
+  const [currentCoupon, setCurrentCoupon] = useState({});
+
+  const handleAddCoupon = (type, coupon) => {
+    if (type !== "add-coupon" && !coupon) {
+      return;
+    }
+    if (type === "add-coupon") {
+      setModalFor(type);
+      setShowAddCoupon(true);
+    } else {
+      setModalFor(type);
+      setCurrentCoupon(coupon);
+      setShowAddCoupon(true);
+    }
   };
 
   const handleClose = () => {
     setShowAddCoupon(false);
   };
+
+  async function fetchAllCoupons() {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/coupons?page=${currentPage}`
+      );
+      const { coupons, pagination } = response.data;
+      setCoupons(coupons);
+      setPagination(pagination);
+    } catch (error) {
+      console.error("Error fetching coupons:", error);
+    }
+  }
+
+  useEffect(() => {
+    fetchAllCoupons();
+  }, [currentPage]);
 
   return (
     <MainPageTemplate>
@@ -31,7 +59,7 @@ const AddAndManageCoupon = () => {
         <div className="flex flex-row gap-6 items-center border-b border-custom-gray-border xl:px-8 px-6 p-4">
           <button
             className="h-[3rem] px-8 flex justify-center items-center bg-custom-violet rounded-md text-lg font-medium text-white"
-            onClick={handleAddCoupon}
+            onClick={() => handleAddCoupon("add-coupon")}
           >
             Add New Coupon
           </button>
@@ -43,19 +71,33 @@ const AddAndManageCoupon = () => {
                 Coupon Manage
               </h1>
 
-              <DisplayTable tableData={{ tableHeader }}>
-                <div className="p-2 bg-white rounded-b-md"></div>
-              </DisplayTable>
+              <CouponTable
+                coupons={coupons}
+                setCoupons={setCoupons}
+                fetchAllCoupons={fetchAllCoupons}
+                handleAddCoupon={handleAddCoupon}
+              />
             </div>
           </div>
           <PaginationBox
-            pagination={{ totalPages: 1, currentPage: 1 }}
+            pagination={pagination}
             prefix="/marketing/add-manage-coupon"
           />
         </div>
         <SidePopUpSlider handleClose={handleClose} showPopUp={showAddCoupon}>
           <div className="p-4">
-            <AddCoupon />
+            {modalFor === "add-coupon" && (
+              <AddCoupon fetchAllCoupons={fetchAllCoupons} />
+            )}
+            {modalFor === "edit-coupon" && (
+              <AddCoupon
+                fetchAllCoupons={fetchAllCoupons}
+                coupon={currentCoupon}
+              />
+            )}
+            {modalFor === "view-coupon" && (
+              <ViewCoupon coupon={currentCoupon} />
+            )}
           </div>
         </SidePopUpSlider>
       </div>

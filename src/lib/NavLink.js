@@ -16,7 +16,7 @@ const allNavLinks = [
   {
     icon: BsBox2,
     label: "Orders",
-    path: "/orders",
+    path: "/orders?page=1",
   },
   {
     icon: FiUser,
