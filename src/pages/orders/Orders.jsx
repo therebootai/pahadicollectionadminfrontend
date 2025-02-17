@@ -12,7 +12,7 @@ const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [pagination, setPagination] = useState({});
   const [showAddOrder, setShowAddOrder] = useState(false);
-  const [modalFor, setModalFor] = useState("edit-order");
+  const [modalFor, setModalFor] = useState("");
   const [currentOrder, setCurrentOrder] = useState({});
   const [searchParams] = useSearchParams();
 
@@ -25,7 +25,9 @@ const Orders = () => {
   };
 
   const handleClose = () => {
+    setModalFor("");
     setShowAddOrder(false);
+    setCurrentOrder({});
   };
 
   async function fetchOrders() {
@@ -66,10 +68,7 @@ const Orders = () => {
       <SidePopUpSlider handleClose={handleClose} showPopUp={showAddOrder}>
         <div className="p-4">
           {modalFor === "edit-order" && (
-            <EditOrders
-              fetchOrders={fetchOrders}
-              order={currentOrder}
-            />
+            <EditOrders fetchOrders={fetchOrders} order={currentOrder} />
           )}
           {modalFor === "view-order" && <ViewOrder order={currentOrder} />}
         </div>

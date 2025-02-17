@@ -303,10 +303,6 @@ const AddProductForm = ({ editedProduct }) => {
       );
     formData.append("hoverImage", hoverImage);
 
-    for (var pair of formData.entries()) {
-      console.log(pair[0] + ", " + pair[1]);
-    }
-
     try {
       const response = await axios.put(
         `${import.meta.env.VITE_API_BASE_URL}/products/${productId}`,
@@ -813,19 +809,3 @@ const AddProductForm = ({ editedProduct }) => {
 };
 
 export default AddProductForm;
-
-{
-  /* <div className="flex flex-col gap-3">
-  <h3
-    className="text-base font-medium text-custom-violet inline-flex items-center gap-2 cursor-pointer"
-    onClick={() => setIsVariantAvailable(!isVariantAvailable)}
-  >
-    If Available Varible{" "}
-    <FaChevronRight
-      className={`${
-        isVariantAvailable ? "rotate-90" : "rotate-0"
-      } transition-transform duration-300`}
-    />
-  </h3>
-</div> */
-}
