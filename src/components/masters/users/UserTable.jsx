@@ -1,12 +1,14 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import DisplayTable from "../../global/DisplayTable";
+import { TfiReload } from "react-icons/tfi";
 
 const UserTable = ({ fetchUsers, users, setUsers }) => {
   const [editingUser, setEditingUser] = useState(null);
   const [updatedUser, setUpdatedUser] = useState({});
   const [formErrors, setFormErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [password, setPassword] = useState("");
 
   useEffect(() => {
     fetchUsers();
@@ -53,7 +55,7 @@ const UserTable = ({ fetchUsers, users, setUsers }) => {
 
   const handleEdit = (user) => {
     setEditingUser(user.userId);
-    setUpdatedUser({ ...user });
+    setUpdatedUser({ ...user, password: "********" });
     setFormErrors({});
   };
 
@@ -73,6 +75,8 @@ const UserTable = ({ fetchUsers, users, setUsers }) => {
       errors.phone = "Mobile number must be 10 digits";
     if (isNaN(updatedUser.phone)) errors.phone = "Phone number must be numeric";
     if (!updatedUser.role) errors.role = "Role is required";
+    if (!updatedUser.password || updatedUser.password === "********")
+      errors.password = "Password is required";
 
     if (Object.keys(errors).length > 0) {
       setFormErrors(errors);
@@ -122,6 +126,22 @@ const UserTable = ({ fetchUsers, users, setUsers }) => {
   const handleTextInput = (e) => {
     const value = e.target.value;
     e.target.value = value.charAt(0).toUpperCase() + value.slice(1);
+  };
+
+  const generatePassword = () => {
+    if (updatedUser.name && updatedUser.phone.length >= 6) {
+      const capitalizedFirstLetter = updatedUser.name.charAt(0).toUpperCase();
+      const restOfName = updatedUser.name.substring(1, 4);
+      const passwordPart = `${capitalizedFirstLetter}${restOfName}@${updatedUser.phone.substring(
+        0,
+        2
+      )}#${updatedUser.phone.substring(2, 4)}`;
+
+      setPassword(passwordPart);
+      setUpdatedUser({ ...updatedUser, password: passwordPart });
+    } else {
+      setPassword("Invalid Data for Password Generation");
+    }
   };
 
   const tableHeader = ["Name", "Email", "Phone", "Role", "Status", "Action"];
@@ -188,6 +208,29 @@ const UserTable = ({ fetchUsers, users, setUsers }) => {
                     <p className="text-red-500 text-sm">{formErrors.phone}</p>
                   )}
                 </div>
+
+                {editingUser === user.userId ? (
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        name="password"
+                        value={updatedUser.password}
+                        onChange={handleInputChange}
+                        className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md w-full"
+                      />
+                      <button
+                        type="button"
+                        onClick={generatePassword}
+                        className="icon-button"
+                      >
+                        <TfiReload />
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  ""
+                )}
 
                 <div className="flex-1">
                   {editingUser === user.userId ? (

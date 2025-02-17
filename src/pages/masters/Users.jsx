@@ -22,7 +22,7 @@ const Users = () => {
       <div className="flex flex-row gap-6 items-center border-b border-custom-gray-border xl:px-8 px-6 p-4"></div>
       <div className="m-6 p-6 flex flex-col gap-6 bg-white rounded border border-custom-gray-border">
         <h1 className="text-2xl font-medium text-custom-black">User Manage</h1>
-        <AddNewUsers />
+        <AddNewUsers fetchUsers={fetchUsers} />
         <UserTable fetchUsers={fetchUsers} users={users} setUsers={setUsers} />
       </div>
     </MainPageTemplate>
