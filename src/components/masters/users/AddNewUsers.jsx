@@ -3,7 +3,7 @@ import { TfiReload } from "react-icons/tfi";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 
-const AddNewUsers = () => {
+const AddNewUsers = ({ fetchUsers }) => {
   const {
     register,
     handleSubmit,
@@ -37,6 +37,7 @@ const AddNewUsers = () => {
         data
       );
       reset();
+      fetchUsers();
     } catch (error) {
       if (error.response && error.response.status === 400) {
         if (
@@ -80,8 +81,12 @@ const AddNewUsers = () => {
           placeholder="Mobile No."
           {...register("phone", {
             required: "Phone is required",
-            minLength: { value: 6, message: "Phone must be at least 6 digits" },
+            minLength: {
+              value: 10,
+              message: "Phone must be at least 10 digits",
+            },
           })}
+          maxLength={10}
           className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md w-full"
         />
         {errors.phone && <span>{errors.phone.message}</span>}
