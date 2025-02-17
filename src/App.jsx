@@ -11,6 +11,7 @@ import Variable from "./pages/masters/Variable";
 import EditProduct from "./pages/products/EditProduct";
 import Customers from "./pages/customers/Customers";
 import Orders from "./pages/orders/Orders";
+import Users from "./pages/masters/Users";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
         {/* Master Routes */}
         <Route path="/masters/pick-up" element={<PickUp />} />
         <Route path="/masters/variable" element={<Variable />} />
+        <Route path="/masters/users" element={<Users />} />
 
         {/* Components Routes */}
         <Route path="/components/:type" element={<WebComponents />} />

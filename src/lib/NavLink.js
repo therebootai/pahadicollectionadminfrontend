@@ -55,6 +55,10 @@ const allNavLinks = [
         label: "Variable",
         path: "/masters/variable?page=1",
       },
+      {
+        label: "Users",
+        path: "/masters/users",
+      },
     ],
   },
   {
