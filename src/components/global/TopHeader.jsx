@@ -43,7 +43,7 @@ const TopHeader = () => {
           </button>
         </div>
       </div>
-      <div className="h-[4.5rem] items-center flex justify-between xl:px-8 xl:gap-4 flex-wrap xlg:flex-nowrap">
+      <div className="min-h-[4.5rem] items-center flex justify-between xl:px-8 xl:gap-4 flex-wrap xlg:flex-nowrap">
         {NavLinkData.map((link, index) => (
           <div className="group" key={index}>
             {!link.dropdown ? (
@@ -57,7 +57,7 @@ const TopHeader = () => {
               >
                 {<link.icon />}
                 {link.label}
-                <IoIosArrowDown />
+                {link.dropdown && <IoIosArrowDown />}
               </NavLink>
             ) : (
               <div className="relative" key={index}>

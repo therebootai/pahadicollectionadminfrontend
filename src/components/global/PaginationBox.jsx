@@ -3,13 +3,10 @@ import {
   MdOutlineKeyboardDoubleArrowLeft,
   MdOutlineKeyboardDoubleArrowRight,
 } from "react-icons/md";
+import { Link } from "react-router-dom";
 
-const PaginationBox = ({ currentPage, totalPages, onPageChange }) => {
-  const handlePageClick = (page) => {
-    if (page > 0 && page <= totalPages) {
-      onPageChange(page);
-    }
-  };
+const PaginationBox = ({ pagination, prefix }) => {
+  const { currentPage = 1, totalPages = 1 } = pagination;
 
   const pageNumbers = [];
   const maxVisiblePages = 5;
@@ -27,18 +24,20 @@ const PaginationBox = ({ currentPage, totalPages, onPageChange }) => {
   return (
     <div className="p-4 px-6 flex justify-end items-center shadow-custom-lite bg-white border border-custom-gray-border rounded-md">
       <div className="flex flex-row gap-6 items-center justify-end">
-        <div
-          className="flex items-center gap-1 cursor-pointer"
-          onClick={() => handlePageClick(currentPage - 1)}
-        >
-          <MdOutlineKeyboardDoubleArrowLeft /> Prev
-        </div>
+        {currentPage === 1 ? null : (
+          <Link
+            className="flex items-center gap-1 cursor-pointer"
+            to={`/${prefix}?page=${currentPage - 1}`}
+          >
+            <MdOutlineKeyboardDoubleArrowLeft /> Prev
+          </Link>
+        )}
 
         <div className="flex flex-row gap-2">
           {pageNumbers.map((pageNumber) => (
-            <div
+            <Link
               key={pageNumber}
-              onClick={() => handlePageClick(pageNumber)}
+              to={`${prefix}?page=${pageNumber}`}
               className={`size-8 rounded-md ${
                 pageNumber === currentPage
                   ? "bg-custom-violet text-white"
@@ -46,16 +45,18 @@ const PaginationBox = ({ currentPage, totalPages, onPageChange }) => {
               } border-custom-violet border flex justify-center items-center text-base font-medium cursor-pointer`}
             >
               {pageNumber}
-            </div>
+            </Link>
           ))}
         </div>
 
-        <div
-          className="flex items-center gap-1 cursor-pointer"
-          onClick={() => handlePageClick(currentPage + 1)}
-        >
-          Next <MdOutlineKeyboardDoubleArrowRight />
-        </div>
+        {currentPage === totalPages ? null : (
+          <Link
+            className="flex items-center gap-1 cursor-pointer"
+            to={`/${prefix}?page=${currentPage + 1}`}
+          >
+            Next <MdOutlineKeyboardDoubleArrowRight />
+          </Link>
+        )}
       </div>
     </div>
   );

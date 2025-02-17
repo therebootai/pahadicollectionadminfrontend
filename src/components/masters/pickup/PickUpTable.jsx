@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import DisplayTable from "../../global/DisplayTable";
 
 const PickUpTable = ({ fetchPickups, pickups, setPickups }) => {
   const [editingPickup, setEditingPickup] = useState(null);
@@ -130,17 +131,18 @@ const PickUpTable = ({ fetchPickups, pickups, setPickups }) => {
     e.target.value = value.charAt(0).toUpperCase() + value.slice(1);
   };
 
+  const tableHeader = [
+    "Name",
+    "Address Details",
+    "Pin Code",
+    "Mobile Number",
+    "status",
+    "Action",
+  ];
+
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-col border border-custom-gray-border rounded-md shadow-custom-lite h-80 overflow-hidden overflow-y-scroll">
-        <div className="flex flex-row p-2 bg-custom-offwhite rounded-t-md text-base font-medium">
-          <div className="w-[20%]">Name</div>
-          <div className="w-[20%]">Address Details</div>
-          <div className="w-[20%]">Pin Code</div>
-          <div className="w-[20%]">Mobile Number</div>
-          <div className="w-[10%]">Status</div>
-          <div className="w-[10%]">Action</div>
-        </div>
+      <DisplayTable tableData={{ tableHeader }}>
         <div className="p-2 bg-white rounded-b-md">
           {pickups && pickups.length > 0 ? (
             pickups.map((pickup) => (
@@ -282,7 +284,7 @@ const PickUpTable = ({ fetchPickups, pickups, setPickups }) => {
             <div className="text-center text-2xl">No Data</div>
           )}
         </div>
-      </div>
+      </DisplayTable>
     </div>
   );
 };

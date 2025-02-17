@@ -16,12 +16,12 @@ const allNavLinks = [
   {
     icon: BsBox2,
     label: "Orders",
-    path: "/orders",
+    path: "/orders?page=1",
   },
   {
     icon: FiUser,
     label: "Customers",
-    path: "/customers",
+    path: "/customers?page=1",
   },
   {
     icon: MdOutlineCategory,
@@ -31,12 +31,12 @@ const allNavLinks = [
   {
     icon: HiOutlineArchiveBox,
     label: "Products",
-    path: "/products",
+    path: "/products?page=1",
   },
   {
     icon: GiProgression,
     label: "Marketing",
-    path: "/add-manage-coupon",
+    path: "/marketing/add-manage-coupon?page=1",
   },
   {
     icon: PiCalendarHeartDuotone,
@@ -52,12 +52,8 @@ const allNavLinks = [
         path: "/masters/pick-up",
       },
       {
-        label: "Coupon",
-        path: "/masters/add-manage-coupon",
-      },
-      {
         label: "Variable",
-        path: "/masters/variable",
+        path: "/masters/variable?page=1",
       },
     ],
   },
@@ -67,19 +63,19 @@ const allNavLinks = [
     dropdown: [
       {
         label: "Slider",
-        path: "/components/slider",
+        path: "/components/slider?page=1",
       },
       {
         label: "Banner",
-        path: "/components/banner",
+        path: "/components/banner?page=1",
       },
       {
         label: "Logo",
-        path: "/components/logo",
+        path: "/components/logo?page=1",
       },
       {
         label: "Popup",
-        path: "/components/pop-up",
+        path: "/components/pop-up?page=1",
       },
     ],
   },
