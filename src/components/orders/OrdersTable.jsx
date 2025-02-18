@@ -1,5 +1,6 @@
 import React from "react";
 import DisplayTable from "../global/DisplayTable";
+import axios from "axios";
 
 const OrdersTable = ({ orders, fetchOrders, handleOpenModal }) => {
   const tableHeader = [

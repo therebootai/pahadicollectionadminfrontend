@@ -51,9 +51,6 @@ const Orders = () => {
     <MainPageTemplate>
       <div className="flex flex-row gap-6 items-center border-b border-custom-gray-border xl:px-8 px-6 p-4">
         <button className="h-[3rem] px-8 flex justify-center items-center bg-custom-violet rounded-md text-lg font-medium text-white">
-          Add Orders
-        </button>
-        <button className="h-[3rem] px-8 flex justify-center items-center bg-custom-violet rounded-md text-lg font-medium text-white">
           Import Orders
         </button>
       </div>

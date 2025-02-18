@@ -173,14 +173,19 @@ const ViewProduct = ({ product }) => {
         </h3>
         <div className="flex flex-wrap gap-4 px-2">
           {product.productImage?.map((img) => (
-            <img
-              key={img._id}
-              src={img.secure_url}
-              alt={img.public_id}
-              width={450}
-              height={450}
-              className="w-[12vmax]"
-            />
+            <div className="relative cursor-pointer" title="Thumbnail">
+              <img
+                key={img._id}
+                src={img.secure_url}
+                alt={img.public_id}
+                width={450}
+                height={450}
+                className="w-[12vmax]"
+              />
+              {img.public_id === product.thumbnail_image?.public_id && (
+                <div className="absolute top-0 left-0 w-full h-full border-8 border-custom-gray/60" />
+              )}
+            </div>
           ))}
         </div>
       </div>
