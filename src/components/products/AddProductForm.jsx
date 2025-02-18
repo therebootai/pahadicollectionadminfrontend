@@ -39,6 +39,7 @@ const AddProductForm = ({ editedProduct }) => {
       weight: "",
     },
   ]);
+  const [thumbnailIndex, setThumbnailIndex] = useState(0);
 
   const [selectedMainCategory, setSelectedMainCategory] = useState(null);
   const [selectedSubCategory, setSelectedSubCategory] = useState(null);
@@ -124,6 +125,11 @@ const AddProductForm = ({ editedProduct }) => {
           }))
         );
       }
+      setThumbnailIndex(
+        editedProduct.productImage?.findIndex(
+          (image) => image.public_id === editedProduct.thumbnail_image.public_id
+        )
+      );
     }
   }, [editedProduct]);
 
@@ -242,6 +248,7 @@ const AddProductForm = ({ editedProduct }) => {
         )
       );
     formData.append("hoverImage", hoverImage);
+    formData.append("thumbnailIndex", thumbnailIndex);
 
     try {
       const response = await axios.post(
@@ -302,6 +309,7 @@ const AddProductForm = ({ editedProduct }) => {
         )
       );
     formData.append("hoverImage", hoverImage);
+    formData.append("thumbnailIndex", thumbnailIndex);
 
     try {
       const response = await axios.put(
@@ -735,11 +743,20 @@ const AddProductForm = ({ editedProduct }) => {
             {productImageThumb.map((image, index) => (
               <div className="relative" key={index}>
                 {image ? (
-                  <img
-                    src={image}
-                    alt="Selected Thumbnail"
-                    className="w-full h-[8rem] object-cover rounded-md"
-                  />
+                  <div
+                    className="relative cursor-pointer"
+                    title="Set Thumbnail"
+                    onClick={() => setThumbnailIndex(index)}
+                  >
+                    <img
+                      src={image}
+                      alt="Selected Thumbnail"
+                      className="w-full h-[8rem] object-cover rounded-md"
+                    />
+                    {thumbnailIndex === index && (
+                      <div className="absolute top-0 left-0 w-full h-full border-8 border-custom-gray/60" />
+                    )}
+                  </div>
                 ) : (
                   <div className="w-full h-[8rem] bg-gray-200 rounded-md flex items-center justify-center text-custom-gray" />
                 )}

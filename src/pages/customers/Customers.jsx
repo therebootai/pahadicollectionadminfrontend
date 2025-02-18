@@ -1,31 +1,49 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import MainPageTemplate from "../../template/MainPageTemplate";
 import PaginationBox from "../../components/global/PaginationBox";
 import CustomersTable from "../../components/customers/CustomersTable";
 import { useSearchParams } from "react-router-dom";
 import axios from "axios";
+import SidePopUpSlider from "../../components/global/SidePopUpSlider";
+import ViewCustomers from "../../components/customers/ViewCustomers";
+import EditCustomer from "../../components/customers/EditCustomer";
 
 const Customers = () => {
   const [searchParams] = useSearchParams();
+  const [customers, setCustomers] = useState([]);
+  const [pagination, setPagination] = useState({});
+  const [modalFor, setModalFor] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [currentCustomer, setCurrentCustomer] = useState({});
 
   const currentPage = searchParams.get("page") || 1;
 
-  const fetchProducts = async () => {
+  const fetchCustomers = async () => {
     try {
       const response = await axios.get(
         `${import.meta.env.VITE_API_BASE_URL}/customers/?page=${currentPage}`
       );
       const { customers, pagination } = response.data;
-      //   setProducts(products);
-      //   setPagination(pagination);
-      console.log(customers);
+      setCustomers(customers);
+      setPagination(pagination);
     } catch (error) {
       console.error("Error fetching products:", error);
     }
   };
 
+  const handleOpenModal = (type, customer) => {
+    setModalFor(type);
+    setCurrentCustomer(customer);
+    setShowModal(true);
+  };
+
+  const handleClose = () => {
+    setModalFor("");
+    setShowModal(false);
+  };
+
   useEffect(() => {
-    fetchProducts();
+    fetchCustomers();
   }, [currentPage]);
 
   return (
@@ -36,12 +54,25 @@ const Customers = () => {
         </button>
       </div>
       <div className="p-4 flex flex-col gap-6">
-        <CustomersTable />
-        <PaginationBox
-          pagination={{ totalPages: 1, currentPage: 1 }}
-          prefix="/customers"
+        <CustomersTable
+          customers={customers}
+          handleOpenModal={handleOpenModal}
         />
+        <PaginationBox pagination={pagination} prefix="/customers" />
       </div>
+      <SidePopUpSlider handleClose={handleClose} showPopUp={showModal}>
+        <div className="p-4">
+          {modalFor === "edit-customer" && (
+            <EditCustomer
+              fetchCustomers={fetchCustomers}
+              customer={currentCustomer}
+            />
+          )}
+          {modalFor === "view-customer" && (
+            <ViewCustomers customer={currentCustomer} />
+          )}
+        </div>
+      </SidePopUpSlider>
     </MainPageTemplate>
   );
 };
