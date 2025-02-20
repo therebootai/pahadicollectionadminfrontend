@@ -4,9 +4,9 @@ import MainPageTemplate from "../../template/MainPageTemplate";
 import PaginationBox from "../../components/global/PaginationBox";
 import SidePopUpSlider from "../../components/global/SidePopUpSlider";
 import { useSearchParams } from "react-router-dom";
-import axios from "axios";
 import CouponTable from "../../components/marketing/coupon/CouponTable";
 import ViewCoupon from "../../components/marketing/coupon/ViewCoupon";
+import axiosFetch from "../../config/axios.config";
 
 const AddAndManageCoupon = () => {
   const [searchParams] = useSearchParams();
@@ -38,9 +38,7 @@ const AddAndManageCoupon = () => {
 
   async function fetchAllCoupons() {
     try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/coupons?page=${currentPage}`
-      );
+      const response = await axiosFetch.get(`/coupons?page=${currentPage}`);
       const { coupons, pagination } = response.data;
       setCoupons(coupons);
       setPagination(pagination);

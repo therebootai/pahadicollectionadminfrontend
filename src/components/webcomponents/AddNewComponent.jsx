@@ -1,5 +1,5 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
+import axiosFetch from "../../config/axios.config";
 
 const AddNewComponent = ({ pageType, fetchComponents }) => {
   const [componentType, setComponentType] = useState(pageType);
@@ -18,10 +18,7 @@ const AddNewComponent = ({ pageType, fetchComponents }) => {
     formData.append("name", componentName);
 
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/component/create`,
-        formData
-      );
+      const response = await axiosFetch.post(`/component/create`, formData);
       const result = response.data;
       await fetchComponents();
     } catch (error) {

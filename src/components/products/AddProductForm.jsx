@@ -1,7 +1,7 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { IoClose } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
+import axiosFetch from "../../config/axios.config";
 
 const AddProductForm = ({ editedProduct }) => {
   const [productName, setProductName] = useState("");
@@ -135,9 +135,7 @@ const AddProductForm = ({ editedProduct }) => {
 
   const fetchCategories = async () => {
     try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/category/get`
-      );
+      const response = await axiosFetch.get(`/category/get`);
       const { categories } = response.data;
 
       // Extract all categories
@@ -149,9 +147,7 @@ const AddProductForm = ({ editedProduct }) => {
 
   const fetchPickups = async () => {
     try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/pickups/get`
-      );
+      const response = await axiosFetch.get(`/pickups/get`);
       setAllPickUps(response.data.pickupdata);
     } catch (error) {
       console.error("Error fetching Pickup Data:", error);
@@ -160,9 +156,7 @@ const AddProductForm = ({ editedProduct }) => {
 
   const fetchVariables = async () => {
     try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/variables/get?&limit=200`
-      );
+      const response = await axiosFetch.get(`/variables/get?&limit=200`);
       const { data } = response.data;
       setALLVariables(data);
     } catch (error) {
@@ -251,10 +245,7 @@ const AddProductForm = ({ editedProduct }) => {
     formData.append("thumbnailIndex", thumbnailIndex);
 
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/products/create`,
-        formData
-      );
+      const response = await axiosFetch.post(`/products/create`, formData);
       const result = response.data;
       if (!result) {
         alert("Failed to add product. Please try again.");
@@ -312,10 +303,7 @@ const AddProductForm = ({ editedProduct }) => {
     formData.append("thumbnailIndex", thumbnailIndex);
 
     try {
-      const response = await axios.put(
-        `${import.meta.env.VITE_API_BASE_URL}/products/${productId}`,
-        formData
-      );
+      const response = await axiosFetch.put(`/products/${productId}`, formData);
       const result = response.data;
       if (!result) {
         alert("Failed to update product. Please try again.");

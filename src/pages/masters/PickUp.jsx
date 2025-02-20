@@ -3,16 +3,14 @@ import { useState } from "react";
 import AddPickUpForm from "../../components/masters/pickup/AddPickUpForm";
 import PickUpTable from "../../components/masters/pickup/PickUpTable";
 import MainPageTemplate from "../../template/MainPageTemplate";
-import axios from "axios";
+import axiosFetch from "../../config/axios.config";
 
 export default function PickUp() {
   const [pickups, setPickups] = useState([]);
 
   const fetchPickups = async () => {
     try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/pickups/get`
-      );
+      const response = await axiosFetch.get(`/pickups/get`);
       setPickups(response.data.pickupdata);
     } catch (error) {
       console.error("Error fetching Pickup Data:", error);

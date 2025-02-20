@@ -1,6 +1,6 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import DisplayTable from "../../global/DisplayTable";
+import axiosFetch from "../../../config/axios.config";
 
 const PickUpTable = ({ fetchPickups, pickups, setPickups }) => {
   const [editingPickup, setEditingPickup] = useState(null);
@@ -15,10 +15,7 @@ const PickUpTable = ({ fetchPickups, pickups, setPickups }) => {
   const handleToggle = async (pickupId, isActive) => {
     try {
       const updatedPickup = { isActive: !isActive };
-      await axios.put(
-        `${import.meta.env.VITE_API_BASE_URL}/pickups/update/${pickupId}`,
-        updatedPickup
-      );
+      await axiosFetch.put(`/pickups/update/${pickupId}`, updatedPickup);
 
       setPickups(
         pickups.map((pickup) =>
@@ -40,9 +37,7 @@ const PickUpTable = ({ fetchPickups, pickups, setPickups }) => {
     if (!confirmDelete) return;
 
     try {
-      await axios.delete(
-        `${import.meta.env.VITE_API_BASE_URL}/pickups/delete/${pickupId}`
-      );
+      await axiosFetch.delete(`/pickups/delete/${pickupId}`);
 
       setPickups(pickups.filter((pickup) => pickup.pickupId !== pickupId));
     } catch (error) {
@@ -93,10 +88,7 @@ const PickUpTable = ({ fetchPickups, pickups, setPickups }) => {
     setLoading(true);
 
     try {
-      await axios.put(
-        `${import.meta.env.VITE_API_BASE_URL}/pickups/update/${editingPickup}`,
-        updatedPickup
-      );
+      await axiosFetch.put(`/pickups/update/${editingPickup}`, updatedPickup);
 
       setPickups(
         pickups.map((pickup) =>

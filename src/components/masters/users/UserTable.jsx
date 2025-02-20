@@ -1,7 +1,7 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import DisplayTable from "../../global/DisplayTable";
 import { TfiReload } from "react-icons/tfi";
+import axiosFetch from "../../../config/axios.config";
 
 const UserTable = ({ fetchUsers, users, setUsers }) => {
   const [editingUser, setEditingUser] = useState(null);
@@ -17,10 +17,7 @@ const UserTable = ({ fetchUsers, users, setUsers }) => {
   const handleToggle = async (userId, activeState) => {
     try {
       const updatedUser = { activeState: !activeState };
-      await axios.put(
-        `${import.meta.env.VITE_API_BASE_URL}/users/update/${userId}`,
-        updatedUser
-      );
+      await axiosFetch.put(`/users/update/${userId}`, updatedUser);
 
       setUsers(
         users.map((user) =>
@@ -42,9 +39,7 @@ const UserTable = ({ fetchUsers, users, setUsers }) => {
     if (!confirmDelete) return;
 
     try {
-      await axios.delete(
-        `${import.meta.env.VITE_API_BASE_URL}/users/delete/${userId}`
-      );
+      await axiosFetch.delete(`/users/delete/${userId}`);
 
       setUsers(users.filter((user) => user.userId !== userId));
     } catch (error) {
@@ -92,10 +87,7 @@ const UserTable = ({ fetchUsers, users, setUsers }) => {
     setLoading(true);
 
     try {
-      await axios.put(
-        `${import.meta.env.VITE_API_BASE_URL}/users/update/${editingUser}`,
-        updatedUser
-      );
+      await axiosFetch.put(`/users/update/${editingUser}`, updatedUser);
 
       setUsers(
         users.map((user) =>

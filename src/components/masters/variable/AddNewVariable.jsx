@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FaMinus, FaPlus } from "react-icons/fa";
-import axios from "axios";
 import { useForm } from "react-hook-form";
+import axiosFetch from "../../../config/axios.config";
 
 const AddNewVariable = ({ fetchVariables, variableToEdit }) => {
   const [variableValues, setVariableValues] = useState([""]);
@@ -49,17 +49,12 @@ const AddNewVariable = ({ fetchVariables, variableToEdit }) => {
 
     try {
       if (variableToEdit) {
-        await axios.put(
-          `${import.meta.env.VITE_API_BASE_URL}/variables/update/${
-            variableToEdit.variableId
-          }`,
+        await axiosFetch.put(
+          `/variables/update/${variableToEdit.variableId}`,
           variableData
         );
       } else {
-        await axios.post(
-          `${import.meta.env.VITE_API_BASE_URL}/variables/create`,
-          variableData
-        );
+        await axiosFetch.post(`/variables/create`, variableData);
       }
       reset();
       setVariableValues([""]);

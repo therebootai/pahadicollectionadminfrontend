@@ -3,10 +3,10 @@ import MainPageTemplate from "../../template/MainPageTemplate";
 import PaginationBox from "../../components/global/PaginationBox";
 import CustomersTable from "../../components/customers/CustomersTable";
 import { useSearchParams } from "react-router-dom";
-import axios from "axios";
 import SidePopUpSlider from "../../components/global/SidePopUpSlider";
 import ViewCustomers from "../../components/customers/ViewCustomers";
 import EditCustomer from "../../components/customers/EditCustomer";
+import axiosFetch from "../../config/axios.config";
 
 const Customers = () => {
   const [searchParams] = useSearchParams();
@@ -20,9 +20,7 @@ const Customers = () => {
 
   const fetchCustomers = async () => {
     try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/customers/?page=${currentPage}`
-      );
+      const response = await axiosFetch.get(`/customers/?page=${currentPage}`);
       const { customers, pagination } = response.data;
       setCustomers(customers);
       setPagination(pagination);
@@ -57,6 +55,7 @@ const Customers = () => {
         <CustomersTable
           customers={customers}
           handleOpenModal={handleOpenModal}
+          fetchCustomers={fetchCustomers}
         />
         <PaginationBox pagination={pagination} prefix="/customers" />
       </div>

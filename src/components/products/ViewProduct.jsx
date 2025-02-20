@@ -167,6 +167,38 @@ const ViewProduct = ({ product }) => {
           </div>
         </div>
       )}
+      <div className="grid grid-cols-2 gap-2 items-center border p-1 border-custom-gray">
+        <h3 className="text-lg font-semibold text-custom-black">
+          Product added to wishlist and cart :
+        </h3>
+        <p className="text-lg font-semibold text-custom-blue">
+          {product.product_added}
+        </p>
+      </div>
+      <div className="grid grid-cols-2 gap-2 items-center border p-1 border-custom-gray">
+        <h3 className="text-lg font-semibold text-custom-black">
+          Product ordered till now :
+        </h3>
+        <p className="text-lg font-semibold text-custom-blue">
+          {product.product_ordered}
+        </p>
+      </div>
+      <div className="grid grid-cols-2 gap-2 items-center border p-1 border-custom-gray">
+        <h3 className="text-lg font-semibold text-custom-black">
+          Product viewed by customers :
+        </h3>
+        <p className="text-lg font-semibold text-custom-blue">
+          {product.product_viewed}
+        </p>
+      </div>
+      <div className="grid grid-cols-2 gap-2 items-center border p-1 border-custom-gray">
+        <h3 className="text-lg font-semibold text-custom-black">
+          Product tags :
+        </h3>
+        <p className="text-lg font-semibold text-custom-blue capitalize">
+          {product.tags?.split("_").join(" ")}
+        </p>
+      </div>
       <div className="grid grid-cols-1 gap-2 items-center border p-1 border-custom-gray">
         <h3 className="text-lg font-semibold text-custom-black underline">
           Product Images :

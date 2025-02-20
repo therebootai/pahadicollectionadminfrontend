@@ -1,7 +1,7 @@
 import React from "react";
 import DisplayTable from "../global/DisplayTable";
-import axios from "axios";
 import { Link } from "react-router-dom";
+import axiosFetch from "../../config/axios.config";
 
 const ProductTable = ({
   products,
@@ -27,9 +27,7 @@ const ProductTable = ({
     if (!confirmDelete) return;
 
     try {
-      await axios.delete(
-        `${import.meta.env.VITE_API_BASE_URL}/products/${productId}`
-      );
+      await axiosFetch.delete(`/products/${productId}`);
 
       setProducts(
         products.filter((product) => product.productId !== productId)
@@ -42,10 +40,9 @@ const ProductTable = ({
 
   const handelToggleStatus = async (productId, status) => {
     try {
-      const response = await axios.put(
-        `${import.meta.env.VITE_API_BASE_URL}/products/${productId}`,
-        { isActive: !status }
-      );
+      const response = await axiosFetch.put(`/products/${productId}`, {
+        isActive: !status,
+      });
       const { data } = response.data;
       setProducts(
         products.map((product) =>

@@ -3,9 +3,9 @@ import MainPageTemplate from "../../template/MainPageTemplate";
 import ProductTable from "../../components/products/ProductTable";
 import { Link, useSearchParams } from "react-router-dom";
 import PaginationBox from "../../components/global/PaginationBox";
-import axios from "axios";
 import SidePopUpSlider from "../../components/global/SidePopUpSlider";
 import ViewProduct from "../../components/products/ViewProduct";
+import axiosFetch from "../../config/axios.config";
 
 const Products = () => {
   const [pagination, setPagination] = useState({});
@@ -18,9 +18,7 @@ const Products = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/products/?page=${currentPage}`
-      );
+      const response = await axiosFetch.get(`/products/?page=${currentPage}`);
       const { products, pagination } = response.data;
       setProducts(products);
       setPagination(pagination);
@@ -66,7 +64,6 @@ const Products = () => {
       </div>
       <SidePopUpSlider handleClose={handleClose} showPopUp={viewBox}>
         <div className="p-4">
-          {/* <AddNewVariable fetchVariables={fetchVariables} /> */}
           <ViewProduct product={selectedProduct} />
         </div>
       </SidePopUpSlider>

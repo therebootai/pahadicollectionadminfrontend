@@ -1,7 +1,7 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import { useForm } from "react-hook-form";
+import axiosFetch from "../../../config/axios.config";
 
 const AddCoupon = ({ fetchAllCoupons, coupon }) => {
   const {
@@ -37,10 +37,8 @@ const AddCoupon = ({ fetchAllCoupons, coupon }) => {
   const fetchAllProducts = async (query) => {
     if (!query.trim()) return setAllProducts([]);
     try {
-      const response = await axios.get(
-        `${
-          import.meta.env.VITE_API_BASE_URL
-        }/products/find?limit=1000&page=1&search=${query}`
+      const response = await axiosFetch.get(
+        `/products/find?limit=1000&page=1&search=${query}`
       );
       const { data } = response.data;
       setAllProducts(data);
@@ -74,16 +72,13 @@ const AddCoupon = ({ fetchAllCoupons, coupon }) => {
     };
     try {
       if (coupon) {
-        const response = await axios.put(
-          `${import.meta.env.VITE_API_BASE_URL}/coupons/${coupon._id}`,
+        const response = await axiosFetch.put(
+          `/coupons/${coupon._id}`,
           payload
         );
         alert("Coupon updated successfully!");
       } else {
-        const response = await axios.post(
-          `${import.meta.env.VITE_API_BASE_URL}/coupons`,
-          payload
-        );
+        const response = await axiosFetch.post(`/coupons`, payload);
         alert("Coupon created successfully!");
       }
       await fetchAllCoupons();

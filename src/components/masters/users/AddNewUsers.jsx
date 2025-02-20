@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { TfiReload } from "react-icons/tfi";
 import { useForm } from "react-hook-form";
-import axios from "axios";
+import axiosFetch from "../../../config/axios.config";
 
 const AddNewUsers = ({ fetchUsers }) => {
   const {
@@ -32,10 +32,7 @@ const AddNewUsers = ({ fetchUsers }) => {
 
   const onSubmit = async (data) => {
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/users/users`,
-        data
-      );
+      const response = await axiosFetch.post(`/users/users`, data);
       reset();
       fetchUsers();
     } catch (error) {
