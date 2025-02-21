@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import MainPageTemplate from "../../template/MainPageTemplate";
 import AddProductForm from "../../components/products/AddProductForm";
 import { useParams } from "react-router-dom";
-import axios from "axios";
+import axiosFetch from "../../config/axios.config";
 
 const EditProduct = () => {
   const { id } = useParams();
@@ -10,9 +10,7 @@ const EditProduct = () => {
 
   async function fetchEditedProduct(id) {
     try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/products/${id}`
-      );
+      const response = await axiosFetch.get(`/products/${id}`);
       const { data } = response.data;
       setEditedProduct(data);
     } catch (error) {

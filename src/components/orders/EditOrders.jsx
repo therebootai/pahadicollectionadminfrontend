@@ -1,6 +1,6 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import axiosFetch from "../../config/axios.config";
 
 const EditOrders = ({ fetchOrders, order }) => {
   const {
@@ -45,10 +45,8 @@ const EditOrders = ({ fetchOrders, order }) => {
   const fetchAllProducts = async (query) => {
     if (!query.trim()) return setAllProducts([]);
     try {
-      const response = await axios.get(
-        `${
-          import.meta.env.VITE_API_BASE_URL
-        }/products/find?limit=1000&page=1&search=${query}`
+      const response = await axiosFetch.get(
+        `/products/find?limit=1000&page=1&search=${query}`
       );
       const { data } = response.data;
       setAllProducts(data);
@@ -126,10 +124,7 @@ const EditOrders = ({ fetchOrders, order }) => {
       delivery_location: deliveryAddress,
     };
     try {
-      const response = await axios.put(
-        `${import.meta.env.VITE_API_BASE_URL}/orders/${order._id}`,
-        payload
-      );
+      const response = await axiosFetch.put(`/orders/${order._id}`, payload);
       await fetchOrders();
       alert("Order updated successfully!");
     } catch (error) {
@@ -255,7 +250,10 @@ const EditOrders = ({ fetchOrders, order }) => {
           {/* Selected Products List */}
           <ul className="space-y-2">
             {products.map((product, index) => (
-              <li key={index} className="flex items-center justify-between border border-custom-gray-border p-1">
+              <li
+                key={index}
+                className="flex items-center justify-between border border-custom-gray-border p-1"
+              >
                 <div className="flex flex-col gap-2">
                   <span className="text-custom-black capitalize font-semibold">
                     Product title - {product.title}

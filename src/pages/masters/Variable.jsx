@@ -4,8 +4,9 @@ import AddNewVariable from "../../components/masters/variable/AddNewVariable";
 import SidePopUpSlider from "../../components/global/SidePopUpSlider";
 import VariableTable from "../../components/masters/variable/VariableTable";
 import PaginationBox from "../../components/global/PaginationBox";
-import axios from "axios";
 import { useSearchParams } from "react-router-dom";
+import Loader from "../../components/global/Loader";
+import axiosFetch from "../../config/axios.config";
 
 const Variable = () => {
   const [showAddVariable, setShowAddVariable] = useState(false);
@@ -28,10 +29,8 @@ const Variable = () => {
   const fetchVariables = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(
-        `${
-          import.meta.env.VITE_API_BASE_URL
-        }/variables/get?page=${currentPage}&limit=20`
+      const response = await axiosFetch.get(
+        `/variables/get?page=${currentPage}&limit=20`
       );
       const { data, pagination } = response.data;
       setVariableData(data);
@@ -60,9 +59,7 @@ const Variable = () => {
       <div className="m-6 p-6 flex flex-col gap-6 bg-white rounded border border-custom-gray-border">
         <h1 className="text-2xl font-medium text-custom-black">Variable</h1>
         {loading ? (
-          <div className="flex justify-center items-center p-4">
-            <div className="spinner-border animate-spin border-4 border-t-4 border-custom-violet rounded-full w-10 h-10"></div>
-          </div>
+          <Loader />
         ) : (
           <VariableTable
             fetchVariables={fetchVariables}

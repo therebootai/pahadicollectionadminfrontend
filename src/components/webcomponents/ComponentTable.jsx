@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import DisplayTable from "../global/DisplayTable";
-import axios from "axios";
+import axiosFetch from "../../config/axios.config";
 
 const ComponentTable = ({ components, fetchComponents, setComponents }) => {
   const [editIndex, setEditIndex] = useState("");
@@ -24,9 +24,7 @@ const ComponentTable = ({ components, fetchComponents, setComponents }) => {
     if (!confirmDelete) return;
 
     try {
-      await axios.delete(
-        `${import.meta.env.VITE_API_BASE_URL}/component/${componentId}`
-      );
+      await axiosFetch.delete(`/component/${componentId}`);
       fetchComponents();
     } catch (error) {
       console.error("Error deleting component", error);
@@ -37,10 +35,7 @@ const ComponentTable = ({ components, fetchComponents, setComponents }) => {
   const handleToggle = async (componentId, isActive) => {
     try {
       const updatedComponent = { status: !isActive };
-      await axios.put(
-        `${import.meta.env.VITE_API_BASE_URL}/component/${componentId}`,
-        updatedComponent
-      );
+      await axiosFetch.put(`/component/${componentId}`, updatedComponent);
       setComponents((prevComponents) =>
         prevComponents.map((component) => {
           return component.componentId === componentId ||
@@ -63,8 +58,8 @@ const ComponentTable = ({ components, fetchComponents, setComponents }) => {
     }
     formData.append("name", editedName);
     try {
-      const response = await axios.put(
-        `${import.meta.env.VITE_API_BASE_URL}/component/${componentId}`,
+      const response = await axiosFetch.put(
+        `/component/${componentId}`,
         formData
       );
       const result = response.data;

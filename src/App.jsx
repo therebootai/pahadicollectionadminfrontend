@@ -12,11 +12,16 @@ import EditProduct from "./pages/products/EditProduct";
 import Customers from "./pages/customers/Customers";
 import Orders from "./pages/orders/Orders";
 import Users from "./pages/masters/Users";
+import Login from "./pages/Login";
+import Payment from "./pages/payments/Payment";
 
 function App() {
   return (
     <>
       <Routes>
+        {/* Login Route */}
+        <Route path="/login" element={<Login />} />
+        {/* Admin Panel */}
         <Route path="/" element={<Dashboard />} />
         <Route path="/add-manage-category" element={<AddAndManageCategory />} />
 
@@ -44,6 +49,9 @@ function App() {
 
         {/* Order Routes */}
         <Route path="/orders" element={<Orders />} />
+
+        {/* Payments Routes */}
+        <Route path="/payments" element={<Payment />} />
       </Routes>
     </>
   );

@@ -1,14 +1,18 @@
-import React from "react";
+import React, { useContext } from "react";
 import { FaRegBell } from "react-icons/fa";
 import { IoSearchSharp } from "react-icons/io5";
 import { LuMessageSquareText } from "react-icons/lu";
 import { PiUserCircleFill } from "react-icons/pi";
 import { NavLinkData } from "../../lib/NavLink";
 import { Link, NavLink, useLocation } from "react-router-dom";
-import { IoIosArrowDown } from "react-icons/io";
+import { IoIosArrowDown, IoIosLogOut } from "react-icons/io";
+import { AuthContext } from "../../context/AuthContextProvider";
+import axiosFetch from "../../config/axios.config";
 
 const TopHeader = () => {
   const pathname = useLocation().pathname;
+
+  const { user, logout } = useContext(AuthContext);
 
   const isActive = (path) => {
     return pathname === path || pathname.includes(path.split("/")[1])
@@ -16,6 +20,18 @@ const TopHeader = () => {
       : false;
   };
 
+  const handelLogout = async () => {
+    try {
+      const response = await axiosFetch.get(`/users/logout`, {
+        withCredentials: true,
+      });
+      if (response.status === 200) {
+        logout();
+      }
+    } catch (error) {
+      alert("Failed to logout");
+    }
+  };
   return (
     <nav className="flex flex-col shadow-custom bg-white">
       <div className="h-[4.5rem] flex flex-row justify-between items-center px-4 xl:px-8 gap-8 border-b">
@@ -38,9 +54,32 @@ const TopHeader = () => {
           <button type="button" className="text-custom-black text-2xl">
             <FaRegBell />
           </button>
-          <button type="button" className="text-custom-black text-2xl">
-            <PiUserCircleFill />
-          </button>
+          <div className="relative flex items-center group">
+            <button type="button" className="text-custom-black text-2xl">
+              <PiUserCircleFill />
+            </button>
+            <div className="absolute top-full right-0 w-[10vmax] bg-custom-violet hidden group-hover:flex p-2 rounded-md flex-col gap-4 z-50">
+              {user && (
+                <div className="flex flex-col gap-2">
+                  <h1 className="text-white text-base font-bold lg:text-xl">
+                    {user.name}
+                  </h1>
+                  <h3 className="text-white text-base lg:text-sm font-medium">
+                    Role: {user.role}
+                  </h3>
+                </div>
+              )}
+              <div className="h-0.5 w-full bg-custom-border" />
+              <button
+                type="button"
+                onClick={handelLogout}
+                className="flex gap-2 items-center font-medium text-sm lg:text-lg text-white whitespace-nowrap"
+              >
+                <IoIosLogOut />
+                <span>Log Out</span>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
       <div className="min-h-[4.5rem] items-center flex justify-between xl:px-8 xl:gap-4 flex-wrap xlg:flex-nowrap">

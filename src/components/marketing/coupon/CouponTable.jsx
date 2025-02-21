@@ -1,6 +1,6 @@
 import React from "react";
 import DisplayTable from "../../global/DisplayTable";
-import axios from "axios";
+import axiosFetch from "../../../config/axios.config";
 
 const CouponTable = ({
   coupons,
@@ -25,9 +25,7 @@ const CouponTable = ({
     if (!confirmDelete) return;
 
     try {
-      await axios.delete(
-        `${import.meta.env.VITE_API_BASE_URL}/coupons/${couponId}`
-      );
+      await axiosFetch.delete(`/coupons/${couponId}`);
 
       await fetchAllCoupons();
       alert("Coupon deleted successfully");
@@ -40,10 +38,7 @@ const CouponTable = ({
   const handleToggle = async (couponId, isActive) => {
     try {
       const updatedPickup = { isActive: !isActive };
-      await axios.put(
-        `${import.meta.env.VITE_API_BASE_URL}/coupons/${couponId}`,
-        updatedPickup
-      );
+      await axiosFetch.put(`/coupons/${couponId}`, updatedPickup);
 
       setCoupons(
         coupons.map((coupon) =>

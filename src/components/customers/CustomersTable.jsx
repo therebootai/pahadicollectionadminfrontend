@@ -1,7 +1,8 @@
 import React from "react";
 import DisplayTable from "../global/DisplayTable";
+import axiosFetch from "../../config/axios.config";
 
-const CustomersTable = ({ customers, handleOpenModal }) => {
+const CustomersTable = ({ customers, handleOpenModal, fetchCustomers }) => {
   const tableHeader = [
     "id",
     "Customer Name",
@@ -9,11 +10,25 @@ const CustomersTable = ({ customers, handleOpenModal }) => {
     "Mobile No.",
     "Total Order Value",
     "Login Status",
+    "disabled",
     "Action",
   ];
 
   function calculateTotalAmount(orders) {
     return orders.reduce((total, order) => total + order.totalAmount, 0);
+  }
+
+  async function toggleCustomerStatus(id, isDisabled) {
+    try {
+      const response = await axiosFetch.put(`/customers/${id}`, {
+        is_disabled: !isDisabled,
+      });
+      await fetchCustomers();
+      alert("Customer Status Updated Successfully");
+    } catch (error) {
+      console.log(error);
+      alert("Falied to update customer Status");
+    }
   }
 
   return (
@@ -34,6 +49,7 @@ const CustomersTable = ({ customers, handleOpenModal }) => {
               {calculateTotalAmount(customer.orders)}
             </div>
             <div className="flex-1">{customer.isLogin ? "Yes" : "No"}</div>
+            <div className="flex-1">{customer.is_disabled ? "Yes" : "No"}</div>
             <div className="flex  items-center gap-3 flex-1">
               <button
                 className="text-base font-medium text-custom-violet"
@@ -42,10 +58,12 @@ const CustomersTable = ({ customers, handleOpenModal }) => {
                 View
               </button>
               <button
-                onClick={() => handleOpenModal("edit-customer", customer)}
+                onClick={() =>
+                  toggleCustomerStatus(customer._id, customer.is_disabled)
+                }
                 className="text-base font-medium text-custom-blue"
               >
-                Edit
+                Marked As {customer.is_disabled ? "Enable" : "Disable"}
               </button>
             </div>
           </div>

@@ -4,7 +4,8 @@ import PaginationBox from "../../components/global/PaginationBox";
 import AddNewComponent from "../../components/webcomponents/AddNewComponent";
 import { useParams, useSearchParams } from "react-router-dom";
 import ComponentTable from "../../components/webcomponents/ComponentTable";
-import axios from "axios";
+import Loader from "../../components/global/Loader";
+import axiosFetch from "../../config/axios.config";
 
 const WebComponents = () => {
   const { type } = useParams();
@@ -12,20 +13,36 @@ const WebComponents = () => {
   const [components, setComponents] = useState([]);
   const [pagination, setPagiantion] = useState({});
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
 
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const currentPage = searchParams.get("page") || 1;
 
-  const fetchComponents = async () => {
+  const status = searchParams.get("status");
+
+  const handleToggle = () => {
+    const newParams = new URLSearchParams(searchParams);
+
+    if (status === "true") {
+      newParams.delete("status"); // Remove if already "active"
+    } else {
+      newParams.set("status", "true"); // Set to "active"
+    }
+
+    setSearchParams(newParams);
+  };
+
+  const fetchComponents = async (filter) => {
+    let query = {
+      page: currentPage,
+    };
+
+    if (filter) query = { ...filter, ...query };
     try {
       setLoading(true);
-      const response = await axios.get(
-        `${
-          import.meta.env.VITE_API_BASE_URL
-        }/component/get?type=${type}&page=${currentPage}`
-      );
+      const response = await axiosFetch.get(`/component/get`, {
+        params: query,
+      });
       const { data, pagination } = response.data;
       setComponents(data);
       setPagiantion(pagination);
@@ -37,12 +54,29 @@ const WebComponents = () => {
   };
 
   useEffect(() => {
-    fetchComponents();
-  }, [type, currentPage]);
+    let query = {};
+
+    if (status) {
+      query = { ...query, status: true };
+    }
+
+    if (type) query = { ...query, type };
+    fetchComponents(query);
+  }, [type, currentPage, status]);
 
   return (
     <MainPageTemplate>
       <div className="flex flex-row gap-6 items-center border-b border-custom-gray-border xl:px-8 px-6 p-4">
+        <button
+          className={`h-[3rem] px-8 flex justify-center items-center border rounded-md text-lg capitalize font-medium ${
+            status === "true"
+              ? "bg-custom-violet text-white border-transparent"
+              : "bg-transparent border-custom-violet text-custom-violet"
+          }`}
+          onClick={handleToggle}
+        >
+          Show active only
+        </button>
         <button className="h-[3rem] px-8 flex justify-center items-center bg-custom-violet rounded-md text-lg font-medium text-white">
           Export
         </button>
@@ -53,7 +87,7 @@ const WebComponents = () => {
         </h1>
         <AddNewComponent pageType={type} fetchComponents={fetchComponents} />
         {loading ? (
-          <p className="text-center text-2xl font-bold">Loading...</p>
+          <Loader />
         ) : (
           <ComponentTable
             components={components}
