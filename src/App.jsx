@@ -14,6 +14,7 @@ import Orders from "./pages/orders/Orders";
 import Users from "./pages/masters/Users";
 import Login from "./pages/Login";
 import Payment from "./pages/payments/Payment";
+import WishList from "./pages/marketing/WishList";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
           path="/marketing/add-manage-coupon"
           element={<AddAndManageCoupon />}
         />
+        <Route path="/marketing/wishlist" element={<WishList />} />
 
         {/* Product Routes */}
         <Route path="/products/add" element={<AddProduct />} />
