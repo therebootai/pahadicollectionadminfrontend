@@ -37,6 +37,7 @@ const AddProductForm = ({ editedProduct }) => {
   const [selectedVariable, setSelectedVariable] = useState(null);
   const [selectedVariantValue, setSelectedVariantValue] = useState("");
   const [allAttributes, setAllAttributes] = useState([]);
+  const [editorTag, setEditorTag] = useState(true);
 
   const navigate = useNavigate();
 
@@ -122,6 +123,7 @@ const AddProductForm = ({ editedProduct }) => {
           (image) => image.public_id === editedProduct.thumbnail_image.public_id
         )
       );
+      setEditorTag(editedProduct.tags?.some((tag) => tag === "editor_choice"));
     }
   }, [editedProduct]);
 
@@ -268,6 +270,9 @@ const AddProductForm = ({ editedProduct }) => {
         })
       );
     }
+    if (editorTag) {
+      formData.append("tags", JSON.stringify(["editor_choice"]));
+    }
 
     try {
       const response = await axiosFetch.post(`/products/create`, formData);
@@ -327,6 +332,25 @@ const AddProductForm = ({ editedProduct }) => {
     }
     formData.append("hoverImage", hoverImage);
     formData.append("thumbnailIndex", thumbnailIndex);
+    if (
+      editorTag &&
+      !editedProduct.tags?.some((tag) => tag !== "editor_choice")
+    ) {
+      formData.append(
+        "tags",
+        JSON.stringify([...editedProduct.tags, "editor_choice"])
+      );
+    } else if (
+      !editorTag &&
+      editedProduct.tags?.some((tag) => tag === "editor_choice")
+    ) {
+      formData.append(
+        "tags",
+        JSON.stringify(
+          editedProduct.tags.filter((tag) => tag !== "editor_choice")
+        )
+      );
+    }
 
     try {
       const response = await axiosFetch.put(`/products/${productId}`, formData);
@@ -789,6 +813,21 @@ const AddProductForm = ({ editedProduct }) => {
             )}
           </div>
         </div>
+      </div>
+      <div className="flex flex-1 gap-2 items-center">
+        <input
+          type="checkbox"
+          id="editor_choice"
+          checked={editorTag}
+          className="size-4 accent-custom-violet"
+          onChange={(e) => setEditorTag(e.target.checked)}
+        />
+        <label
+          htmlFor="editor_choice"
+          className="text-custom-black capitalize text-base font-medium cursor-pointer select-none"
+        >
+          Marked as Editor Choice
+        </label>
       </div>
       <div className="w-[20%] ">
         {editedProduct ? (
