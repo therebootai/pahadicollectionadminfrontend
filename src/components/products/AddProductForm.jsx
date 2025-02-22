@@ -21,7 +21,7 @@ const AddProductForm = ({ editedProduct }) => {
   const [inStock, setInStock] = useState("");
   const [mrp, setMrp] = useState("");
   const [prize, setPrize] = useState("");
-  const [attribute, setAttribute] = useState("");
+  const [attribute, setAttribute] = useState([]);
   const [productSpecification, setProductSpecification] = useState([
     { key: "", value: "" },
   ]);
@@ -102,7 +102,14 @@ const AddProductForm = ({ editedProduct }) => {
       setInStock(editedProduct.in_stock || "");
       setMrp(editedProduct.mrp || "");
       setPrize(editedProduct.price || "");
-      setAttribute(editedProduct.attribute || "");
+      setAttribute(
+        editedProduct.attribute
+          ? editedProduct.attribute.map((item) => ({
+              id: item._id,
+              name: item.attribute_title,
+            }))
+          : []
+      );
       setProductSpecification(
         editedProduct.specification?.map((spec) => ({
           key: spec.key,
@@ -239,7 +246,10 @@ const AddProductForm = ({ editedProduct }) => {
     formData.append("price", prize);
     formData.append("mrp", mrp);
     formData.append("in_stock", inStock);
-    formData.append("attribute", attribute);
+    if (attribute.length > 0) {
+      const attributesId = [...attribute].map((a) => a.id);
+      formData.append("attribute", JSON.stringify(attributesId));
+    }
     formData.append("discount", discount);
     formData.append("description", description);
     formData.append("specification", JSON.stringify(productSpecification));
@@ -287,7 +297,8 @@ const AddProductForm = ({ editedProduct }) => {
     formData.append("price", prize);
     formData.append("mrp", mrp);
     formData.append("in_stock", inStock);
-    formData.append("attribute", attribute);
+    const attributesId = [...attribute].map((a) => a.id);
+    formData.append("attribute", JSON.stringify(attributesId));
     formData.append("discount", discount);
     formData.append("description", description);
     formData.append("specification", JSON.stringify(productSpecification));
@@ -327,8 +338,8 @@ const AddProductForm = ({ editedProduct }) => {
       alert("Product updated successfully!");
       navigate("/products?page=1");
     } catch (error) {
-      console.error("Error adding product:", error);
-      alert("Failed to add product. Please try again.");
+      console.error("Error updating product:", error);
+      alert("Failed to update product. Please try again.");
     }
   };
 
@@ -491,7 +502,14 @@ const AddProductForm = ({ editedProduct }) => {
                       setInStock(product.in_stock || "");
                       setMrp(product.mrp || "");
                       setPrize(product.price || "");
-                      setAttribute(product.attribute || "");
+                      setAttribute(
+                        product.attribute
+                          ? product.attribute.map((item) => ({
+                              id: item._id,
+                              name: item.attribute_title,
+                            }))
+                          : []
+                      );
                       setProductSpecification(
                         product.specification?.map((spec) => ({
                           key: spec.key,
@@ -593,15 +611,40 @@ const AddProductForm = ({ editedProduct }) => {
         </h2>
         <div className="flex flex-wrap gap-4">
           {allAttributes.length > 0 &&
-            allAttributes.map((attribute) => (
-              <input
-                type="text"
-                key={attribute._id}
-                value={attribute.attribute_title}
-                onChange={(e) => setAttribute(e.target.value)}
-                placeholder="Enter Attribute"
-                className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md flex-1"
-              />
+            allAttributes.map((attri) => (
+              <div
+                key={attri._id}
+                className="px-2 placeholder:text-custom-gray rounded-md flex-1 flex items-center gap-2"
+              >
+                <input
+                  type="checkbox"
+                  id={attri.attributeId}
+                  checked={[...attribute].some((att) => att.id === attri._id)}
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      setAttribute(
+                        new Set([
+                          ...attribute,
+                          { id: attri._id, name: attri.attribute_title },
+                        ])
+                      );
+                    } else {
+                      setAttribute(
+                        new Set(
+                          [...attribute].filter((att) => att.id !== attri._id)
+                        )
+                      );
+                    }
+                  }}
+                  className="size-4 accent-custom-violet"
+                />
+                <label
+                  htmlFor={attri.attributeId}
+                  className="text-custom-black capitalize text-base font-medium cursor-pointer select-none"
+                >
+                  {attri.attribute_title}
+                </label>
+              </div>
             ))}
         </div>
       </div>
