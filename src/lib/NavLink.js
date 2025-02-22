@@ -36,7 +36,7 @@ const allNavLinks = [
   {
     icon: PiMoneyWavyBold,
     label: "Payments",
-    path: "/payments",
+    path: "/payments?page=1",
   },
   {
     icon: GiProgression,
@@ -45,6 +45,10 @@ const allNavLinks = [
       {
         label: "Coupon",
         path: "/marketing/add-manage-coupon?page=1",
+      },
+      {
+        label: "WishList",
+        path: "/marketing/wishlist?page=1",
       },
     ],
   },

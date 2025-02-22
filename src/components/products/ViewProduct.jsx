@@ -105,65 +105,50 @@ const ViewProduct = ({ product }) => {
           ))}
         </div>
       </div>
-      {product.variant && product.variant.length > 0 && (
+      {product.variable?.variableId && (
         <div className="grid grid-cols-1 gap-2 items-center border p-1 border-custom-gray">
           <h3 className="text-lg font-semibold text-custom-black underline">
             Variants :
           </h3>
-          <div className="flex flex-col gap-6 px-2">
-            {product.variant?.map((vari) => (
-              <div
-                className="flex flex-col gap-1 border-b border-stone-500 last:border-0"
-                key={vari._id}
-              >
-                <div className="grid grid-cols-2 items-center">
-                  <p className="text-lg font-semibold text-custom-black">
-                    Variable Name
-                  </p>
-                  <p className="text-lg font-semibold text-custom-blue">
-                    {vari.variable?.variableName}
-                  </p>
-                </div>
-                <div className="grid grid-cols-2 items-center">
-                  <p className="text-lg font-semibold text-custom-black">
-                    Title
-                  </p>
-                  <p className="text-lg font-semibold text-custom-blue">
-                    {vari.additional?.alternateTitle}
-                  </p>
-                </div>
-                <div className="grid grid-cols-2 items-center">
-                  <p className="text-lg font-semibold text-custom-black">
-                    Variant Type
-                  </p>
-                  <p className="text-lg font-semibold text-custom-blue">
-                    {vari.additional?.varType}
-                  </p>
-                </div>
-                <div className="grid grid-cols-2 items-center">
-                  <p className="text-lg font-semibold text-custom-black">
-                    In Stock
-                  </p>
-                  <p className="text-lg font-semibold text-custom-blue">
-                    {vari.additional?.inStock}
-                  </p>
-                </div>
-                <div className="grid grid-cols-2 items-center">
-                  <p className="text-lg font-semibold text-custom-black">MRP</p>
-                  <p className="text-lg font-semibold text-custom-blue">
-                    {vari.additional?.mrp}
-                  </p>
-                </div>
-                <div className="grid grid-cols-2 items-center">
-                  <p className="text-lg font-semibold text-custom-black">
-                    Price
-                  </p>
-                  <p className="text-lg font-semibold text-custom-blue">
-                    {vari.additional?.price}
-                  </p>
-                </div>
-              </div>
-            ))}
+          <div className="flex flex-col gap-1 border-b border-stone-500 last:border-0">
+            <div className="grid grid-cols-2 items-center">
+              <p className="text-lg font-semibold text-custom-black">
+                Variable Name
+              </p>
+              <p className="text-lg font-semibold text-custom-blue">
+                {product.variable?.variableId?.variableName}
+              </p>
+            </div>
+            <div className="grid grid-cols-2 items-center">
+              <p className="text-lg font-semibold text-custom-black">
+                Variable Value
+              </p>
+              <p className="text-lg font-semibold text-custom-blue">
+                {product.variable?.variableValue}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+      {product.main_product && (
+        <div className="grid grid-cols-1 gap-2 items-center border p-1 border-custom-gray">
+          <h3 className="text-lg font-semibold text-custom-black underline">
+            Main Product :
+          </h3>
+          <div className="flex gap-4 ps-2">
+            <img
+              src={product.main_product?.thumbnail_image?.secure_url}
+              alt="product thumbnail"
+              className="size-28 object-cover"
+            />
+            <div>
+              <h1 className="text-lg font-semibold">
+                {product.main_product?.title}
+              </h1>
+              <p className="text-sm font-medium capitalize">
+                {product.main_product?.productType}
+              </p>
+            </div>
           </div>
         </div>
       )}
@@ -191,23 +176,28 @@ const ViewProduct = ({ product }) => {
           {product.product_viewed}
         </p>
       </div>
-      <div className="grid grid-cols-2 gap-2 items-center border p-1 border-custom-gray">
-        <h3 className="text-lg font-semibold text-custom-black">
-          Product tags :
-        </h3>
-        <p className="text-lg font-semibold text-custom-blue capitalize">
-          {product.tags?.split("_").join(" ")}
-        </p>
-      </div>
+      {product.tags?.length > 0 && (
+        <div className="grid grid-cols-2 gap-2 items-center border p-1 border-custom-gray">
+          <h3 className="text-lg font-semibold text-custom-black">
+            Product tags :
+          </h3>
+          <p className="text-lg font-semibold text-custom-blue capitalize">
+            {product.tags?.split("_").join(" ")}
+          </p>
+        </div>
+      )}
       <div className="grid grid-cols-1 gap-2 items-center border p-1 border-custom-gray">
         <h3 className="text-lg font-semibold text-custom-black underline">
           Product Images :
         </h3>
         <div className="flex flex-wrap gap-4 px-2">
           {product.productImage?.map((img) => (
-            <div className="relative cursor-pointer" title="Thumbnail">
+            <div
+              className="relative cursor-pointer"
+              title="Thumbnail"
+              key={img._id}
+            >
               <img
-                key={img._id}
                 src={img.secure_url}
                 alt={img.public_id}
                 width={450}
