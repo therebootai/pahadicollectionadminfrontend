@@ -36,6 +36,7 @@ const AddProductForm = ({ editedProduct }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [selectedVariable, setSelectedVariable] = useState(null);
   const [selectedVariantValue, setSelectedVariantValue] = useState("");
+  const [allAttributes, setAllAttributes] = useState([]);
 
   const navigate = useNavigate();
 
@@ -162,10 +163,26 @@ const AddProductForm = ({ editedProduct }) => {
     }
   };
 
+  const fetchAllAttributes = async () => {
+    try {
+      const response = await axiosFetch.get(`/attributes?is_active=true`);
+      const { attributes } = response.data;
+      setAllAttributes(attributes);
+    } catch (error) {
+      console.error("Error Fetching Attributes", error);
+    }
+  };
+
   useEffect(() => {
-    fetchCategories();
-    fetchPickups();
-    fetchVariables();
+    async function fetchData() {
+      Promise.all([
+        fetchCategories(),
+        fetchPickups(),
+        fetchVariables(),
+        fetchAllAttributes(),
+      ]);
+    }
+    fetchData();
   }, []);
 
   const handleFileChange = (event, setThumb, setUpload) => {
@@ -568,13 +585,24 @@ const AddProductForm = ({ editedProduct }) => {
             disabled
             className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md flex-1 disabled:cursor-not-allowed"
           />
-          <input
-            type="text"
-            value={attribute}
-            onChange={(e) => setAttribute(e.target.value)}
-            placeholder="Enter Attribute"
-            className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md flex-1"
-          />
+        </div>
+      </div>
+      <div className="flex flex-col gap-3">
+        <h2 className="text-base font-medium text-custom-black">
+          Product Attributes
+        </h2>
+        <div className="flex flex-wrap gap-4">
+          {allAttributes.length > 0 &&
+            allAttributes.map((attribute) => (
+              <input
+                type="text"
+                key={attribute._id}
+                value={attribute.attribute_title}
+                onChange={(e) => setAttribute(e.target.value)}
+                placeholder="Enter Attribute"
+                className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md flex-1"
+              />
+            ))}
         </div>
       </div>
       <textarea
