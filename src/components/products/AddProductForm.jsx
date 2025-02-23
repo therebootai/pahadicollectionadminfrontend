@@ -21,7 +21,7 @@ const AddProductForm = ({ editedProduct }) => {
   const [inStock, setInStock] = useState("");
   const [mrp, setMrp] = useState("");
   const [prize, setPrize] = useState("");
-  const [attribute, setAttribute] = useState("");
+  const [attribute, setAttribute] = useState([]);
   const [productSpecification, setProductSpecification] = useState([
     { key: "", value: "" },
   ]);
@@ -36,6 +36,8 @@ const AddProductForm = ({ editedProduct }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [selectedVariable, setSelectedVariable] = useState(null);
   const [selectedVariantValue, setSelectedVariantValue] = useState("");
+  const [allAttributes, setAllAttributes] = useState([]);
+  const [editorTag, setEditorTag] = useState(true);
 
   const navigate = useNavigate();
 
@@ -101,7 +103,14 @@ const AddProductForm = ({ editedProduct }) => {
       setInStock(editedProduct.in_stock || "");
       setMrp(editedProduct.mrp || "");
       setPrize(editedProduct.price || "");
-      setAttribute(editedProduct.attribute || "");
+      setAttribute(
+        editedProduct.attribute
+          ? editedProduct.attribute.map((item) => ({
+              id: item._id,
+              name: item.attribute_title,
+            }))
+          : []
+      );
       setProductSpecification(
         editedProduct.specification?.map((spec) => ({
           key: spec.key,
@@ -114,6 +123,7 @@ const AddProductForm = ({ editedProduct }) => {
           (image) => image.public_id === editedProduct.thumbnail_image.public_id
         )
       );
+      setEditorTag(editedProduct.tags?.some((tag) => tag === "editor_choice"));
     }
   }, [editedProduct]);
 
@@ -162,10 +172,26 @@ const AddProductForm = ({ editedProduct }) => {
     }
   };
 
+  const fetchAllAttributes = async () => {
+    try {
+      const response = await axiosFetch.get(`/attributes?is_active=true`);
+      const { attributes } = response.data;
+      setAllAttributes(attributes);
+    } catch (error) {
+      console.error("Error Fetching Attributes", error);
+    }
+  };
+
   useEffect(() => {
-    fetchCategories();
-    fetchPickups();
-    fetchVariables();
+    async function fetchData() {
+      Promise.all([
+        fetchCategories(),
+        fetchPickups(),
+        fetchVariables(),
+        fetchAllAttributes(),
+      ]);
+    }
+    fetchData();
   }, []);
 
   const handleFileChange = (event, setThumb, setUpload) => {
@@ -222,7 +248,10 @@ const AddProductForm = ({ editedProduct }) => {
     formData.append("price", prize);
     formData.append("mrp", mrp);
     formData.append("in_stock", inStock);
-    formData.append("attribute", attribute);
+    if (attribute.length > 0) {
+      const attributesId = [...attribute].map((a) => a.id);
+      formData.append("attribute", JSON.stringify(attributesId));
+    }
     formData.append("discount", discount);
     formData.append("description", description);
     formData.append("specification", JSON.stringify(productSpecification));
@@ -240,6 +269,9 @@ const AddProductForm = ({ editedProduct }) => {
           variableValue: selectedVariantValue,
         })
       );
+    }
+    if (editorTag) {
+      formData.append("tags", JSON.stringify(["editor_choice"]));
     }
 
     try {
@@ -270,7 +302,8 @@ const AddProductForm = ({ editedProduct }) => {
     formData.append("price", prize);
     formData.append("mrp", mrp);
     formData.append("in_stock", inStock);
-    formData.append("attribute", attribute);
+    const attributesId = [...attribute].map((a) => a.id);
+    formData.append("attribute", JSON.stringify(attributesId));
     formData.append("discount", discount);
     formData.append("description", description);
     formData.append("specification", JSON.stringify(productSpecification));
@@ -299,6 +332,25 @@ const AddProductForm = ({ editedProduct }) => {
     }
     formData.append("hoverImage", hoverImage);
     formData.append("thumbnailIndex", thumbnailIndex);
+    if (
+      editorTag &&
+      !editedProduct.tags?.some((tag) => tag !== "editor_choice")
+    ) {
+      formData.append(
+        "tags",
+        JSON.stringify([...editedProduct.tags, "editor_choice"])
+      );
+    } else if (
+      !editorTag &&
+      editedProduct.tags?.some((tag) => tag === "editor_choice")
+    ) {
+      formData.append(
+        "tags",
+        JSON.stringify(
+          editedProduct.tags.filter((tag) => tag !== "editor_choice")
+        )
+      );
+    }
 
     try {
       const response = await axiosFetch.put(`/products/${productId}`, formData);
@@ -310,8 +362,8 @@ const AddProductForm = ({ editedProduct }) => {
       alert("Product updated successfully!");
       navigate("/products?page=1");
     } catch (error) {
-      console.error("Error adding product:", error);
-      alert("Failed to add product. Please try again.");
+      console.error("Error updating product:", error);
+      alert("Failed to update product. Please try again.");
     }
   };
 
@@ -474,7 +526,14 @@ const AddProductForm = ({ editedProduct }) => {
                       setInStock(product.in_stock || "");
                       setMrp(product.mrp || "");
                       setPrize(product.price || "");
-                      setAttribute(product.attribute || "");
+                      setAttribute(
+                        product.attribute
+                          ? product.attribute.map((item) => ({
+                              id: item._id,
+                              name: item.attribute_title,
+                            }))
+                          : []
+                      );
                       setProductSpecification(
                         product.specification?.map((spec) => ({
                           key: spec.key,
@@ -568,13 +627,49 @@ const AddProductForm = ({ editedProduct }) => {
             disabled
             className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md flex-1 disabled:cursor-not-allowed"
           />
-          <input
-            type="text"
-            value={attribute}
-            onChange={(e) => setAttribute(e.target.value)}
-            placeholder="Enter Attribute"
-            className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md flex-1"
-          />
+        </div>
+      </div>
+      <div className="flex flex-col gap-3">
+        <h2 className="text-base font-medium text-custom-black">
+          Product Attributes
+        </h2>
+        <div className="flex flex-wrap gap-4">
+          {allAttributes.length > 0 &&
+            allAttributes.map((attri) => (
+              <div
+                key={attri._id}
+                className="px-2 placeholder:text-custom-gray rounded-md flex-1 flex items-center gap-2"
+              >
+                <input
+                  type="checkbox"
+                  id={attri.attributeId}
+                  checked={[...attribute].some((att) => att.id === attri._id)}
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      setAttribute(
+                        new Set([
+                          ...attribute,
+                          { id: attri._id, name: attri.attribute_title },
+                        ])
+                      );
+                    } else {
+                      setAttribute(
+                        new Set(
+                          [...attribute].filter((att) => att.id !== attri._id)
+                        )
+                      );
+                    }
+                  }}
+                  className="size-4 accent-custom-violet"
+                />
+                <label
+                  htmlFor={attri.attributeId}
+                  className="text-custom-black capitalize text-base font-medium cursor-pointer select-none"
+                >
+                  {attri.attribute_title}
+                </label>
+              </div>
+            ))}
         </div>
       </div>
       <textarea
@@ -718,6 +813,21 @@ const AddProductForm = ({ editedProduct }) => {
             )}
           </div>
         </div>
+      </div>
+      <div className="flex flex-1 gap-2 items-center">
+        <input
+          type="checkbox"
+          id="editor_choice"
+          checked={editorTag}
+          className="size-4 accent-custom-violet"
+          onChange={(e) => setEditorTag(e.target.checked)}
+        />
+        <label
+          htmlFor="editor_choice"
+          className="text-custom-black capitalize text-base font-medium cursor-pointer select-none"
+        >
+          Marked as Editor Choice
+        </label>
       </div>
       <div className="w-[20%] ">
         {editedProduct ? (

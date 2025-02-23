@@ -15,6 +15,7 @@ import Users from "./pages/masters/Users";
 import Login from "./pages/Login";
 import Payment from "./pages/payments/Payment";
 import WishList from "./pages/marketing/WishList";
+import Attributes from "./pages/masters/Attributes";
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
         <Route path="/masters/pick-up" element={<PickUp />} />
         <Route path="/masters/variable" element={<Variable />} />
         <Route path="/masters/users" element={<Users />} />
+        <Route path="/masters/attributes" element={<Attributes />} />
 
         {/* Components Routes */}
         <Route path="/components/:type" element={<WebComponents />} />

@@ -45,9 +45,7 @@ const Orders = () => {
   };
 
   async function fetchOrders(filter) {
-    let query = {
-      page: currentPage,
-    };
+    let query = {};
 
     if (filter) query = { ...filter, ...query };
     try {
@@ -63,7 +61,9 @@ const Orders = () => {
   }
 
   useEffect(() => {
-    let query = {};
+    let query = {
+      page: currentPage || 1,
+    };
 
     if (status) {
       query = { ...query, status };

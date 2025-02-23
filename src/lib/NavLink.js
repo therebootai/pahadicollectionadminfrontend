@@ -68,6 +68,10 @@ const allNavLinks = [
         label: "Users",
         path: "/masters/users",
       },
+      {
+        label: "Attributes",
+        path: "/masters/attributes?page=1",
+      },
     ],
   },
   {

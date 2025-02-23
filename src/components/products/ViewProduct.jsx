@@ -177,13 +177,20 @@ const ViewProduct = ({ product }) => {
         </p>
       </div>
       {product.tags?.length > 0 && (
-        <div className="grid grid-cols-2 gap-2 items-center border p-1 border-custom-gray">
+        <div className="flex flex-col gap-2 border p-1 border-custom-gray">
           <h3 className="text-lg font-semibold text-custom-black">
             Product tags :
           </h3>
-          <p className="text-lg font-semibold text-custom-blue capitalize">
-            {product.tags?.split("_").join(" ")}
-          </p>
+          <div className="flex flex-wrap gap-2">
+            {product.tags.map((tag, key) => (
+              <p
+                className="text-lg font-semibold text-custom-blue capitalize"
+                key={key}
+              >
+                {tag.split("_").join(" ")}
+              </p>
+            ))}
+          </div>
         </div>
       )}
       <div className="grid grid-cols-1 gap-2 items-center border p-1 border-custom-gray">
@@ -223,6 +230,30 @@ const ViewProduct = ({ product }) => {
           className="w-[12vmax]"
         />
       </div>
+      {product.variant && product.variant.length > 0 && (
+        <div className="grid grid-cols-1 gap-2 items-center border p-1 border-custom-gray">
+          <h3 className="text-lg font-semibold text-custom-black underline">
+            Variant Product :
+          </h3>
+          <div className="flex flex-wrap gap-4">
+            {product.variant.map((prod) => (
+              <div className="flex gap-4 ps-2" key={prod._id}>
+                <img
+                  src={prod.thumbnail_image?.secure_url}
+                  alt="product thumbnail"
+                  className="size-28 object-cover"
+                />
+                <div>
+                  <h1 className="text-lg font-semibold">{prod.title}</h1>
+                  <p className="text-sm font-medium capitalize">
+                    {prod.productType}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </section>
   );
 };
