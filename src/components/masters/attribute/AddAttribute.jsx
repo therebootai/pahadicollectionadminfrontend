@@ -33,7 +33,7 @@ const AddAttribute = ({ fetchAttributes }) => {
         <input
           type="text"
           {...register("attribute_title", {
-            required: "This field is required",
+            required: "Attribute title is required",
           })}
           placeholder="Attribute Name"
           className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md w-full"
