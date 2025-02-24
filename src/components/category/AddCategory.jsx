@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
 import axiosFetch from "../../config/axios.config";
 
-const AddCategory = ({ fetchCategories, categories, setCategories }) => {
+const AddCategory = ({ fetchCategories, categories }) => {
   const [thumbnail, setThumbnail] = useState(null);
   const [subcategory, setSubcategory] = useState(false);
   const [subsubcategory, setSubSubcategory] = useState(false);
   const [mainCategory, setMainCategory] = useState("");
   const [selectedCategoryId, setSelectedCategoryId] = useState("");
-  const [isActive, setIsActive] = useState(true);
   const [subCategoryName, setSubCategoryName] = useState("");
   const [subSubCategoryName, setSubSubCategoryName] = useState("");
   const [subCategoryId, setSubCategoryId] = useState("");

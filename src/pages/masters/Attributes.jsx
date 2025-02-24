@@ -10,9 +10,11 @@ const Attributes = () => {
   const [attributes, setAttributes] = useState([]);
   const [pagination, setPagination] = useState({});
 
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const currentPage = searchParams.get("page") || 1;
+
+  const status = searchParams.get("status");
 
   const fetchAttributes = async (filter) => {
     let query = {
@@ -30,19 +32,45 @@ const Attributes = () => {
     }
   };
 
+  const handleCheckStatus = (status) => {
+    const newParams = new URLSearchParams(searchParams);
+
+    if (status === "") {
+      newParams.delete("status");
+    } else {
+      newParams.set("status", status);
+    }
+
+    setSearchParams(newParams);
+  };
+
   useEffect(() => {
     let query = {};
 
     if (currentPage) {
       query = { ...query, page: currentPage };
     }
+
+    if (status) {
+      query = { ...query, is_active: status };
+    }
     fetchAttributes(query);
-  }, [currentPage]);
+  }, [currentPage, status]);
 
   return (
     <MainPageTemplate>
       <div className="flex flex-col gap-6 ">
-        <div className="flex flex-row gap-6 items-center border-b border-custom-gray-border xl:px-8 px-6 p-4"></div>
+        <div className="flex flex-row gap-6 items-center border-b border-custom-gray-border xl:px-8 px-6 p-4">
+          <select
+            className="h-[3rem] px-8 flex justify-center items-center rounded-md text-lg font-medium text-custom-black border border-custom-violet focus-within:outline-none"
+            value={status || ""}
+            onChange={(e) => handleCheckStatus(e.target.value)}
+          >
+            <option value="">Choose Status</option>
+            <option value="true">Show Active Only</option>
+            <option value="false">Show Disable Only</option>
+          </select>
+        </div>
         <div className="m-6 p-6 flex flex-col gap-6 bg-white rounded border border-custom-gray-border">
           <h1 className="text-2xl font-medium text-custom-black">
             Attributes Manage

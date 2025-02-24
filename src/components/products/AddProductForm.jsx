@@ -30,7 +30,6 @@ const AddProductForm = ({ editedProduct }) => {
 
   const [selectedMainCategory, setSelectedMainCategory] = useState(null);
   const [selectedSubCategory, setSelectedSubCategory] = useState(null);
-  const [selectedSubSubCategory, setSelectedSubSubCategory] = useState(null);
   const [allMainProducts, setAllMainProducts] = useState([]);
   const [mainProduct, setMainProduct] = useState({});
   const [dropdownVisible, setDropdownVisible] = useState(false);
@@ -38,6 +37,10 @@ const AddProductForm = ({ editedProduct }) => {
   const [selectedVariantValue, setSelectedVariantValue] = useState("");
   const [allAttributes, setAllAttributes] = useState([]);
   const [editorTag, setEditorTag] = useState(true);
+  const [isDrafted, setIsDrafted] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
 
   const navigate = useNavigate();
 
@@ -97,7 +100,6 @@ const AddProductForm = ({ editedProduct }) => {
       setSubCategory(editedProduct.subCategory || "");
       setSelectedSubCategory(selectedSubCategoryObj || null);
       setSubSubCategory(editedProduct.subSubCategory || "");
-      setSelectedSubSubCategory(editedProduct.subSubCategory || null);
       setPickup(editedProduct.pickup?._id || "");
       setDiscount(editedProduct.discount || "");
       setInStock(editedProduct.in_stock || "");
@@ -120,8 +122,9 @@ const AddProductForm = ({ editedProduct }) => {
       setDescription(editedProduct.description || "");
       setThumbnailIndex(
         editedProduct.productImage?.findIndex(
-          (image) => image.public_id === editedProduct.thumbnail_image.public_id
-        )
+          (image) =>
+            image.public_id === editedProduct.thumbnail_image?.public_id
+        ) || 0
       );
       setEditorTag(editedProduct.tags?.some((tag) => tag === "editor_choice"));
     }
@@ -237,6 +240,38 @@ const AddProductForm = ({ editedProduct }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (isDrafted && productName === undefined) {
+      alert("Product Name is required for Drafted Product");
+      return;
+    }
+
+    if (!isDrafted) {
+      if (productName === undefined) {
+        alert("Product name is required");
+        return;
+      }
+      if (category === undefined) {
+        alert("Category is required");
+        return;
+      }
+
+      if (pickup === undefined) {
+        alert("Pick up is required");
+        return;
+      }
+
+      if (prize === undefined) {
+        alert("Price is required");
+      }
+
+      if (productType === "variant") {
+        if (Object.keys(mainProduct).length === 0) {
+          alert("Main Product is required");
+          return;
+        }
+      }
+    }
+
     const formData = new FormData();
 
     formData.append("title", productName);
@@ -260,6 +295,7 @@ const AddProductForm = ({ editedProduct }) => {
     });
     formData.append("hoverImage", hoverImage);
     formData.append("thumbnailIndex", thumbnailIndex);
+    formData.append("is_drafted", isDrafted);
     if (productType === "variant") {
       formData.append("main_product", mainProduct._id);
       formData.append(
@@ -274,6 +310,8 @@ const AddProductForm = ({ editedProduct }) => {
       formData.append("tags", JSON.stringify(["editor_choice"]));
     }
 
+    setLoading(true);
+
     try {
       const response = await axiosFetch.post(`/products/create`, formData);
       const result = response.data;
@@ -286,6 +324,8 @@ const AddProductForm = ({ editedProduct }) => {
     } catch (error) {
       console.error("Error adding product:", error);
       alert("Failed to add product. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -351,6 +391,9 @@ const AddProductForm = ({ editedProduct }) => {
         )
       );
     }
+    formData.append("is_drafted", false);
+
+    setLoading(true);
 
     try {
       const response = await axiosFetch.put(`/products/${productId}`, formData);
@@ -364,6 +407,8 @@ const AddProductForm = ({ editedProduct }) => {
     } catch (error) {
       console.error("Error updating product:", error);
       alert("Failed to update product. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -406,7 +451,6 @@ const AddProductForm = ({ editedProduct }) => {
             );
             setSelectedMainCategory(mainCat);
             setSelectedSubCategory(null);
-            setSelectedSubSubCategory(null);
           }}
           className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md"
         >
@@ -426,7 +470,6 @@ const AddProductForm = ({ editedProduct }) => {
               (sub) => sub.subcategoriesname === e.target.value
             );
             setSelectedSubCategory(subCat);
-            setSelectedSubSubCategory(null);
           }}
           disabled={!selectedMainCategory}
         >
@@ -441,10 +484,6 @@ const AddProductForm = ({ editedProduct }) => {
           value={subSubCategory}
           onChange={(e) => {
             setSubSubCategory(e.target.value);
-            const subSubCat = subSubCategories.find(
-              (subSub) => subSub.subsubcategoriesname === e.target.value
-            );
-            setSelectedSubSubCategory(subSubCat);
           }}
           disabled={!selectedSubCategory}
           className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md"
@@ -520,7 +559,6 @@ const AddProductForm = ({ editedProduct }) => {
                       setSubCategory(product.subCategory || "");
                       setSelectedSubCategory(selectedSubCategoryObj || null);
                       setSubSubCategory(product.subSubCategory || "");
-                      setSelectedSubSubCategory(product.subSubCategory || null);
                       setPickup(product.pickup?._id || "");
                       setDiscount(product.discount || "");
                       setInStock(product.in_stock || "");
@@ -829,7 +867,7 @@ const AddProductForm = ({ editedProduct }) => {
           Marked as Editor Choice
         </label>
       </div>
-      <div className="w-[20%] ">
+      <div className="flex gap-6 max-w-screen-md">
         {editedProduct ? (
           <button
             className="h-[3rem] flex justify-center items-center w-full bg-custom-blue text-base font-medium text-white rounded-md"
@@ -845,6 +883,18 @@ const AddProductForm = ({ editedProduct }) => {
             onClick={handleSubmit}
           >
             Add
+          </button>
+        )}
+        {!editedProduct && (
+          <button
+            className="h-[3rem] flex justify-center items-center w-full border border-custom-blue text-base font-medium text-custom-blue rounded-md"
+            type="submit"
+            onClick={(e) => {
+              setIsDrafted(true);
+              handleSubmit(e);
+            }}
+          >
+            Save As Draft
           </button>
         )}
       </div>
