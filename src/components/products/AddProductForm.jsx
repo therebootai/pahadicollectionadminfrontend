@@ -38,9 +38,7 @@ const AddProductForm = ({ editedProduct }) => {
   const [allAttributes, setAllAttributes] = useState([]);
   const [editorTag, setEditorTag] = useState(true);
   const [isDrafted, setIsDrafted] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState({});
 
   const navigate = useNavigate();
 
@@ -262,6 +260,32 @@ const AddProductForm = ({ editedProduct }) => {
 
       if (prize === undefined) {
         alert("Price is required");
+        return;
+      }
+
+      if (mrp === undefined) {
+        alert("MRP is required");
+        return;
+      }
+
+      if (inStock === undefined) {
+        alert("In-Stock is required");
+        return;
+      }
+
+      if (productImage.length === 0) {
+        alert("Product Image is required");
+        return;
+      }
+
+      if (hoverImage === undefined) {
+        alert("Hover Image is required");
+        return;
+      }
+
+      if (specification.length === 0) {
+        alert("Specification is required");
+        return;
       }
 
       if (productType === "variant") {
@@ -331,6 +355,65 @@ const AddProductForm = ({ editedProduct }) => {
 
   const handleUpdate = async (e, productId) => {
     e.preventDefault();
+
+    if (isDrafted && productName === undefined) {
+      alert("Product Name is required for Drafted Product");
+      return;
+    }
+
+    if (!isDrafted) {
+      if (productName === undefined) {
+        alert("Product name is required");
+        return;
+      }
+      if (category === undefined) {
+        alert("Category is required");
+        return;
+      }
+
+      if (pickup === undefined) {
+        alert("Pick up is required");
+        return;
+      }
+
+      if (prize === undefined) {
+        alert("Price is required");
+        return;
+      }
+
+      if (mrp === undefined) {
+        alert("MRP is required");
+        return;
+      }
+
+      if (inStock === undefined) {
+        alert("In-Stock is required");
+        return;
+      }
+
+      if (productImage.length === 0) {
+        alert("Product Image is required");
+        return;
+      }
+
+      if (hoverImage === undefined) {
+        alert("Hover Image is required");
+        return;
+      }
+
+      if (specification.length === 0) {
+        alert("Specification is required");
+        return;
+      }
+
+      if (productType === "variant") {
+        if (Object.keys(mainProduct).length === 0) {
+          alert("Main Product is required");
+          return;
+        }
+      }
+    }
+
     const formData = new FormData();
 
     formData.append("title", productName);
@@ -826,7 +909,7 @@ const AddProductForm = ({ editedProduct }) => {
           <div className="relative w-full h-[3rem] border border-custom-gray-border rounded-md">
             <label
               htmlFor="file-input"
-              className="absolute top-1/2 left-2 transform -translate-y-1/2 text-custom-gray cursor-pointer"
+              className="absolute top-1/2 left-2 transform -translate-y-1/2 text-custom-gray cursor-pointer truncate"
             >
               {hoverImage ? hoverImage.name : "Choose Hover Image.."}
             </label>
@@ -874,7 +957,7 @@ const AddProductForm = ({ editedProduct }) => {
             type="submit"
             onClick={(e) => handleUpdate(e, editedProduct.productId)}
           >
-            Update
+            {loading ? `Updating...` : `Update`}
           </button>
         ) : (
           <button
@@ -882,7 +965,7 @@ const AddProductForm = ({ editedProduct }) => {
             type="submit"
             onClick={handleSubmit}
           >
-            Add
+            {loading ? `Adding...` : `Add`}
           </button>
         )}
         {!editedProduct && (
@@ -894,7 +977,7 @@ const AddProductForm = ({ editedProduct }) => {
               handleSubmit(e);
             }}
           >
-            Save As Draft
+            {loading ? `Saving...` : `Save As Draft`}
           </button>
         )}
       </div>

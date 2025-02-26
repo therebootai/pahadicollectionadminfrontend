@@ -1,37 +1,31 @@
 import React, { useEffect, useState } from "react";
 import MainPageTemplate from "../../template/MainPageTemplate";
-import { useSearchParams } from "react-router-dom";
 import PaginationBox from "../../components/global/PaginationBox";
+import ReviewTable from "../../components/marketing/reviews/ReviewTable";
 import axiosFetch from "../../config/axios.config";
-import WishListsTable from "../../components/marketing/wishlists/WishListsTable";
+import { useSearchParams } from "react-router-dom";
 
-const WishList = () => {
-  const [wishLists, setWishLists] = useState([]);
+const Reviews = () => {
   const [pagination, setPagination] = useState({});
-  const [loading, setLoading] = useState(false);
+  const [reviews, setReviews] = useState([]);
 
   const [searchParams, setSearchParams] = useSearchParams();
 
   const currentPage = searchParams.get("page") || 1;
-
-  async function fetchWishlists(filter) {
-    let query = {
-      page: currentPage,
-    };
+  async function fetchReviews(filter) {
+    let query = {};
 
     if (filter) query = { ...filter, ...query };
-    setLoading(true);
+
     try {
-      const response = await axiosFetch.get(`/customers/wishlist`, {
+      const response = await axiosFetch.get(`/reviews`, {
         params: query,
       });
-      const { wishlist, pagination } = response.data;
+      const { reviews, pagination } = response.data;
       setPagination(pagination);
-      setWishLists(wishlist);
+      setReviews(reviews);
     } catch (error) {
       console.log(error);
-    } finally {
-      setLoading(false);
     }
   }
 
@@ -48,11 +42,10 @@ const WishList = () => {
   };
 
   useEffect(() => {
-    let query = {
-      page: currentPage || 1,
-    };
+    let query = {};
 
-    fetchWishlists(query);
+    if (currentPage) query = { ...query, page: currentPage };
+    fetchReviews(query);
   }, [currentPage]);
 
   return (
@@ -60,16 +53,16 @@ const WishList = () => {
       <div className="flex flex-col gap-6 ">
         <div className="flex flex-row gap-6 items-center border-b border-custom-gray-border xl:px-8 px-6 p-4"></div>
       </div>
-      <div className="p-4 flex flex-col gap-6">
-        <WishListsTable
-          wishLists={wishLists}
-          fetchWishlists={fetchWishlists}
-          loading={loading}
-        />
-        <PaginationBox pagination={pagination} prefix="/wishlist" />
+
+      <div className="m-6 p-6 flex flex-col gap-6 bg-white rounded border border-custom-gray-border">
+        <h1 className="text-2xl font-medium text-custom-black">
+          Reviews Manage
+        </h1>
+        <ReviewTable reviews={reviews} setReviews={setReviews} />
+        <PaginationBox pagination={pagination} prefix="/reviews" />
       </div>
     </MainPageTemplate>
   );
 };
 
-export default WishList;
+export default Reviews;

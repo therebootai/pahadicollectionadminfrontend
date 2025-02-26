@@ -51,9 +51,11 @@ const AddNewComponent = ({ pageType, fetchComponents }) => {
         <div className="relative flex-1 h-[3rem] border border-custom-gray-border rounded-md">
           <label
             htmlFor="file-input"
-            className="absolute capitalize top-1/2 left-2 transform -translate-y-1/2 text-custom-gray cursor-pointer"
+            className="absolute capitalize top-1/2 left-2 transform -translate-y-1/2 text-custom-gray cursor-pointer truncate"
           >
-            Choose {componentType} Images...
+            {componentImage
+              ? componentImage.name
+              : `Choose ${componentType} Images...`}
           </label>
           <input
             id="file-input"

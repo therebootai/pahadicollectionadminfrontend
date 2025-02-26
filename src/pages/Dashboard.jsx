@@ -7,7 +7,7 @@ import DashboardPieChart from "../components/dashboard/DashboardPieChart";
 const Dashboard = () => {
   const topRowCardData = [
     {
-      basis: 18,
+      basis: 25,
       child: (
         <div className="flex flex-col gap-2">
           <h1 className="text-custom-violet text-2xl font-medium text-center">
@@ -20,7 +20,7 @@ const Dashboard = () => {
       ),
     },
     {
-      basis: 18,
+      basis: 25,
       child: (
         <div className="flex flex-col gap-2">
           <h1 className="text-custom-violet text-2xl font-medium text-center">
@@ -33,7 +33,7 @@ const Dashboard = () => {
       ),
     },
     {
-      basis: 18,
+      basis: 25,
       child: (
         <div className="flex flex-col gap-2">
           <h1 className="text-custom-violet text-2xl font-medium text-center">
@@ -46,7 +46,7 @@ const Dashboard = () => {
       ),
     },
     {
-      basis: 18,
+      basis: 25,
       child: (
         <div className="flex flex-col gap-2">
           <h1 className="text-custom-violet text-2xl font-medium text-center">
@@ -59,7 +59,7 @@ const Dashboard = () => {
       ),
     },
     {
-      basis: 20,
+      basis: 25,
       child: (
         <div className="flex flex-col gap-2">
           <h1 className="text-custom-violet text-2xl font-medium text-center">
@@ -117,7 +117,7 @@ const Dashboard = () => {
   return (
     <MainPageTemplate>
       <div className="flex flex-row gap-6 items-center border-b border-custom-gray-border xl:px-8 px-6 p-4"></div>
-      <div className="p-4 flex flex-col gap-6">
+      <div className="p-4 flex flex-col gap-6 no-scrollbar">
         <div className="flex gap-6">
           {topRowCardData.map((card, key) => (
             <DashboardCard key={key} basis={card.basis}>
@@ -126,7 +126,7 @@ const Dashboard = () => {
           ))}
         </div>
         <div className="flex gap-6">
-          <DashboardCard basis={76}>
+          <DashboardCard basis={85}>
             <div className="min-h-72 w-full flex-1 relative self-stretch">
               <DashboardAreaChart />
             </div>

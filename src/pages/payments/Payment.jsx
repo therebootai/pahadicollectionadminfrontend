@@ -15,34 +15,23 @@ const Payment = () => {
 
   const status = searchParams.get("status");
 
-  const handleCheckStatus = (status) => {
+  const mode = searchParams.get("mode");
+
+  const handleQueryParam = (key, value) => {
     const newParams = new URLSearchParams(searchParams);
 
-    if (status === "") {
-      newParams.delete("status");
+    if (value === "") {
+      newParams.delete(key);
     } else {
-      newParams.set("status", status);
+      newParams.set(key, value);
     }
 
     setSearchParams(newParams);
   };
-
-  const handleCheckMode = (mode) => {
-    const newParams = new URLSearchParams(searchParams);
-
-    if (mode === "") {
-      newParams.delete("mode");
-    } else {
-      newParams.set("mode", mode);
-    }
-
-    setSearchParams(newParams);
-  };
+  
 
   async function fetchPayments(filter) {
-    let query = {
-      page: currentPage,
-    };
+    let query = {};
 
     if (filter) query = { ...filter, ...query };
 
@@ -61,11 +50,18 @@ const Payment = () => {
   useEffect(() => {
     let query = {};
 
+    if (currentPage) query = { ...query, page: currentPage };
+
     if (status) {
       query = { ...query, status };
     }
+
+    if (mode) {
+      query = { ...query, mode };
+    }
+
     fetchPayments(query);
-  }, [currentPage, status]);
+  }, [currentPage, status, mode]);
 
   return (
     <MainPageTemplate>
@@ -73,7 +69,7 @@ const Payment = () => {
         <select
           className="h-[3rem] px-8 flex justify-center items-center rounded-md text-lg font-medium text-custom-black border border-custom-violet focus-within:outline-none"
           value={status || ""}
-          onChange={(e) => handleCheckStatus(e.target.value)}
+          onChange={(e) => handleQueryParam("status", e.target.value)}
         >
           <option value="">Choose Status</option>
           <option value="completed">Completed</option>
@@ -81,8 +77,8 @@ const Payment = () => {
         </select>
         <select
           className="h-[3rem] px-8 flex justify-center items-center rounded-md text-lg font-medium text-custom-black border border-custom-violet focus-within:outline-none"
-          value={status || ""}
-          onChange={(e) => handleCheckMode(e.target.value)}
+          value={mode || ""}
+          onChange={(e) => handleQueryParam("mode", e.target.value)}
         >
           <option value="">Choose Payment Mode</option>
           <option value="COD">COD</option>

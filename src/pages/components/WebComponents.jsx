@@ -33,11 +33,9 @@ const WebComponents = () => {
   };
 
   const fetchComponents = async (filter) => {
-    let query = {
-      page: currentPage,
-    };
+    let query = {};
 
-    if (filter) query = { ...filter, ...query };
+    if (filter) query = { ...filter };
     try {
       setLoading(true);
       const response = await axiosFetch.get(`/component/get`, {
@@ -60,7 +58,12 @@ const WebComponents = () => {
       query = { ...query, status: true };
     }
 
+    if (currentPage) {
+      query = { ...query, page: currentPage };
+    }
+
     if (type) query = { ...query, type };
+
     fetchComponents(query);
   }, [type, currentPage, status]);
 
@@ -85,13 +88,24 @@ const WebComponents = () => {
         <h1 className="text-2xl font-medium text-custom-black capitalize">
           {type}
         </h1>
-        <AddNewComponent pageType={type} fetchComponents={fetchComponents} />
+        <AddNewComponent
+          pageType={type}
+          fetchComponents={() =>
+            fetchComponents({ type, page: currentPage, status })
+          }
+        />
         {loading ? (
           <Loader />
         ) : (
           <ComponentTable
             components={components}
-            fetchComponents={fetchComponents}
+            fetchComponents={() =>
+              fetchComponents({
+                type,
+                page: currentPage,
+                status,
+              })
+            }
             setComponents={setComponents}
           />
         )}

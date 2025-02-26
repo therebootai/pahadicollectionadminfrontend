@@ -111,7 +111,7 @@ const TopHeader = () => {
                   {link.label}
                   <IoIosArrowDown />
                 </h3>
-                <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-full bg-custom-violet/70 hidden group-hover:flex p-2 rounded-md flex-col gap-2">
+                <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-full bg-custom-violet/70 hidden group-hover:flex p-2 rounded-md flex-col gap-2 z-10">
                   {link.dropdown.map((item, index) => (
                     <Link
                       key={index}

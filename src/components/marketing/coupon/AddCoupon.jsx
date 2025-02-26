@@ -100,7 +100,13 @@ const AddCoupon = ({ fetchAllCoupons, coupon }) => {
 
   return (
     <div>
-      <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
+      <form
+        className="flex flex-col gap-4 bg-white p-4 rounded-md shadow-custom-lite"
+        onSubmit={handleSubmit(onSubmit)}
+      >
+        <h1 className="text-xl font-medium text-custom-black">
+          {coupon ? "Update" : "Add"} Coupon
+        </h1>
         <div className="flex gap-4">
           <input
             type="text"
