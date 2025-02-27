@@ -50,6 +50,10 @@ const allNavLinks = [
         label: "WishList",
         path: "/marketing/wishlist?page=1",
       },
+      {
+        label: "Reviews",
+        path: "/marketing/reviews?page=1",
+      },
     ],
   },
   {

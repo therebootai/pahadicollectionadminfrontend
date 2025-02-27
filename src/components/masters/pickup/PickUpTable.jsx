@@ -142,7 +142,7 @@ const PickUpTable = ({ fetchPickups, pickups, setPickups }) => {
                 className="flex flex-row p-2 border-b border-custom-gray-border text-base"
                 key={pickup.pickupId}
               >
-                <div className="w-[20%]">
+                <div className="flex-1">
                   {editingPickup === pickup.pickupId ? (
                     <input
                       type="text"
@@ -162,7 +162,7 @@ const PickUpTable = ({ fetchPickups, pickups, setPickups }) => {
                   )}
                 </div>
 
-                <div className="w-[20%]">
+                <div className="flex-1">
                   {editingPickup === pickup.pickupId ? (
                     <input
                       type="text"
@@ -182,7 +182,7 @@ const PickUpTable = ({ fetchPickups, pickups, setPickups }) => {
                   )}
                 </div>
 
-                <div className="w-[20%]">
+                <div className="flex-1">
                   {editingPickup === pickup.pickupId ? (
                     <input
                       type="text"
@@ -202,7 +202,7 @@ const PickUpTable = ({ fetchPickups, pickups, setPickups }) => {
                   )}
                 </div>
 
-                <div className="w-[20%]">
+                <div className="flex-1">
                   {editingPickup === pickup.pickupId ? (
                     <input
                       type="text"
@@ -222,7 +222,7 @@ const PickUpTable = ({ fetchPickups, pickups, setPickups }) => {
                   )}
                 </div>
 
-                <div className="w-[10%]">
+                <div className="flex-1">
                   <label className="switch">
                     <input
                       type="checkbox"
@@ -235,7 +235,7 @@ const PickUpTable = ({ fetchPickups, pickups, setPickups }) => {
                   </label>
                 </div>
 
-                <div className="w-[10%]">
+                <div className="flex-1">
                   <div className="flex flex-row gap-3 items-center">
                     {editingPickup === pickup.pickupId ? (
                       <>

@@ -32,13 +32,14 @@ const Attributes = () => {
     }
   };
 
-  const handleCheckStatus = (status) => {
+
+  const handleQueryParam = (key, value) => {
     const newParams = new URLSearchParams(searchParams);
 
-    if (status === "") {
-      newParams.delete("status");
+    if (value === "") {
+      newParams.delete(key);
     } else {
-      newParams.set("status", status);
+      newParams.set(key, value);
     }
 
     setSearchParams(newParams);
@@ -64,7 +65,7 @@ const Attributes = () => {
           <select
             className="h-[3rem] px-8 flex justify-center items-center rounded-md text-lg font-medium text-custom-black border border-custom-violet focus-within:outline-none"
             value={status || ""}
-            onChange={(e) => handleCheckStatus(e.target.value)}
+            onChange={(e) => handleQueryParam("status", e.target.value)}
           >
             <option value="">Choose Status</option>
             <option value="true">Show Active Only</option>
@@ -75,11 +76,17 @@ const Attributes = () => {
           <h1 className="text-2xl font-medium text-custom-black">
             Attributes Manage
           </h1>
-          <AddAttribute fetchAttributes={fetchAttributes} />
+          <AddAttribute
+            fetchAttributes={() =>
+              fetchAttributes({ page: currentPage, is_active: status })
+            }
+          />
           <AttributeTable
             attributes={attributes}
             setAttributes={setAttributes}
-            fetchAttributes={fetchAttributes}
+            fetchAttributes={() =>
+              fetchAttributes({ page: currentPage, is_active: status })
+            }
           />
           <PaginationBox pagination={pagination} prefix="/masters/attributes" />
         </div>

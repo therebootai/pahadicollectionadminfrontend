@@ -18,6 +18,12 @@ const Products = () => {
 
   const type = searchParams.get("type");
 
+  const status = searchParams.get("status");
+
+  const tags = searchParams.get("tags");
+
+  const is_drafted = searchParams.get("is_drafted");
+
   const fetchProducts = async (filter) => {
     let query = {
       page: currentPage,
@@ -36,13 +42,13 @@ const Products = () => {
     }
   };
 
-  const handleCheckType = (type) => {
+  const handleQueryParam = (key, value) => {
     const newParams = new URLSearchParams(searchParams);
 
-    if (type === "") {
-      newParams.delete("type");
+    if (value === "" || value === false) {
+      newParams.delete(key);
     } else {
-      newParams.set("type", type);
+      newParams.set(key, value);
     }
 
     setSearchParams(newParams);
@@ -62,8 +68,21 @@ const Products = () => {
     if (type) {
       query = { ...query, productType: type };
     }
+
+    if (status) {
+      query = { ...query, isActive: status };
+    }
+
+    if (tags) {
+      query = { ...query, tags: tags };
+    }
+
+    if (is_drafted) {
+      query = { ...query, is_drafted: is_drafted };
+    }
+
     fetchProducts(query);
-  }, [currentPage, type]);
+  }, [currentPage, type, status, tags, is_drafted]);
 
   return (
     <MainPageTemplate>
@@ -71,12 +90,50 @@ const Products = () => {
         <select
           className="h-[3rem] px-8 flex justify-center items-center rounded-md text-lg font-medium text-custom-black border border-custom-violet focus-within:outline-none"
           value={type || ""}
-          onChange={(e) => handleCheckType(e.target.value)}
+          onChange={(e) => handleQueryParam("type", e.target.value)}
         >
           <option value="">Choose Type</option>
           <option value="single">Single</option>
           <option value="variant">Variant</option>
         </select>
+        <select
+          className="h-[3rem] px-8 flex justify-center items-center rounded-md text-lg font-medium text-custom-black border border-custom-violet focus-within:outline-none"
+          value={status || ""}
+          onChange={(e) => handleQueryParam("status", e.target.value)}
+        >
+          <option value="">Show All</option>
+          <option value="true">Enabled</option>
+          <option value="false">Disabled</option>
+        </select>
+        <select
+          className="h-[3rem] px-8 flex justify-center items-center rounded-md text-lg font-medium text-custom-black border border-custom-violet focus-within:outline-none"
+          value={tags || ""}
+          onChange={(e) => handleQueryParam("tags", e.target.value)}
+        >
+          <option value="">Show All Tags</option>
+          <option value="best_selling">Best Selling</option>
+          <option value="mostly_viewed">Mostly Viewed</option>
+          <option value="mostly_added">Mostly Added</option>
+          <option value="editor_choice">Editor Choice</option>
+        </select>
+        <div
+          className={`h-[3rem] px-8 flex justify-center items-center rounded-md text-lg font-medium border border-custom-violet cursor-pointer ${
+            Boolean(is_drafted)
+              ? "bg-custom-violet text-white"
+              : "bg-transparent text-custom-violet"
+          }`}
+        >
+          <input
+            type="checkbox"
+            checked={Boolean(is_drafted)}
+            onChange={(e) => handleQueryParam("is_drafted", e.target.checked)}
+            className="sr-only"
+            id="is_drafted"
+          />
+          <label htmlFor="is_drafted" className="cursor-pointer">
+            {Boolean(is_drafted) ? "Show Drafted Only" : "Show All"}
+          </label>
+        </div>
         <button className="h-[3rem] px-8 flex justify-center items-center bg-custom-violet rounded-md text-lg font-medium text-white">
           Import Product
         </button>
@@ -91,7 +148,9 @@ const Products = () => {
         <ProductTable
           products={products}
           setProducts={setProducts}
-          fetchProducts={fetchProducts}
+          fetchProducts={() =>
+            fetchProducts({ page: currentPage, productType: type })
+          }
           setSelectedProduct={setSelectedProduct}
           handelView={handelView}
         />

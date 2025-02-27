@@ -32,13 +32,13 @@ const Orders = () => {
     setCurrentOrder({});
   };
 
-  const handleCheckStatus = (status) => {
+  const handleQueryParam = (key, value) => {
     const newParams = new URLSearchParams(searchParams);
 
-    if (status === "") {
-      newParams.delete("status");
+    if (value === "") {
+      newParams.delete(key);
     } else {
-      newParams.set("status", status);
+      newParams.set(key, value);
     }
 
     setSearchParams(newParams);
@@ -77,7 +77,7 @@ const Orders = () => {
         <select
           className="h-[3rem] px-8 flex justify-center items-center rounded-md text-lg font-medium text-custom-black border border-custom-violet focus-within:outline-none"
           value={status || ""}
-          onChange={(e) => handleCheckStatus(e.target.value)}
+          onChange={(e) => handleQueryParam("status", e.target.value)}
         >
           <option value="">Choose Status</option>
           <option value="ordered">Ordered</option>
@@ -95,7 +95,7 @@ const Orders = () => {
       <div className="p-4 flex flex-col gap-6">
         <OrdersTable
           orders={orders}
-          fetchOrders={fetchOrders}
+          fetchOrders={() => fetchOrders({ page: currentOrder, status })}
           handleOpenModal={handleOpenModal}
         />
         <PaginationBox pagination={pagination} prefix="/orders" />
@@ -103,7 +103,10 @@ const Orders = () => {
       <SidePopUpSlider handleClose={handleClose} showPopUp={showAddOrder}>
         <div className="p-4">
           {modalFor === "edit-order" && (
-            <EditOrders fetchOrders={fetchOrders} order={currentOrder} />
+            <EditOrders
+              fetchOrders={() => fetchOrders({ page: currentOrder, status })}
+              order={currentOrder}
+            />
           )}
           {modalFor === "view-order" && <ViewOrder order={currentOrder} />}
         </div>

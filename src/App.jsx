@@ -16,6 +16,7 @@ import Login from "./pages/Login";
 import Payment from "./pages/payments/Payment";
 import WishList from "./pages/marketing/WishList";
 import Attributes from "./pages/masters/Attributes";
+import Reviews from "./pages/marketing/Reviews";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
           element={<AddAndManageCoupon />}
         />
         <Route path="/marketing/wishlist" element={<WishList />} />
+        <Route path="/marketing/reviews" element={<Reviews />} />
 
         {/* Product Routes */}
         <Route path="/products/add" element={<AddProduct />} />
