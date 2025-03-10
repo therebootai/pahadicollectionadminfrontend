@@ -10,6 +10,26 @@ const ViewOrder = ({ order }) => {
           {order.orderId}
         </p>
       </div>
+      <div className="grid grid-cols-2 gap-2 items-center border p-1 border-custom-gray">
+        <h3 className="text-lg font-semibold text-custom-black">
+          Order initialize :
+        </h3>
+        <p className="text-lg font-semibold text-custom-blue">
+          {new Date(order.createdAt).toLocaleDateString("en-In")}
+        </p>
+      </div>
+      <div className="flex flex-col gap-4 border p-1 border-custom-gray">
+        <h3 className="text-lg font-semibold text-custom-black">
+          Delivery Address :
+        </h3>
+        <div className="flex flex-col gap-2">
+          {Object.entries(order.delivery_location).map(([key, value]) => (
+            <p key={key}>
+              <strong>{key}:</strong> {value}
+            </p>
+          ))}
+        </div>
+      </div>
       <div className="flex flex-col gap-4 border p-1 border-custom-gray">
         <h3 className="text-lg font-semibold text-custom-black">
           Customer Details :
@@ -43,17 +63,56 @@ const ViewOrder = ({ order }) => {
         </h1>
         {order.products.map((prod) => (
           <div
-            className="grid grid-cols-2 gap-2 items-center p-2 m-2 border border-custom-gray"
             key={prod.productId.productId}
+            className="flex flex-col p-2 m-2 border border-custom-gray"
           >
-            <h3 className="text-lg font-semibold text-custom-black">
-              Product Name :
-            </h3>
-            <p className="text-lg font-semibold text-custom-blue">
-              {prod.productId?.title}
-            </p>
+            <div className="grid grid-cols-2 gap-2 items-center">
+              <h3 className="text-lg font-semibold text-custom-black">
+                Product Name :
+              </h3>
+              <p className="text-lg font-semibold text-custom-blue">
+                {prod.productId?.title}
+              </p>
+            </div>
+            <div className="grid grid-cols-2 gap-2 items-center">
+              <h3 className="text-lg font-semibold text-custom-black">
+                Quantity :
+              </h3>
+              <p className="text-lg font-semibold text-custom-blue">
+                {prod.quantity}
+              </p>
+            </div>
           </div>
         ))}
+      </div>
+      <div className="flex flex-col gap-4 border p-1 border-custom-gray">
+        <h1 className="text-lg font-semibold text-custom-black">
+          Payment Details:
+        </h1>
+        <div className="grid grid-cols-2 gap-2 items-center">
+          <h3 className="text-lg font-semibold text-custom-black">
+            Payment Status :
+          </h3>
+          <p className="text-lg font-semibold text-custom-blue">
+            {order.paymentId.paymentStatus}
+          </p>
+        </div>
+        <div className="grid grid-cols-2 gap-2 items-center">
+          <h3 className="text-lg font-semibold text-custom-black">
+            Payment Mode :
+          </h3>
+          <p className="text-lg font-semibold text-custom-blue">
+            {order.paymentId.paymentMode}
+          </p>
+        </div>
+        <div className="grid grid-cols-2 gap-2 items-center">
+          <h3 className="text-lg font-semibold text-custom-black">
+            Payment initialize :
+          </h3>
+          <p className="text-lg font-semibold text-custom-blue">
+            {new Date(order.paymentId.createdAt).toLocaleDateString("en-In")}
+          </p>
+        </div>
       </div>
     </section>
   );

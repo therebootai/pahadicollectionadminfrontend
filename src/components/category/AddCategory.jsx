@@ -1,16 +1,12 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import axiosFetch from "../../config/axios.config";
 
-// Base API URL from VITE environment variables
-const API_URL = import.meta.env.VITE_API_BASE_URL;
-
-const AddCategory = ({ fetchCategories, categories, setCategories }) => {
+const AddCategory = ({ fetchCategories, categories }) => {
   const [thumbnail, setThumbnail] = useState(null);
   const [subcategory, setSubcategory] = useState(false);
   const [subsubcategory, setSubSubcategory] = useState(false);
   const [mainCategory, setMainCategory] = useState("");
   const [selectedCategoryId, setSelectedCategoryId] = useState("");
-  const [isActive, setIsActive] = useState(true);
   const [subCategoryName, setSubCategoryName] = useState("");
   const [subSubCategoryName, setSubSubCategoryName] = useState("");
   const [subCategoryId, setSubCategoryId] = useState("");
@@ -41,13 +37,9 @@ const AddCategory = ({ fetchCategories, categories, setCategories }) => {
       formData.append("mainCategory", categoryData.mainCategory);
       formData.append("categoryImage", file);
 
-      const response = await axios.post(
-        `${API_URL}/category/create`,
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
+      const response = await axiosFetch.post(`/category/create`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
 
       setMainCategory("");
       setThumbnail(null);
@@ -72,7 +64,7 @@ const AddCategory = ({ fetchCategories, categories, setCategories }) => {
         isActive: true,
       };
 
-      const response = await axios.put(`${API_URL}/category/update`, {
+      const response = await axiosFetch.put(`/category/update`, {
         categoryId: selectedCategoryId,
         subcategories: [newSubcategory],
       });
@@ -99,7 +91,7 @@ const AddCategory = ({ fetchCategories, categories, setCategories }) => {
       };
 
       // Ensure the correct structure for subcategory
-      const response = await axios.put(`${API_URL}/category/update`, {
+      const response = await axiosFetch.put(`/category/update`, {
         categoryId: selectedCategoryId,
         subcategories: [
           {

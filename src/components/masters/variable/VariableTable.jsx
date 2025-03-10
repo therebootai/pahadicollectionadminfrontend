@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import DisplayTable from "../../global/DisplayTable";
-import axios from "axios";
 import SidePopUpSlider from "../../global/SidePopUpSlider";
 import AddNewVariable from "./AddNewVariable";
+import axiosFetch from "../../../config/axios.config";
 
 const VariableTable = ({ variableData, setVariableData, fetchVariables }) => {
   const tableHeader = ["Variable Name", "Variable Value", "Status", "Actions"];
@@ -12,10 +12,7 @@ const VariableTable = ({ variableData, setVariableData, fetchVariables }) => {
   const handleToggle = async (variableId, isActive) => {
     try {
       const updatedPickup = { isActive: !isActive };
-      await axios.put(
-        `${import.meta.env.VITE_API_BASE_URL}/variables/update/${variableId}`,
-        updatedPickup
-      );
+      await axiosFetch.put(`/variables/update/${variableId}`, updatedPickup);
 
       setVariableData(
         variableData.map((variable) =>
@@ -37,9 +34,7 @@ const VariableTable = ({ variableData, setVariableData, fetchVariables }) => {
     if (!confirmDelete) return;
 
     try {
-      await axios.delete(
-        `${import.meta.env.VITE_API_BASE_URL}/variables/delete/${variableId}`
-      );
+      await axiosFetch.delete(`/variables/delete/${variableId}`);
 
       setVariableData(
         variableData.filter((variable) => variable.variableId !== variableId)

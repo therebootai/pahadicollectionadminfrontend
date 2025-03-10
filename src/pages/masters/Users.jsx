@@ -2,16 +2,14 @@ import React, { useState } from "react";
 import MainPageTemplate from "../../template/MainPageTemplate";
 import AddNewUsers from "../../components/masters/users/AddNewUsers";
 import UserTable from "../../components/masters/users/UserTable";
-import axios from "axios";
+import axiosFetch from "../../config/axios.config";
 
 const Users = () => {
   const [users, setUsers] = useState([]);
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/users/users`
-      );
+      const response = await axiosFetch.get(`/users/users`);
       setUsers(response.data);
     } catch (error) {
       console.error("Error fetching Pickup Data:", error);

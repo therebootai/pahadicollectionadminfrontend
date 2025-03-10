@@ -1,5 +1,5 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
+import axiosFetch from "../../config/axios.config";
 
 const AddNewComponent = ({ pageType, fetchComponents }) => {
   const [componentType, setComponentType] = useState(pageType);
@@ -18,10 +18,7 @@ const AddNewComponent = ({ pageType, fetchComponents }) => {
     formData.append("name", componentName);
 
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/component/create`,
-        formData
-      );
+      const response = await axiosFetch.post(`/component/create`, formData);
       const result = response.data;
       await fetchComponents();
     } catch (error) {
@@ -54,9 +51,11 @@ const AddNewComponent = ({ pageType, fetchComponents }) => {
         <div className="relative flex-1 h-[3rem] border border-custom-gray-border rounded-md">
           <label
             htmlFor="file-input"
-            className="absolute capitalize top-1/2 left-2 transform -translate-y-1/2 text-custom-gray cursor-pointer"
+            className="absolute capitalize top-1/2 left-2 transform -translate-y-1/2 text-custom-gray cursor-pointer truncate"
           >
-            Choose {componentType} Images...
+            {componentImage
+              ? componentImage.name
+              : `Choose ${componentType} Images...`}
           </label>
           <input
             id="file-input"

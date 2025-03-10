@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import axiosFetch from "../../config/axios.config";
 
 const ManageCategory = ({ categories, setCategories, fetchCategories }) => {
   const [editingCategory, setEditingCategory] = useState(null);
@@ -16,9 +16,7 @@ const ManageCategory = ({ categories, setCategories, fetchCategories }) => {
     if (!confirmDelete) return;
 
     try {
-      await axios.delete(
-        `${import.meta.env.VITE_API_BASE_URL}/category/delete/${categoryId}`
-      );
+      await axiosFetch.delete(`/category/delete/${categoryId}`);
 
       setCategories(
         categories.filter((category) => category.categoryId !== categoryId)
@@ -62,10 +60,7 @@ const ManageCategory = ({ categories, setCategories, fetchCategories }) => {
         };
       }
 
-      await axios.put(
-        `${import.meta.env.VITE_API_BASE_URL}/category/update`,
-        payload
-      );
+      await axiosFetch.put(`/category/update`, payload);
 
       setCategories((prevCategories) =>
         prevCategories.map((category) =>
@@ -135,8 +130,8 @@ const ManageCategory = ({ categories, setCategories, fetchCategories }) => {
         );
         imageFormData.append("categoryId", editingCategory.categoryId);
 
-        const imageResponse = await axios.put(
-          `${import.meta.env.VITE_API_BASE_URL}/category/upload-image`,
+        const imageResponse = await axiosFetch.put(
+          `/category/upload-image`,
           imageFormData,
           {
             headers: {
@@ -153,10 +148,7 @@ const ManageCategory = ({ categories, setCategories, fetchCategories }) => {
         categoryImage: categoryImageUrl,
       };
 
-      const response = await axios.put(
-        `${import.meta.env.VITE_API_BASE_URL}/category/update`,
-        finalPayload
-      );
+      const response = await axiosFetch.put(`/category/update`, finalPayload);
 
       setCategories((prevCategories) => {
         return prevCategories.map((category) =>

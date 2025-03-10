@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import AddCategory from "../components/category/AddCategory";
 import ManageCategory from "../components/category/ManageCategory";
 import MainPageTemplate from "../template/MainPageTemplate";
-import axios from "axios";
 import SidePopUpSlider from "../components/global/SidePopUpSlider";
+import axiosFetch from "../config/axios.config";
 
 const AddAndManageCategory = () => {
   const [showAddCategory, setShowAddCategory] = useState(false);
@@ -16,11 +16,10 @@ const AddAndManageCategory = () => {
   const handleClose = () => {
     setShowAddCategory(false);
   };
+
   const fetchCategories = async () => {
     try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/category/get`
-      );
+      const response = await axiosFetch.get(`/category/get`);
       setCategories(response.data.categories);
     } catch (error) {
       console.error("Error fetching categories:", error);

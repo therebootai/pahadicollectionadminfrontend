@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import axios from "axios";
+import axiosFetch from "../../../config/axios.config";
 
 const AddPickUpForm = ({ fetchPickups }) => {
   const {
@@ -15,10 +15,7 @@ const AddPickUpForm = ({ fetchPickups }) => {
   const onSubmit = async (data) => {
     setLoading(true);
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/pickups/create`,
-        data
-      );
+      const response = await axiosFetch.post(`/pickups/create`, data);
 
       reset();
       setServerError("");

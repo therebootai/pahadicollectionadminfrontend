@@ -1,5 +1,6 @@
 import React from "react";
 import DisplayTable from "../global/DisplayTable";
+import axiosFetch from "../../config/axios.config";
 
 const OrdersTable = ({ orders, fetchOrders, handleOpenModal }) => {
   const tableHeader = [
@@ -21,9 +22,7 @@ const OrdersTable = ({ orders, fetchOrders, handleOpenModal }) => {
     if (!confirmDelete) return;
 
     try {
-      await axios.delete(
-        `${import.meta.env.VITE_API_BASE_URL}/orders/${orderId}`
-      );
+      await axiosFetch.delete(`/orders/${orderId}`);
 
       await fetchOrders();
       alert("Order deleted successfully");

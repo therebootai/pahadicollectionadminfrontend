@@ -12,11 +12,19 @@ import EditProduct from "./pages/products/EditProduct";
 import Customers from "./pages/customers/Customers";
 import Orders from "./pages/orders/Orders";
 import Users from "./pages/masters/Users";
+import Login from "./pages/Login";
+import Payment from "./pages/payments/Payment";
+import WishList from "./pages/marketing/WishList";
+import Attributes from "./pages/masters/Attributes";
+import Reviews from "./pages/marketing/Reviews";
 
 function App() {
   return (
     <>
       <Routes>
+        {/* Login Route */}
+        <Route path="/login" element={<Login />} />
+        {/* Admin Panel */}
         <Route path="/" element={<Dashboard />} />
         <Route path="/add-manage-category" element={<AddAndManageCategory />} />
 
@@ -25,6 +33,8 @@ function App() {
           path="/marketing/add-manage-coupon"
           element={<AddAndManageCoupon />}
         />
+        <Route path="/marketing/wishlist" element={<WishList />} />
+        <Route path="/marketing/reviews" element={<Reviews />} />
 
         {/* Product Routes */}
         <Route path="/products/add" element={<AddProduct />} />
@@ -35,6 +45,7 @@ function App() {
         <Route path="/masters/pick-up" element={<PickUp />} />
         <Route path="/masters/variable" element={<Variable />} />
         <Route path="/masters/users" element={<Users />} />
+        <Route path="/masters/attributes" element={<Attributes />} />
 
         {/* Components Routes */}
         <Route path="/components/:type" element={<WebComponents />} />
@@ -44,6 +55,9 @@ function App() {
 
         {/* Order Routes */}
         <Route path="/orders" element={<Orders />} />
+
+        {/* Payments Routes */}
+        <Route path="/payments" element={<Payment />} />
       </Routes>
     </>
   );

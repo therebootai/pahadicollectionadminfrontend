@@ -1,7 +1,7 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { IoClose } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
+import axiosFetch from "../../config/axios.config";
 
 const AddProductForm = ({ editedProduct }) => {
   const [productName, setProductName] = useState("");
@@ -21,28 +21,24 @@ const AddProductForm = ({ editedProduct }) => {
   const [inStock, setInStock] = useState("");
   const [mrp, setMrp] = useState("");
   const [prize, setPrize] = useState("");
-  const [attribute, setAttribute] = useState("");
+  const [attribute, setAttribute] = useState([]);
   const [productSpecification, setProductSpecification] = useState([
     { key: "", value: "" },
   ]);
   const [description, setDescription] = useState("");
-  const [variant, setVariant] = useState([
-    {
-      id: Date.now(), // Unique identifier
-      alternateTitle: "",
-      variantId: "",
-      selectedVariable: null,
-      varType: "",
-      inStock: "",
-      mrp: "",
-      price: "",
-      weight: "",
-    },
-  ]);
+  const [thumbnailIndex, setThumbnailIndex] = useState(0);
 
   const [selectedMainCategory, setSelectedMainCategory] = useState(null);
   const [selectedSubCategory, setSelectedSubCategory] = useState(null);
-  const [selectedSubSubCategory, setSelectedSubSubCategory] = useState(null);
+  const [allMainProducts, setAllMainProducts] = useState([]);
+  const [mainProduct, setMainProduct] = useState({});
+  const [dropdownVisible, setDropdownVisible] = useState(false);
+  const [selectedVariable, setSelectedVariable] = useState(null);
+  const [selectedVariantValue, setSelectedVariantValue] = useState("");
+  const [allAttributes, setAllAttributes] = useState([]);
+  const [editorTag, setEditorTag] = useState(true);
+  const [isDrafted, setIsDrafted] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -91,16 +87,30 @@ const AddProductForm = ({ editedProduct }) => {
       const selectedSubCategoryObj = editedProduct.category?.subcategories.find(
         (sub) => sub.subcategoriesname === editedProduct.subCategory
       );
+      if (editedProduct.productType === "variant") {
+        setMainProduct({
+          _id: editedProduct.main_product?._id,
+          title: editedProduct.main_product?.title,
+        });
+        setSelectedVariable(editedProduct.variable?.variableId);
+        setSelectedVariantValue(editedProduct.variable?.variableValue);
+      }
       setSubCategory(editedProduct.subCategory || "");
       setSelectedSubCategory(selectedSubCategoryObj || null);
       setSubSubCategory(editedProduct.subSubCategory || "");
-      setSelectedSubSubCategory(editedProduct.subSubCategory || null);
       setPickup(editedProduct.pickup?._id || "");
       setDiscount(editedProduct.discount || "");
       setInStock(editedProduct.in_stock || "");
       setMrp(editedProduct.mrp || "");
       setPrize(editedProduct.price || "");
-      setAttribute(editedProduct.attribute || "");
+      setAttribute(
+        editedProduct.attribute
+          ? editedProduct.attribute.map((item) => ({
+              id: item._id,
+              name: item.attribute_title,
+            }))
+          : []
+      );
       setProductSpecification(
         editedProduct.specification?.map((spec) => ({
           key: spec.key,
@@ -108,30 +118,19 @@ const AddProductForm = ({ editedProduct }) => {
         })) || [{ key: "", value: "" }]
       );
       setDescription(editedProduct.description || "");
-
-      if (editedProduct.variant && editedProduct.variant.length > 0) {
-        setVariant(
-          editedProduct.variant.map((variant) => ({
-            id: Date.now(),
-            alternateTitle: variant.additional.alternateTitle || "",
-            variantId: variant.variable?._id || "",
-            selectedVariable: variant.variable || null,
-            varType: variant.additional.varType || "",
-            inStock: variant.additional.inStock || "",
-            mrp: variant.additional.mrp || "",
-            price: variant.additional.price || "",
-            weight: variant.additional.weight || "",
-          }))
-        );
-      }
+      setThumbnailIndex(
+        editedProduct.productImage?.findIndex(
+          (image) =>
+            image.public_id === editedProduct.thumbnail_image?.public_id
+        ) || 0
+      );
+      setEditorTag(editedProduct.tags?.some((tag) => tag === "editor_choice"));
     }
   }, [editedProduct]);
 
   const fetchCategories = async () => {
     try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/category/get`
-      );
+      const response = await axiosFetch.get(`/category/get`);
       const { categories } = response.data;
 
       // Extract all categories
@@ -141,11 +140,23 @@ const AddProductForm = ({ editedProduct }) => {
     }
   };
 
+  const fetchMainProducts = async (query) => {
+    if (!query.trim()) return setAllMainProducts([]);
+    try {
+      const response = await axiosFetch.get(
+        `/products/find?limit=1000&page=1&search=${query}`
+      );
+      const { data } = response.data;
+      setAllMainProducts(data);
+      setDropdownVisible(true);
+    } catch (error) {
+      console.error("Failed to fetch products:", error);
+    }
+  };
+
   const fetchPickups = async () => {
     try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/pickups/get`
-      );
+      const response = await axiosFetch.get(`/pickups/get`);
       setAllPickUps(response.data.pickupdata);
     } catch (error) {
       console.error("Error fetching Pickup Data:", error);
@@ -154,9 +165,7 @@ const AddProductForm = ({ editedProduct }) => {
 
   const fetchVariables = async () => {
     try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/variables/get?&limit=200`
-      );
+      const response = await axiosFetch.get(`/variables/get?&limit=200`);
       const { data } = response.data;
       setALLVariables(data);
     } catch (error) {
@@ -164,10 +173,26 @@ const AddProductForm = ({ editedProduct }) => {
     }
   };
 
+  const fetchAllAttributes = async () => {
+    try {
+      const response = await axiosFetch.get(`/attributes?is_active=true`);
+      const { attributes } = response.data;
+      setAllAttributes(attributes);
+    } catch (error) {
+      console.error("Error Fetching Attributes", error);
+    }
+  };
+
   useEffect(() => {
-    fetchCategories();
-    fetchPickups();
-    fetchVariables();
+    async function fetchData() {
+      Promise.all([
+        fetchCategories(),
+        fetchPickups(),
+        fetchVariables(),
+        fetchAllAttributes(),
+      ]);
+    }
+    fetchData();
   }, []);
 
   const handleFileChange = (event, setThumb, setUpload) => {
@@ -213,6 +238,64 @@ const AddProductForm = ({ editedProduct }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (isDrafted && productName === undefined) {
+      alert("Product Name is required for Drafted Product");
+      return;
+    }
+
+    if (!isDrafted) {
+      if (productName === undefined) {
+        alert("Product name is required");
+        return;
+      }
+      if (category === undefined) {
+        alert("Category is required");
+        return;
+      }
+
+      if (pickup === undefined) {
+        alert("Pick up is required");
+        return;
+      }
+
+      if (prize === undefined) {
+        alert("Price is required");
+        return;
+      }
+
+      if (mrp === undefined) {
+        alert("MRP is required");
+        return;
+      }
+
+      if (inStock === undefined) {
+        alert("In-Stock is required");
+        return;
+      }
+
+      if (productImage.length === 0) {
+        alert("Product Image is required");
+        return;
+      }
+
+      if (hoverImage === undefined) {
+        alert("Hover Image is required");
+        return;
+      }
+
+      if (specification.length === 0) {
+        alert("Specification is required");
+        return;
+      }
+
+      if (productType === "variant") {
+        if (Object.keys(mainProduct).length === 0) {
+          alert("Main Product is required");
+          return;
+        }
+      }
+    }
+
     const formData = new FormData();
 
     formData.append("title", productName);
@@ -224,30 +307,37 @@ const AddProductForm = ({ editedProduct }) => {
     formData.append("price", prize);
     formData.append("mrp", mrp);
     formData.append("in_stock", inStock);
-    formData.append("attribute", attribute);
+    if (attribute.length > 0) {
+      const attributesId = [...attribute].map((a) => a.id);
+      formData.append("attribute", JSON.stringify(attributesId));
+    }
     formData.append("discount", discount);
     formData.append("description", description);
     formData.append("specification", JSON.stringify(productSpecification));
     productImage.forEach((image) => {
       formData.append(`productImage`, image); // Append each file separately
     });
-    productType === "variant" &&
-      formData.append(
-        "variant",
-        JSON.stringify(
-          variant.map(({ variantId, id, selectedVariable, ...additional }) => ({
-            variable: variantId,
-            additional,
-          }))
-        )
-      );
     formData.append("hoverImage", hoverImage);
+    formData.append("thumbnailIndex", thumbnailIndex);
+    formData.append("is_drafted", isDrafted);
+    if (productType === "variant") {
+      formData.append("main_product", mainProduct._id);
+      formData.append(
+        "variable",
+        JSON.stringify({
+          variableId: selectedVariable._id,
+          variableValue: selectedVariantValue,
+        })
+      );
+    }
+    if (editorTag) {
+      formData.append("tags", JSON.stringify(["editor_choice"]));
+    }
+
+    setLoading(true);
 
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/products/create`,
-        formData
-      );
+      const response = await axiosFetch.post(`/products/create`, formData);
       const result = response.data;
       if (!result) {
         alert("Failed to add product. Please try again.");
@@ -258,11 +348,72 @@ const AddProductForm = ({ editedProduct }) => {
     } catch (error) {
       console.error("Error adding product:", error);
       alert("Failed to add product. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleUpdate = async (e, productId) => {
     e.preventDefault();
+
+    if (isDrafted && productName === undefined) {
+      alert("Product Name is required for Drafted Product");
+      return;
+    }
+
+    if (!isDrafted) {
+      if (productName === undefined) {
+        alert("Product name is required");
+        return;
+      }
+      if (category === undefined) {
+        alert("Category is required");
+        return;
+      }
+
+      if (pickup === undefined) {
+        alert("Pick up is required");
+        return;
+      }
+
+      if (prize === undefined) {
+        alert("Price is required");
+        return;
+      }
+
+      if (mrp === undefined) {
+        alert("MRP is required");
+        return;
+      }
+
+      if (inStock === undefined) {
+        alert("In-Stock is required");
+        return;
+      }
+
+      if (productImage.length === 0) {
+        alert("Product Image is required");
+        return;
+      }
+
+      if (hoverImage === undefined) {
+        alert("Hover Image is required");
+        return;
+      }
+
+      if (specification.length === 0) {
+        alert("Specification is required");
+        return;
+      }
+
+      if (productType === "variant") {
+        if (Object.keys(mainProduct).length === 0) {
+          alert("Main Product is required");
+          return;
+        }
+      }
+    }
+
     const formData = new FormData();
 
     formData.append("title", productName);
@@ -274,7 +425,8 @@ const AddProductForm = ({ editedProduct }) => {
     formData.append("price", prize);
     formData.append("mrp", mrp);
     formData.append("in_stock", inStock);
-    formData.append("attribute", attribute);
+    const attributesId = [...attribute].map((a) => a.id);
+    formData.append("attribute", JSON.stringify(attributesId));
     formData.append("discount", discount);
     formData.append("description", description);
     formData.append("specification", JSON.stringify(productSpecification));
@@ -291,27 +443,43 @@ const AddProductForm = ({ editedProduct }) => {
 
     formData.append("productImage", JSON.stringify(existingImagesToSend));
 
-    productType === "variant" &&
+    if (productType === "variant") {
+      formData.append("main_product", mainProduct._id);
       formData.append(
-        "variant",
+        "variable",
+        JSON.stringify({
+          variableId: selectedVariable._id,
+          variableValue: selectedVariantValue,
+        })
+      );
+    }
+    formData.append("hoverImage", hoverImage);
+    formData.append("thumbnailIndex", thumbnailIndex);
+    if (
+      editorTag &&
+      !editedProduct.tags?.some((tag) => tag !== "editor_choice")
+    ) {
+      formData.append(
+        "tags",
+        JSON.stringify([...editedProduct.tags, "editor_choice"])
+      );
+    } else if (
+      !editorTag &&
+      editedProduct.tags?.some((tag) => tag === "editor_choice")
+    ) {
+      formData.append(
+        "tags",
         JSON.stringify(
-          variant.map(({ variantId, id, selectedVariable, ...additional }) => ({
-            variable: variantId,
-            additional,
-          }))
+          editedProduct.tags.filter((tag) => tag !== "editor_choice")
         )
       );
-    formData.append("hoverImage", hoverImage);
-
-    for (var pair of formData.entries()) {
-      console.log(pair[0] + ", " + pair[1]);
     }
+    formData.append("is_drafted", false);
+
+    setLoading(true);
 
     try {
-      const response = await axios.put(
-        `${import.meta.env.VITE_API_BASE_URL}/products/${productId}`,
-        formData
-      );
+      const response = await axiosFetch.put(`/products/${productId}`, formData);
       const result = response.data;
       if (!result) {
         alert("Failed to update product. Please try again.");
@@ -320,59 +488,32 @@ const AddProductForm = ({ editedProduct }) => {
       alert("Product updated successfully!");
       navigate("/products?page=1");
     } catch (error) {
-      console.error("Error adding product:", error);
-      alert("Failed to add product. Please try again.");
+      console.error("Error updating product:", error);
+      alert("Failed to update product. Please try again.");
+    } finally {
+      setLoading(false);
     }
-  };
-
-  const handleChangeForVariant = (index, field, value) => {
-    setVariant((prevVariants) =>
-      prevVariants.map((variant, i) =>
-        i === index ? { ...variant, [field]: value } : variant
-      )
-    );
-  };
-
-  // Handler to update variant selection
-  const handleVariantChange = (index, value) => {
-    const selectedVariable = allVariables.find((item) => item._id === value);
-    setVariant((prevVariants) =>
-      prevVariants.map((variant, i) =>
-        i === index
-          ? { ...variant, variantId: value, selectedVariable }
-          : variant
-      )
-    );
-  };
-
-  // Handler to add a new variant
-  const addVariant = () => {
-    setVariant((prevVariants) => [
-      ...prevVariants,
-      {
-        id: Date.now(),
-        alternateTitle: "",
-        variantId: "",
-        selectedVariable: null,
-        varType: "",
-        inStock: "",
-        mrp: "",
-        price: "",
-        weight: "",
-      },
-    ]);
-  };
-
-  // Handler to remove a variant
-  const removeVariant = (id) => {
-    setVariant((prevVariants) =>
-      prevVariants.filter((variant) => variant.id !== id)
-    );
   };
 
   const subCategories = selectedMainCategory?.subcategories || [];
 
   const subSubCategories = selectedSubCategory?.subsubcategories || [];
+
+  const handleProductSearchChange = (e) => {
+    const value = e.target.value;
+    fetchMainProducts(value);
+  };
+
+  const handleVariableChange = (e) => {
+    const variableId = e.target.value;
+    const variable = allVariables.find((item) => item._id === variableId);
+
+    setSelectedVariable(variable);
+    setSelectedVariantValue("");
+  };
+  const handleValueChange = (value) => {
+    setSelectedVariantValue(value);
+  };
 
   return (
     <form className="flex flex-col gap-12">
@@ -393,7 +534,6 @@ const AddProductForm = ({ editedProduct }) => {
             );
             setSelectedMainCategory(mainCat);
             setSelectedSubCategory(null);
-            setSelectedSubSubCategory(null);
           }}
           className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md"
         >
@@ -413,7 +553,6 @@ const AddProductForm = ({ editedProduct }) => {
               (sub) => sub.subcategoriesname === e.target.value
             );
             setSelectedSubCategory(subCat);
-            setSelectedSubSubCategory(null);
           }}
           disabled={!selectedMainCategory}
         >
@@ -428,10 +567,6 @@ const AddProductForm = ({ editedProduct }) => {
           value={subSubCategory}
           onChange={(e) => {
             setSubSubCategory(e.target.value);
-            const subSubCat = subSubCategories.find(
-              (subSub) => subSub.subsubcategoriesname === e.target.value
-            );
-            setSelectedSubSubCategory(subSubCat);
           }}
           disabled={!selectedSubCategory}
           className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md"
@@ -479,182 +614,184 @@ const AddProductForm = ({ editedProduct }) => {
           }}
           className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md"
         />
+        {productType === "variant" && (
+          <div className="flex flex-col gap-2 relative">
+            <input
+              type="text"
+              value={mainProduct.title}
+              className="h-[3rem] px-2 border border-custom-gray-border outline-none placeholder:text-custom-gray text-custom-black rounded-md"
+              onChange={handleProductSearchChange}
+              placeholder="Search and select product"
+            />
+            {dropdownVisible && allMainProducts.length > 0 && (
+              <ul className="absolute z-10 bg-white border border-gray-300 rounded-md shadow-lg max-h-40 overflow-y-auto w-full top-full">
+                {allMainProducts.map((product) => (
+                  <li
+                    key={product._id}
+                    onClick={() => {
+                      setMainProduct({
+                        _id: product._id,
+                        title: product.title,
+                      });
+                      setCategory(product.category?._id || "");
+                      setSelectedMainCategory(product.category || null);
+                      const selectedSubCategoryObj =
+                        product.category?.subcategories.find(
+                          (sub) => sub.subcategoriesname === product.subCategory
+                        );
+                      setSubCategory(product.subCategory || "");
+                      setSelectedSubCategory(selectedSubCategoryObj || null);
+                      setSubSubCategory(product.subSubCategory || "");
+                      setPickup(product.pickup?._id || "");
+                      setDiscount(product.discount || "");
+                      setInStock(product.in_stock || "");
+                      setMrp(product.mrp || "");
+                      setPrize(product.price || "");
+                      setAttribute(
+                        product.attribute
+                          ? product.attribute.map((item) => ({
+                              id: item._id,
+                              name: item.attribute_title,
+                            }))
+                          : []
+                      );
+                      setProductSpecification(
+                        product.specification?.map((spec) => ({
+                          key: spec.key,
+                          value: spec.value,
+                        })) || [{ key: "", value: "" }]
+                      );
+                      setDescription(product.description || "");
+                      setDropdownVisible(false);
+                      setSelectedVariable(product.variable?.variableId);
+                      setSelectedVariantValue(product.variable?.variableValue);
+                    }}
+                    className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                  >
+                    {product.title}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
       </div>
       <div className="flex flex-col gap-3">
         <h2 className="text-base font-medium text-custom-black">
           Other Details &#40;Product Types&#41;
         </h2>
-        {productType === "single" ? (
-          <div className="flex flex-wrap gap-8 w-full">
-            <input
-              type="number"
-              placeholder="In-Stock"
-              value={inStock}
-              onChange={(e) => setInStock(e.target.value)}
-              className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md flex-1"
-            />
-            <input
-              type="number"
-              placeholder="MRP"
-              value={mrp}
-              onChange={(e) => {
-                setMrp(e.target.value);
-                let currentPrice =
-                  parseInt(e.target.value) -
-                  parseInt(e.target.value) * (parseInt(discount) / 100);
-                setPrize(currentPrice || "");
-              }}
-              className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md flex-1"
-            />
-            <input
-              type="number"
-              placeholder="Price"
-              value={prize}
-              disabled
-              className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md flex-1 disabled:cursor-not-allowed"
-            />
-            <input
-              type="text"
-              value={attribute}
-              onChange={(e) => setAttribute(e.target.value)}
-              placeholder="Enter Attribute"
-              className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md flex-1"
-            />
-          </div>
-        ) : (
-          <>
-            {variant.map((vari, index) => (
-              <div className="flex flex-wrap gap-8 w-full" key={index}>
-                <input
-                  type="text"
-                  value={vari.alternateTitle}
-                  onChange={(e) =>
-                    handleChangeForVariant(
-                      index,
-                      "alternateTitle",
-                      e.target.value
-                    )
-                  }
-                  placeholder="Enter Alternate Product Title"
-                  className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md flex-1"
-                />
-                <select
-                  value={vari.variantId}
-                  onChange={(e) => handleVariantChange(index, e.target.value)}
-                  className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md flex-1"
-                >
-                  <option value="">Variable</option>
-                  {allVariables.map((item) => (
-                    <option key={item._id} value={item._id}>
-                      {item.variableName}
-                    </option>
+        <div className="flex flex-wrap gap-8 w-full">
+          {productType === "variant" && (
+            <div className="relative flex flex-1 justify-between gap-4">
+              <select
+                value={selectedVariable?._id || ""}
+                onChange={handleVariableChange}
+                className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md flex-1"
+              >
+                <option value="">Variable</option>
+                {allVariables.map((item) => (
+                  <option key={item._id} value={item._id}>
+                    {item.variableName}
+                  </option>
+                ))}
+              </select>
+
+              {/* Display variable type options if a variable is selected */}
+              {selectedVariable?.variableType && (
+                <div className="flex flex-col gap-2 mt-2">
+                  {selectedVariable.variableType.map((item) => (
+                    <div key={item._id} className="flex gap-2">
+                      <input
+                        type="radio"
+                        name={`variableType-${selectedVariable._id}}`}
+                        id={item._id}
+                        value={item.varType}
+                        checked={selectedVariantValue === item.varType}
+                        onChange={() => handleValueChange(item.varType)}
+                      />
+                      <label
+                        htmlFor={item._id}
+                        className="text-base font-medium text-custom-black"
+                      >
+                        {item.varType}
+                      </label>
+                    </div>
                   ))}
-                </select>
-                {vari.selectedVariable && (
-                  <div className="flex flex-col gap-2 flex-1">
-                    {vari.selectedVariable.variableType?.map(
-                      (item, varCount) => (
-                        <div key={item._id} className="flex gap-2">
-                          <input
-                            type="radio"
-                            name={`variableType-${varCount}`}
-                            id={item._id}
-                            value={item.varType}
-                            checked={vari.varType === item.varType}
-                            onChange={() =>
-                              handleChangeForVariant(
-                                index,
-                                "varType",
-                                item.varType
-                              )
-                            }
-                          />
-                          <label
-                            htmlFor={item.varType}
-                            className="text-base font-medium text-custom-black"
-                          >
-                            {item.varType}
-                          </label>
-                        </div>
-                      )
-                    )}
-                  </div>
-                )}
+                </div>
+              )}
+            </div>
+          )}
+          <input
+            type="number"
+            placeholder="In-Stock"
+            value={inStock}
+            onChange={(e) => setInStock(e.target.value)}
+            className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md flex-1"
+          />
+          <input
+            type="number"
+            placeholder="MRP"
+            value={mrp}
+            onChange={(e) => {
+              setMrp(e.target.value);
+              let currentPrice =
+                parseInt(e.target.value) -
+                parseInt(e.target.value) * (parseInt(discount) / 100);
+              setPrize(currentPrice || "");
+            }}
+            className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md flex-1"
+          />
+          <input
+            type="number"
+            placeholder="Price"
+            value={prize}
+            disabled
+            className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md flex-1 disabled:cursor-not-allowed"
+          />
+        </div>
+      </div>
+      <div className="flex flex-col gap-3">
+        <h2 className="text-base font-medium text-custom-black">
+          Product Attributes
+        </h2>
+        <div className="flex flex-wrap gap-4">
+          {allAttributes.length > 0 &&
+            allAttributes.map((attri) => (
+              <div
+                key={attri._id}
+                className="px-2 placeholder:text-custom-gray rounded-md flex-1 flex items-center gap-2"
+              >
                 <input
-                  type="number"
-                  placeholder="In-Stock"
-                  value={vari.inStock}
+                  type="checkbox"
+                  id={attri.attributeId}
+                  checked={[...attribute].some((att) => att.id === attri._id)}
                   onChange={(e) => {
-                    setInStock((prevInStock) => {
-                      const newInStock = parseInt(e.target.value) || 0;
-                      if (newInStock > prevInStock) {
-                        return newInStock;
-                      }
-                      return prevInStock;
-                    });
-                    handleChangeForVariant(index, "inStock", e.target.value);
+                    if (e.target.checked) {
+                      setAttribute(
+                        new Set([
+                          ...attribute,
+                          { id: attri._id, name: attri.attribute_title },
+                        ])
+                      );
+                    } else {
+                      setAttribute(
+                        new Set(
+                          [...attribute].filter((att) => att.id !== attri._id)
+                        )
+                      );
+                    }
                   }}
-                  className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md flex-1"
+                  className="size-4 accent-custom-violet"
                 />
-                <input
-                  type="number"
-                  placeholder="MRP"
-                  value={vari.mrp}
-                  onChange={(e) => {
-                    const newMrp = parseInt(e.target.value) || 0;
-                    const discountValue = parseInt(discount) || 0;
-                    const newPrice = newMrp - newMrp * (discountValue / 100);
-
-                    // Update the state only if the new MRP is greater than the previous one
-                    setMrp((prevMrp) => {
-                      if (newMrp > prevMrp) {
-                        setPrize(newPrice); // Also update the price state
-                        return newMrp;
-                      }
-                      return prevMrp; // Keep the previous value
-                    });
-
-                    // Update the variant state
-                    handleChangeForVariant(index, "price", newPrice);
-                    handleChangeForVariant(index, "mrp", newMrp);
-                  }}
-                  className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md flex-1"
-                />
-                <input
-                  type="number"
-                  placeholder="Price"
-                  value={vari.price}
-                  disabled
-                  onChange={(e) =>
-                    handleChangeForVariant(index, "price", e.target.value)
-                  }
-                  className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md flex-1"
-                />
-                {/* <input
-                  type="number"
-                  placeholder="Weight (10 G)"
-                  className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md flex-1"
-                /> */}
-                {variant.length > 1 && (
-                  <button
-                    type="button"
-                    onClick={() => removeVariant(vari.id)}
-                    className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md flex-1"
-                  >
-                    ❌
-                  </button>
-                )}
+                <label
+                  htmlFor={attri.attributeId}
+                  className="text-custom-black capitalize text-base font-medium cursor-pointer select-none"
+                >
+                  {attri.attribute_title}
+                </label>
               </div>
             ))}
-            <button
-              type="button"
-              onClick={addVariant}
-              className="px-4 py-2 bg-blue-500 text-white rounded-md"
-            >
-              ➕ Add Variant
-            </button>
-          </>
-        )}
+        </div>
       </div>
       <textarea
         value={description}
@@ -739,11 +876,20 @@ const AddProductForm = ({ editedProduct }) => {
             {productImageThumb.map((image, index) => (
               <div className="relative" key={index}>
                 {image ? (
-                  <img
-                    src={image}
-                    alt="Selected Thumbnail"
-                    className="w-full h-[8rem] object-cover rounded-md"
-                  />
+                  <div
+                    className="relative cursor-pointer"
+                    title="Set Thumbnail"
+                    onClick={() => setThumbnailIndex(index)}
+                  >
+                    <img
+                      src={image}
+                      alt="Selected Thumbnail"
+                      className="w-full h-[8rem] object-cover rounded-md"
+                    />
+                    {thumbnailIndex === index && (
+                      <div className="absolute top-0 left-0 w-full h-full border-8 border-custom-gray/60" />
+                    )}
+                  </div>
                 ) : (
                   <div className="w-full h-[8rem] bg-gray-200 rounded-md flex items-center justify-center text-custom-gray" />
                 )}
@@ -763,7 +909,7 @@ const AddProductForm = ({ editedProduct }) => {
           <div className="relative w-full h-[3rem] border border-custom-gray-border rounded-md">
             <label
               htmlFor="file-input"
-              className="absolute top-1/2 left-2 transform -translate-y-1/2 text-custom-gray cursor-pointer"
+              className="absolute top-1/2 left-2 transform -translate-y-1/2 text-custom-gray cursor-pointer truncate"
             >
               {hoverImage ? hoverImage.name : "Choose Hover Image.."}
             </label>
@@ -789,14 +935,29 @@ const AddProductForm = ({ editedProduct }) => {
           </div>
         </div>
       </div>
-      <div className="w-[20%] ">
+      <div className="flex flex-1 gap-2 items-center">
+        <input
+          type="checkbox"
+          id="editor_choice"
+          checked={editorTag}
+          className="size-4 accent-custom-violet"
+          onChange={(e) => setEditorTag(e.target.checked)}
+        />
+        <label
+          htmlFor="editor_choice"
+          className="text-custom-black capitalize text-base font-medium cursor-pointer select-none"
+        >
+          Marked as Editor Choice
+        </label>
+      </div>
+      <div className="flex gap-6 max-w-screen-md">
         {editedProduct ? (
           <button
             className="h-[3rem] flex justify-center items-center w-full bg-custom-blue text-base font-medium text-white rounded-md"
             type="submit"
             onClick={(e) => handleUpdate(e, editedProduct.productId)}
           >
-            Update
+            {loading ? `Updating...` : `Update`}
           </button>
         ) : (
           <button
@@ -804,7 +965,19 @@ const AddProductForm = ({ editedProduct }) => {
             type="submit"
             onClick={handleSubmit}
           >
-            Add
+            {loading ? `Adding...` : `Add`}
+          </button>
+        )}
+        {!editedProduct && (
+          <button
+            className="h-[3rem] flex justify-center items-center w-full border border-custom-blue text-base font-medium text-custom-blue rounded-md"
+            type="submit"
+            onClick={(e) => {
+              setIsDrafted(true);
+              handleSubmit(e);
+            }}
+          >
+            {loading ? `Saving...` : `Save As Draft`}
           </button>
         )}
       </div>
@@ -813,19 +986,3 @@ const AddProductForm = ({ editedProduct }) => {
 };
 
 export default AddProductForm;
-
-{
-  /* <div className="flex flex-col gap-3">
-  <h3
-    className="text-base font-medium text-custom-violet inline-flex items-center gap-2 cursor-pointer"
-    onClick={() => setIsVariantAvailable(!isVariantAvailable)}
-  >
-    If Available Varible{" "}
-    <FaChevronRight
-      className={`${
-        isVariantAvailable ? "rotate-90" : "rotate-0"
-      } transition-transform duration-300`}
-    />
-  </h3>
-</div> */
-}

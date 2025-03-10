@@ -2,7 +2,7 @@ import React from "react";
 
 const ViewProduct = ({ product }) => {
   return (
-    <section className="flex flex-col gap-4">
+    <section className="flex flex-col gap-4 bg-white p-4 rounded-md shadow-custom-lite">
       <h1 className="text-2xl font-bold text-custom-black">Product Details</h1>
       <div className="grid grid-cols-2 gap-2 items-center border p-1 border-custom-gray">
         <h3 className="text-lg font-semibold text-custom-black">
@@ -105,64 +105,90 @@ const ViewProduct = ({ product }) => {
           ))}
         </div>
       </div>
-      {product.variant && product.variant.length > 0 && (
+      {product.variable?.variableId && (
         <div className="grid grid-cols-1 gap-2 items-center border p-1 border-custom-gray">
           <h3 className="text-lg font-semibold text-custom-black underline">
             Variants :
           </h3>
-          <div className="flex flex-col gap-6 px-2">
-            {product.variant?.map((vari) => (
-              <div
-                className="flex flex-col gap-1 border-b border-stone-500 last:border-0"
-                key={vari._id}
+          <div className="flex flex-col gap-1 border-b border-stone-500 last:border-0">
+            <div className="grid grid-cols-2 items-center">
+              <p className="text-lg font-semibold text-custom-black">
+                Variable Name
+              </p>
+              <p className="text-lg font-semibold text-custom-blue">
+                {product.variable?.variableId?.variableName}
+              </p>
+            </div>
+            <div className="grid grid-cols-2 items-center">
+              <p className="text-lg font-semibold text-custom-black">
+                Variable Value
+              </p>
+              <p className="text-lg font-semibold text-custom-blue">
+                {product.variable?.variableValue}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+      {product.main_product && (
+        <div className="grid grid-cols-1 gap-2 items-center border p-1 border-custom-gray">
+          <h3 className="text-lg font-semibold text-custom-black underline">
+            Main Product :
+          </h3>
+          <div className="flex gap-4 ps-2">
+            <img
+              src={product.main_product?.thumbnail_image?.secure_url}
+              alt="product thumbnail"
+              className="size-28 object-cover"
+            />
+            <div>
+              <h1 className="text-lg font-semibold">
+                {product.main_product?.title}
+              </h1>
+              <p className="text-sm font-medium capitalize">
+                {product.main_product?.productType}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+      <div className="grid grid-cols-2 gap-2 items-center border p-1 border-custom-gray">
+        <h3 className="text-lg font-semibold text-custom-black">
+          Product added to wishlist and cart :
+        </h3>
+        <p className="text-lg font-semibold text-custom-blue">
+          {product.product_added}
+        </p>
+      </div>
+      <div className="grid grid-cols-2 gap-2 items-center border p-1 border-custom-gray">
+        <h3 className="text-lg font-semibold text-custom-black">
+          Product ordered till now :
+        </h3>
+        <p className="text-lg font-semibold text-custom-blue">
+          {product.product_ordered}
+        </p>
+      </div>
+      <div className="grid grid-cols-2 gap-2 items-center border p-1 border-custom-gray">
+        <h3 className="text-lg font-semibold text-custom-black">
+          Product viewed by customers :
+        </h3>
+        <p className="text-lg font-semibold text-custom-blue">
+          {product.product_viewed}
+        </p>
+      </div>
+      {product.tags?.length > 0 && (
+        <div className="flex flex-col gap-2 border p-1 border-custom-gray">
+          <h3 className="text-lg font-semibold text-custom-black">
+            Product tags :
+          </h3>
+          <div className="flex flex-wrap gap-2">
+            {product.tags.map((tag, key) => (
+              <p
+                className="text-lg font-semibold text-custom-blue capitalize"
+                key={key}
               >
-                <div className="grid grid-cols-2 items-center">
-                  <p className="text-lg font-semibold text-custom-black">
-                    Variable Name
-                  </p>
-                  <p className="text-lg font-semibold text-custom-blue">
-                    {vari.variable?.variableName}
-                  </p>
-                </div>
-                <div className="grid grid-cols-2 items-center">
-                  <p className="text-lg font-semibold text-custom-black">
-                    Title
-                  </p>
-                  <p className="text-lg font-semibold text-custom-blue">
-                    {vari.additional?.alternateTitle}
-                  </p>
-                </div>
-                <div className="grid grid-cols-2 items-center">
-                  <p className="text-lg font-semibold text-custom-black">
-                    Variant Type
-                  </p>
-                  <p className="text-lg font-semibold text-custom-blue">
-                    {vari.additional?.varType}
-                  </p>
-                </div>
-                <div className="grid grid-cols-2 items-center">
-                  <p className="text-lg font-semibold text-custom-black">
-                    In Stock
-                  </p>
-                  <p className="text-lg font-semibold text-custom-blue">
-                    {vari.additional?.inStock}
-                  </p>
-                </div>
-                <div className="grid grid-cols-2 items-center">
-                  <p className="text-lg font-semibold text-custom-black">MRP</p>
-                  <p className="text-lg font-semibold text-custom-blue">
-                    {vari.additional?.mrp}
-                  </p>
-                </div>
-                <div className="grid grid-cols-2 items-center">
-                  <p className="text-lg font-semibold text-custom-black">
-                    Price
-                  </p>
-                  <p className="text-lg font-semibold text-custom-blue">
-                    {vari.additional?.price}
-                  </p>
-                </div>
-              </div>
+                {tag.split("_").join(" ")}
+              </p>
             ))}
           </div>
         </div>
@@ -173,14 +199,22 @@ const ViewProduct = ({ product }) => {
         </h3>
         <div className="flex flex-wrap gap-4 px-2">
           {product.productImage?.map((img) => (
-            <img
+            <div
+              className="relative cursor-pointer"
+              title="Thumbnail"
               key={img._id}
-              src={img.secure_url}
-              alt={img.public_id}
-              width={450}
-              height={450}
-              className="w-[12vmax]"
-            />
+            >
+              <img
+                src={img.secure_url}
+                alt={img.public_id}
+                width={450}
+                height={450}
+                className="w-[12vmax]"
+              />
+              {img.public_id === product.thumbnail_image?.public_id && (
+                <div className="absolute top-0 left-0 w-full h-full border-8 border-custom-gray/60" />
+              )}
+            </div>
           ))}
         </div>
       </div>
@@ -196,6 +230,30 @@ const ViewProduct = ({ product }) => {
           className="w-[12vmax]"
         />
       </div>
+      {product.variant && product.variant.length > 0 && (
+        <div className="grid grid-cols-1 gap-2 items-center border p-1 border-custom-gray">
+          <h3 className="text-lg font-semibold text-custom-black underline">
+            Variant Product :
+          </h3>
+          <div className="flex flex-wrap gap-4">
+            {product.variant.map((prod) => (
+              <div className="flex gap-4 ps-2" key={prod._id}>
+                <img
+                  src={prod.thumbnail_image?.secure_url}
+                  alt="product thumbnail"
+                  className="size-28 object-cover"
+                />
+                <div>
+                  <h1 className="text-lg font-semibold">{prod.title}</h1>
+                  <p className="text-sm font-medium capitalize">
+                    {prod.productType}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </section>
   );
 };

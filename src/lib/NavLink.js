@@ -5,7 +5,7 @@ import { GiProgression } from "react-icons/gi";
 import { HiOutlineArchiveBox } from "react-icons/hi2";
 import { LuLayoutPanelLeft, LuPanelsTopLeft } from "react-icons/lu";
 import { MdOutlineCategory } from "react-icons/md";
-import { PiCalendarHeartDuotone } from "react-icons/pi";
+import { PiMoneyWavyBold } from "react-icons/pi";
 
 const allNavLinks = [
   {
@@ -34,14 +34,27 @@ const allNavLinks = [
     path: "/products?page=1",
   },
   {
-    icon: GiProgression,
-    label: "Marketing",
-    path: "/marketing/add-manage-coupon?page=1",
+    icon: PiMoneyWavyBold,
+    label: "Payments",
+    path: "/payments?page=1",
   },
   {
-    icon: PiCalendarHeartDuotone,
-    label: "Wishlist",
-    path: "/wishlist",
+    icon: GiProgression,
+    label: "Marketing",
+    dropdown: [
+      {
+        label: "Coupon",
+        path: "/marketing/add-manage-coupon?page=1",
+      },
+      {
+        label: "WishList",
+        path: "/marketing/wishlist?page=1",
+      },
+      {
+        label: "Reviews",
+        path: "/marketing/reviews?page=1",
+      },
+    ],
   },
   {
     icon: LuLayoutPanelLeft,
@@ -58,6 +71,10 @@ const allNavLinks = [
       {
         label: "Users",
         path: "/masters/users",
+      },
+      {
+        label: "Attributes",
+        path: "/masters/attributes?page=1",
       },
     ],
   },
