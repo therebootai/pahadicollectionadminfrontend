@@ -401,7 +401,7 @@ const AddProductForm = ({ editedProduct }) => {
         return;
       }
 
-      if (specification.length === 0) {
+      if (productSpecification.length === 0) {
         alert("Specification is required");
         return;
       }
