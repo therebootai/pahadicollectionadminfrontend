@@ -830,7 +830,7 @@ const AddProductForm = ({ editedProduct }) => {
                 onClick={handleAddValue}
                 className="bg-custom-lite-gray border border-custom-gray-border text-custom-black h-12 rounded-md"
               >
-                Add Specification
+                Add Another Specification
               </button>
 
               {productSpecification.length > 1 && (
@@ -848,7 +848,7 @@ const AddProductForm = ({ editedProduct }) => {
       </div>
       <div className="flex gap-8">
         <div className="flex flex-col gap-8 flex-1">
-          <div className="relative w-full h-[3rem] border border-custom-gray-border rounded-md">
+          <div className="relative w-full h-[3rem] border border-custom-gray-border rounded-md truncate">
             <label
               htmlFor="file-input"
               className="absolute top-1/2 left-2 transform -translate-y-1/2 text-custom-gray cursor-pointer"
@@ -859,7 +859,8 @@ const AddProductForm = ({ editedProduct }) => {
               id="file-input"
               multiple
               type="file"
-              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+              accept="image/*"
+              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer truncate"
               onChange={(e) =>
                 handleProductImageChange(
                   e,
@@ -906,7 +907,7 @@ const AddProductForm = ({ editedProduct }) => {
           </div>
         </div>
         <div className="flex flex-col gap-8 flex-1">
-          <div className="relative w-full h-[3rem] border border-custom-gray-border rounded-md">
+          <div className="relative w-full h-[3rem] border border-custom-gray-border rounded-md truncate">
             <label
               htmlFor="file-input"
               className="absolute top-1/2 left-2 transform -translate-y-1/2 text-custom-gray cursor-pointer truncate"
@@ -916,7 +917,8 @@ const AddProductForm = ({ editedProduct }) => {
             <input
               id="file-input"
               type="file"
-              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+              accept="image/*"
+              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer truncate"
               onChange={(e) =>
                 handleFileChange(e, setHoverImageThumb, setHoverImage)
               }
