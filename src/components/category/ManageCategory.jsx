@@ -278,7 +278,7 @@ const ManageCategory = ({ categories, setCategories, fetchCategories }) => {
                             className="w-full h-[6rem] object-cover rounded-md"
                           />
 
-                          <div className="relative w-full h-[3rem] border border-[#CCCCCC] rounded-md">
+                          <div className="relative w-full h-[3rem] border border-[#CCCCCC] rounded-md truncate">
                             <label
                               htmlFor="file-input"
                               className="absolute top-1/2 left-2 transform -translate-y-1/2 text-custom-gray cursor-pointer"
@@ -288,7 +288,8 @@ const ManageCategory = ({ categories, setCategories, fetchCategories }) => {
                             <input
                               id="file-input"
                               type="file"
-                              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                              accept="image/*"
+                              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer truncate"
                               onChange={(e) =>
                                 handleImageChange(e, category.categoryId)
                               }
