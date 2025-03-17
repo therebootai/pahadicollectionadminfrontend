@@ -70,7 +70,9 @@ const ProductTable = ({
                 key={product.productId}
               >
                 <div className="flex-1">{product.productId}</div>
-                <div className="flex-1">{product.title}</div>
+                <div className="flex-1 truncate" title={product.title}>
+                  {product.title}
+                </div>
                 <div className="flex-1">{product.discount} %</div>
                 <div className="flex-1">{product.mrp}</div>
                 <div className="flex-1">{product.price}</div>

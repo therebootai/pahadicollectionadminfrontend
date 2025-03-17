@@ -156,7 +156,7 @@ const ComponentTable = ({ components, fetchComponents, setComponents }) => {
                       onChange={(e) => setEditedName(e.target.value)}
                       className="px-2 h-8 border border-custom-gray-border outline-none placeholder:text-custom-gray rounded-md flex-1"
                     />
-                    <div className="relative flex-1 h-8 border border-custom-gray-border rounded-md">
+                    <div className="relative flex-1 h-8 border border-custom-gray-border rounded-md truncate">
                       <label
                         htmlFor="file-input"
                         className="absolute capitalize top-1/2 left-2 transform -translate-y-1/2 text-custom-gray cursor-pointer"
@@ -166,6 +166,7 @@ const ComponentTable = ({ components, fetchComponents, setComponents }) => {
                       <input
                         id="file-input"
                         type="file"
+                        accept="image/*"
                         className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                         onChange={(e) => setEditedCover(e.target.files[0])}
                       />

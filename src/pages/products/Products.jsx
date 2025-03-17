@@ -131,7 +131,7 @@ const Products = () => {
             id="is_drafted"
           />
           <label htmlFor="is_drafted" className="cursor-pointer">
-            {Boolean(is_drafted) ? "Show Drafted Only" : "Show All"}
+            Show Drafted Only
           </label>
         </div>
         <button className="h-[3rem] px-8 flex justify-center items-center bg-custom-violet rounded-md text-lg font-medium text-white">
