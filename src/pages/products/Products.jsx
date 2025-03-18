@@ -88,7 +88,7 @@ const Products = () => {
     <MainPageTemplate>
       <div className="flex flex-row gap-6 items-center border-b border-custom-gray-border xl:px-8 px-6 p-4">
         <select
-          className="h-[3rem] px-8 flex justify-center items-center rounded-md text-lg font-medium text-custom-black border border-custom-violet focus-within:outline-none"
+          className="h-[3rem] xlg:px-6 px-4 xl:px-8 flex justify-center items-center rounded-md text-base font-medium text-custom-black border border-custom-violet focus-within:outline-none"
           value={type || ""}
           onChange={(e) => handleQueryParam("type", e.target.value)}
         >
@@ -97,7 +97,7 @@ const Products = () => {
           <option value="variant">Variant</option>
         </select>
         <select
-          className="h-[3rem] px-8 flex justify-center items-center rounded-md text-lg font-medium text-custom-black border border-custom-violet focus-within:outline-none"
+          className="h-[3rem] xlg:px-6 px-4 xl:px-8 flex justify-center items-center rounded-md text-base xlg:text-lg font-medium text-custom-black border border-custom-violet focus-within:outline-none"
           value={status || ""}
           onChange={(e) => handleQueryParam("status", e.target.value)}
         >
@@ -106,7 +106,7 @@ const Products = () => {
           <option value="false">Disabled</option>
         </select>
         <select
-          className="h-[3rem] px-8 flex justify-center items-center rounded-md text-lg font-medium text-custom-black border border-custom-violet focus-within:outline-none"
+          className="h-[3rem] xlg:px-6 px-4 xl:px-8 flex justify-center items-center rounded-md text-base font-medium text-custom-black border border-custom-violet focus-within:outline-none"
           value={tags || ""}
           onChange={(e) => handleQueryParam("tags", e.target.value)}
         >
@@ -117,7 +117,7 @@ const Products = () => {
           <option value="editor_choice">Editor Choice</option>
         </select>
         <div
-          className={`h-[3rem] px-8 flex justify-center items-center rounded-md text-lg font-medium border border-custom-violet cursor-pointer ${
+          className={`h-[3rem] xlg:px-6 px-4 xl:px-8 flex justify-center items-center rounded-md text-base font-medium border border-custom-violet cursor-pointer ${
             Boolean(is_drafted)
               ? "bg-custom-violet text-white"
               : "bg-transparent text-custom-violet"
@@ -134,12 +134,12 @@ const Products = () => {
             Show Drafted Only
           </label>
         </div>
-        <button className="h-[3rem] px-8 flex justify-center items-center bg-custom-violet rounded-md text-lg font-medium text-white">
+        <button className="h-[3rem] xlg:px-6 px-4 xl:px-8 flex justify-center items-center bg-custom-violet rounded-md text-base xlg:text-lg font-medium text-white">
           Import Product
         </button>
         <Link
           to="/products/add"
-          className="h-[3rem] px-8 flex justify-center items-center bg-custom-violet rounded-md text-lg font-medium text-white"
+          className="h-[3rem] xlg:px-6 px-4 xl:px-8 flex justify-center items-center bg-custom-violet rounded-md text-base xlg:text-lg font-medium text-white"
         >
           Add Products
         </Link>

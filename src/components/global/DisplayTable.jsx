@@ -5,7 +5,7 @@ const DisplayTable = ({ children, tableData }) => {
   return (
     <div>
       <div className="flex flex-col border border-custom-gray-border rounded-md shadow-custom-lite">
-        <div className="flex flex-row p-2 rounded-t-md text-base font-medium">
+        <div className="flex flex-row p-2 py-4 gap-2 rounded-t-md text-base font-medium">
           {tableHeader.map((item, index) => (
             <div
               key={index}

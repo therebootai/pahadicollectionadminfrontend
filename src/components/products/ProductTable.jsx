@@ -12,6 +12,7 @@ const ProductTable = ({
   const tableHeader = [
     "id",
     "Product Name",
+    "Category Name",
     "Discount",
     "MRP",
     "Price",
@@ -66,13 +67,15 @@ const ProductTable = ({
           ) : (
             products.map((product) => (
               <div
-                className="flex flex-row p-2 border-b border-custom-gray-border text-base"
+                className="flex flex-row p-2 py-4 border-b gap-2 border-custom-gray-border text-base"
                 key={product.productId}
               >
                 <div className="flex-1">{product.productId}</div>
-                <div className="flex-1 truncate" title={product.title}>
+                <div className="flex-1 line-clamp-2" title={product.title}>
                   {product.title}
                 </div>
+                <div className="flex-1">{product.category?.mainCategory}</div>
+
                 <div className="flex-1">{product.discount} %</div>
                 <div className="flex-1">{product.mrp}</div>
                 <div className="flex-1">{product.price}</div>

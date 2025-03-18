@@ -23,11 +23,12 @@ const ViewOrder = ({ order }) => {
           Delivery Address :
         </h3>
         <div className="flex flex-col gap-2">
-          {Object.entries(order.delivery_location).map(([key, value]) => (
-            <p key={key}>
-              <strong>{key}:</strong> {value}
-            </p>
-          ))}
+          {order.delivery_location &&
+            Object.entries(order.delivery_location).map(([key, value]) => (
+              <p key={key}>
+                <strong>{key}:</strong> {value}
+              </p>
+            ))}
         </div>
       </div>
       <div className="flex flex-col gap-4 border p-1 border-custom-gray">
@@ -37,7 +38,7 @@ const ViewOrder = ({ order }) => {
         <div className="grid grid-cols-2 gap-2 items-center">
           <h3 className="text-lg font-semibold text-custom-black">Name :</h3>
           <p className="text-lg font-semibold text-custom-blue">
-            {order.customerId.name}
+            {order.customerId?.name}
           </p>
         </div>
         <div className="grid grid-cols-2 gap-2 items-center">
@@ -45,7 +46,7 @@ const ViewOrder = ({ order }) => {
             mobile Number :
           </h3>
           <p className="text-lg font-semibold text-custom-blue">
-            {order.customerId.mobile}
+            {order.customerId?.mobile}
           </p>
         </div>
         <div className="grid grid-cols-2 gap-2 items-center">
@@ -53,7 +54,7 @@ const ViewOrder = ({ order }) => {
             email id :
           </h3>
           <p className="text-lg font-semibold text-custom-blue">
-            {order.customerId.email}
+            {order.customerId?.email}
           </p>
         </div>
       </div>

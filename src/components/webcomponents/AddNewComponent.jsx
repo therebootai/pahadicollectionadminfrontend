@@ -5,6 +5,7 @@ const AddNewComponent = ({ pageType, fetchComponents }) => {
   const [componentType, setComponentType] = useState(pageType);
   const [componentImage, setComponentImage] = useState(null);
   const [componentName, setComponentName] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setComponentType(pageType);
@@ -12,6 +13,7 @@ const AddNewComponent = ({ pageType, fetchComponents }) => {
 
   const handelSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     const formData = new FormData();
     formData.append("type", componentType);
     formData.append("component_image", componentImage);
@@ -23,6 +25,8 @@ const AddNewComponent = ({ pageType, fetchComponents }) => {
       await fetchComponents();
     } catch (error) {
       console.error("Error adding component:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -38,7 +42,7 @@ const AddNewComponent = ({ pageType, fetchComponents }) => {
           <option value="slider">slider</option>
           <option value="banner">banner</option>
           <option value="logo">logo</option>
-          <option value="pop-up">Pop-Up</option>
+          <option value="popup">Pop-Up</option>
         </select>
         <input
           type="text"
@@ -70,7 +74,7 @@ const AddNewComponent = ({ pageType, fetchComponents }) => {
           className="h-[3rem] flex justify-center items-center flex-1 bg-custom-blue text-base font-medium text-white rounded-md"
           type="submit"
         >
-          Submit
+          {loading ? "Saving..." : "Submit"}
         </button>
       </form>
       <div></div>

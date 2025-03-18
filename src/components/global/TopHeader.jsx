@@ -82,14 +82,14 @@ const TopHeader = () => {
           </div>
         </div>
       </div>
-      <div className="min-h-[4.5rem] items-center flex justify-between xl:px-8 xl:gap-4 flex-wrap xlg:flex-nowrap">
+      <div className="min-h-[4.5rem] items-center flex justify-between px-4 xlg:px-6 xl:px-8 xl:gap-4 flex-wrap xlg:flex-nowrap">
         {NavLinkData.map((link, index) => (
           <div className="group" key={index}>
             {!link.dropdown ? (
               <NavLink
                 to={link.path}
                 className={({ isActive }) =>
-                  `inline-flex gap-2 items-center hover:text-custom-violet font-medium text-base lg:text-xl ${
+                  `inline-flex gap-2 items-center hover:text-custom-violet font-medium text-base lg:text-base xlg:text-base xl:text-xl ${
                     isActive ? "text-custom-violet" : "text-custom-black"
                   }`
                 }
@@ -101,7 +101,7 @@ const TopHeader = () => {
             ) : (
               <div className="relative" key={index}>
                 <h3
-                  className={`inline-flex gap-2 items-center hover:text-custom-violet font-medium text-base lg:text-xl ${
+                  className={`inline-flex gap-2 items-center hover:text-custom-violet font-medium lg:text-base xlg:text-base xl:text-xl ${
                     isActive(link.dropdown[0].path)
                       ? "text-custom-violet"
                       : "text-custom-black"
@@ -111,7 +111,7 @@ const TopHeader = () => {
                   {link.label}
                   <IoIosArrowDown />
                 </h3>
-                <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-full bg-custom-violet/70 hidden group-hover:flex p-2 rounded-md flex-col gap-2 z-10">
+                <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-[12rem] bg-custom-violet/70 hidden group-hover:flex p-2 rounded-md flex-col gap-2 z-10">
                   {link.dropdown.map((item, index) => (
                     <Link
                       key={index}

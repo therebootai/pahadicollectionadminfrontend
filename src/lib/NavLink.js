@@ -96,7 +96,7 @@ const allNavLinks = [
       },
       {
         label: "Popup",
-        path: "/components/pop-up?page=1",
+        path: "/components/popup?page=1",
       },
     ],
   },

@@ -30,12 +30,7 @@ const EditOrders = ({ fetchOrders, order }) => {
           quantity: p.quantity,
         }))
       );
-      setDeliveryAddress(
-        Object.keys(order.delivery_location).reduce((acc, key) => {
-          acc[key] = order.delivery_location[key] || deliveryAddress[key];
-          return acc;
-        }, {})
-      );
+
       reset({
         status: order.status || "",
       });
@@ -160,50 +155,7 @@ const EditOrders = ({ fetchOrders, order }) => {
             <option value="canceled">canceled</option>
           </select>
         </div>
-        <div className="flex flex-col gap-3">
-          <h3 className="text-base font-medium text-custom-black">
-            Delivery Address
-          </h3>
-          <div className="flex flex-col gap-4">
-            {Object.entries(deliveryAddress).map(([key, value], index) => (
-              <div key={index} className="grid grid-cols-4 gap-4">
-                <input
-                  type="text"
-                  value={key}
-                  onChange={(e) =>
-                    handleChangeValue(key, e.target.value, value)
-                  }
-                  placeholder="Type"
-                  className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md"
-                />
-                <input
-                  type="text"
-                  value={value}
-                  onChange={(e) => handleChangeValue(key, key, e.target.value)}
-                  placeholder="Value"
-                  className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md"
-                />
-                <button
-                  type="button"
-                  onClick={handleAddValue}
-                  className="bg-custom-lite-gray border border-custom-gray-border text-custom-black h-12 rounded-md"
-                >
-                  Add more
-                </button>
 
-                {Object.keys(deliveryAddress).length > 1 && (
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveValue(key)}
-                    className="bg-custom-lite-gray border border-custom-gray-border text-custom-black h-12 rounded-md"
-                  >
-                    Remove
-                  </button>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
         <div className="flex flex-col gap-2">
           <h3 className="text-base font-medium text-custom-black">
             Ordered Products
