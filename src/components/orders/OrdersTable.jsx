@@ -38,7 +38,7 @@ const OrdersTable = ({ orders, fetchOrders, handleOpenModal }) => {
         orders.map((order) => (
           <div
             key={order._id}
-            className="flex flex-row p-2 border-b border-custom-gray-border text-base"
+            className="flex flex-row p-2 py-4 border-b border-custom-gray-border text-base"
           >
             <div className="flex-1">{order.orderId}</div>
             <div className="flex-1">
@@ -46,7 +46,7 @@ const OrdersTable = ({ orders, fetchOrders, handleOpenModal }) => {
             </div>
             <div className="flex-1">{order.customerId.name}</div>
             <div className="flex-1">{order.customerId.mobile}</div>
-            <div className="flex-1">
+            <div className="flex-1 line-clamp-2">
               {Object.entries(order.delivery_location ?? {})
                 .map(([key, value]) => `${key}: ${value ?? "Not available"}`)
                 .join(", ")}

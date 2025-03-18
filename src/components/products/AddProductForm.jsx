@@ -40,6 +40,19 @@ const AddProductForm = ({ editedProduct }) => {
   const [isDrafted, setIsDrafted] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const [errors, setErrors] = useState({
+    productName: "",
+    category: "",
+    pickup: "",
+    prize: "",
+    mrp: "",
+    inStock: "",
+    productImage: "",
+    hoverImage: "",
+    productSpecification: "",
+    mainProduct: "",
+  });
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -235,65 +248,111 @@ const AddProductForm = ({ editedProduct }) => {
     );
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e, isDrafted = false) => {
     e.preventDefault();
 
-    if (isDrafted && productName === undefined) {
-      alert("Product Name is required for Drafted Product");
-      return;
+    setErrors({
+      productName: "",
+      category: "",
+      pickup: "",
+      prize: "",
+      mrp: "",
+      inStock: "",
+      productImage: "",
+      hoverImage: "",
+      productSpecification: "",
+      mainProduct: "",
+    });
+    let isValid = true;
+
+    if (isDrafted) {
+      if (!productName) {
+        setErrors((prev) => ({
+          ...prev,
+          productName: "Product Name is required for Drafted Product",
+        }));
+        isValid = false;
+      }
+
+      if (!isValid) return;
     }
 
+    const specificationErrors = productSpecification
+      .map((spec, index) => {
+        if (!spec.key || !spec.value) {
+          isValid = false;
+          return `Specification at index ${
+            index + 1
+          } must have both a key and value`;
+        }
+        return null;
+      })
+      .filter((error) => error !== null);
+
     if (!isDrafted) {
-      if (productName === undefined) {
-        alert("Product name is required");
-        return;
+      if (!productName) {
+        setErrors((prev) => ({
+          ...prev,
+          productName: "Product name is required",
+        }));
+        isValid = false;
       }
-      if (category === undefined) {
-        alert("Category is required");
-        return;
-      }
-
-      if (pickup === undefined) {
-        alert("Pick up is required");
-        return;
+      if (!category) {
+        setErrors((prev) => ({ ...prev, category: "Category is required" }));
+        isValid = false;
       }
 
-      if (prize === undefined) {
-        alert("Price is required");
-        return;
+      if (!pickup) {
+        setErrors((prev) => ({ ...prev, pickup: "Pick up is required" }));
+        isValid = false;
       }
 
-      if (mrp === undefined) {
-        alert("MRP is required");
-        return;
+      if (!prize) {
+        setErrors((prev) => ({ ...prev, prize: "Price is required" }));
+        isValid = false;
       }
 
-      if (inStock === undefined) {
-        alert("In-Stock is required");
-        return;
+      if (!mrp) {
+        setErrors((prev) => ({ ...prev, mrp: "MRP is required" }));
+        isValid = false;
+      }
+
+      if (!inStock) {
+        setErrors((prev) => ({ ...prev, inStock: "In-Stock is required" }));
+        isValid = false;
       }
 
       if (productImage.length === 0) {
-        alert("Product Image is required");
-        return;
+        setErrors((prev) => ({
+          ...prev,
+          productImage: "Product Image is required",
+        }));
+        isValid = false;
       }
 
-      if (hoverImage === undefined) {
-        alert("Hover Image is required");
-        return;
+      if (!hoverImage) {
+        setErrors((prev) => ({
+          ...prev,
+          hoverImage: "Hover Image is required",
+        }));
+        isValid = false;
       }
 
-      if (specification.length === 0) {
-        alert("Specification is required");
-        return;
+      if (specificationErrors.length > 0) {
+        setErrors((prev) => ({
+          ...prev,
+          productSpecification: specificationErrors.join(", "),
+        }));
       }
 
-      if (productType === "variant") {
-        if (Object.keys(mainProduct).length === 0) {
-          alert("Main Product is required");
-          return;
-        }
+      if (productType === "variant" && !mainProduct._id) {
+        setErrors((prev) => ({
+          ...prev,
+          mainProduct: "Main Product is required",
+        }));
+        isValid = false;
       }
+      if (!isValid) return;
     }
 
     const formData = new FormData();
@@ -315,7 +374,7 @@ const AddProductForm = ({ editedProduct }) => {
     formData.append("description", description);
     formData.append("specification", JSON.stringify(productSpecification));
     productImage.forEach((image) => {
-      formData.append(`productImage`, image); // Append each file separately
+      formData.append(`productImage`, image);
     });
     formData.append("hoverImage", hoverImage);
     formData.append("thumbnailIndex", thumbnailIndex);
@@ -347,6 +406,17 @@ const AddProductForm = ({ editedProduct }) => {
       navigate("/products?page=1");
     } catch (error) {
       console.error("Error adding product:", error);
+
+      // Additional debugging
+      if (error.response) {
+        console.error("Error Response Data:", error.response.data);
+        console.error("Error Response Status:", error.response.status);
+      } else if (error.request) {
+        console.error("Error Request:", error.request);
+      } else {
+        console.error("Error Message:", error.message);
+      }
+
       alert("Failed to add product. Please try again.");
     } finally {
       setLoading(false);
@@ -432,10 +502,9 @@ const AddProductForm = ({ editedProduct }) => {
     formData.append("specification", JSON.stringify(productSpecification));
     const existingImagesToSend = productImage
       .filter((image) => typeof image === "object" && image.secure_url)
-      .map((img) => ({ secure_url: img.secure_url, public_id: img.public_id })); // Prepare existing image data
+      .map((img) => ({ secure_url: img.secure_url, public_id: img.public_id }));
 
     productImage.forEach((image) => {
-      // Send ALL images (new and existing)
       if (typeof image === "object" && image instanceof File) {
         formData.append(`productImage`, image);
       }
@@ -518,32 +587,42 @@ const AddProductForm = ({ editedProduct }) => {
   return (
     <form className="flex flex-col gap-12">
       <div className="grid grid-cols-3 gap-8">
-        <input
-          type="text"
-          value={productName}
-          onChange={(e) => setProductName(e.target.value)}
-          placeholder="Enter Product Title"
-          className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md"
-        />
-        <select
-          value={category}
-          onChange={(e) => {
-            setCategory(e.target.value);
-            const mainCat = allCategories.find(
-              (cat) => cat._id === e.target.value
-            );
-            setSelectedMainCategory(mainCat);
-            setSelectedSubCategory(null);
-          }}
-          className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md"
-        >
-          <option value="">Choose Category</option>
-          {allCategories.map((category) => (
-            <option key={category._id} value={category._id}>
-              {category.mainCategory}
-            </option>
-          ))}
-        </select>
+        <div className=" flex flex-col gap-1">
+          <input
+            type="text"
+            value={productName}
+            onChange={(e) => setProductName(e.target.value)}
+            placeholder="Enter Product Title"
+            className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md"
+          />
+          {errors.productName && (
+            <span className="text-red-500 text-sm">{errors.productName}</span>
+          )}
+        </div>
+        <div className=" flex flex-col gap-1">
+          <select
+            value={category}
+            onChange={(e) => {
+              setCategory(e.target.value);
+              const mainCat = allCategories.find(
+                (cat) => cat._id === e.target.value
+              );
+              setSelectedMainCategory(mainCat);
+              setSelectedSubCategory(null);
+            }}
+            className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md"
+          >
+            <option value="">Choose Category</option>
+            {allCategories.map((category) => (
+              <option key={category._id} value={category._id}>
+                {category.mainCategory}
+              </option>
+            ))}
+          </select>
+          {errors.category && (
+            <span className="text-red-500 text-sm">{errors.category}</span>
+          )}
+        </div>
         <select
           className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md"
           value={subCategory}
@@ -581,18 +660,23 @@ const AddProductForm = ({ editedProduct }) => {
             </option>
           ))}
         </select>
-        <select
-          value={pickup}
-          onChange={(e) => setPickup(e.target.value)}
-          className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md"
-        >
-          <option value="">Choose Pickup Location</option>
-          {allPickUps.map((pickup) => (
-            <option key={pickup._id} value={pickup._id}>
-              {pickup.pickupPointName}
-            </option>
-          ))}
-        </select>
+        <div className=" flex flex-col gap-1">
+          <select
+            value={pickup}
+            onChange={(e) => setPickup(e.target.value)}
+            className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md"
+          >
+            <option value="">Choose Pickup Location</option>
+            {allPickUps.map((pickup) => (
+              <option key={pickup._id} value={pickup._id}>
+                {pickup.pickupPointName}
+              </option>
+            ))}
+          </select>
+          {errors.pickup && (
+            <span className="text-red-500 text-sm">{errors.pickup}</span>
+          )}
+        </div>
         <select
           value={productType}
           onChange={(e) => setProductType(e.target.value)}
@@ -728,26 +812,36 @@ const AddProductForm = ({ editedProduct }) => {
             onChange={(e) => setInStock(e.target.value)}
             className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md flex-1"
           />
-          <input
-            type="number"
-            placeholder="MRP"
-            value={mrp}
-            onChange={(e) => {
-              setMrp(e.target.value);
-              let currentPrice =
-                parseInt(e.target.value) -
-                parseInt(e.target.value) * (parseInt(discount) / 100);
-              setPrize(currentPrice || "");
-            }}
-            className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md flex-1"
-          />
-          <input
-            type="number"
-            placeholder="Price"
-            value={prize}
-            disabled
-            className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md flex-1 disabled:cursor-not-allowed"
-          />
+          <div className=" flex flex-col gap-1 flex-1">
+            <input
+              type="number"
+              placeholder="MRP"
+              value={mrp}
+              onChange={(e) => {
+                setMrp(e.target.value);
+                let currentPrice =
+                  parseInt(e.target.value) -
+                  parseInt(e.target.value) * (parseInt(discount) / 100);
+                setPrize(currentPrice || "");
+              }}
+              className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md"
+            />
+            {errors.mrp && (
+              <span className="text-red-500 text-sm">{errors.mrp}</span>
+            )}
+          </div>
+          <div className=" flex flex-col gap-1 flex-1">
+            <input
+              type="number"
+              placeholder="Price"
+              value={prize}
+              disabled
+              className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md disabled:cursor-not-allowed"
+            />
+            {errors.prize && (
+              <span className="text-red-500 text-sm">{errors.prize}</span>
+            )}
+          </div>
         </div>
       </div>
       <div className="flex flex-col gap-3">
@@ -807,24 +901,51 @@ const AddProductForm = ({ editedProduct }) => {
         <div className="flex flex-col gap-4">
           {productSpecification.map((value, index) => (
             <div key={index} className="grid grid-cols-4 gap-4">
-              <input
-                type="text"
-                value={value.key}
-                onChange={(e) =>
-                  handleChangeValue(index, { ...value, key: e.target.value })
-                }
-                placeholder="Type"
-                className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md"
-              />
-              <input
-                type="text"
-                placeholder="Value"
-                value={value.value}
-                onChange={(e) =>
-                  handleChangeValue(index, { ...value, value: e.target.value })
-                }
-                className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md"
-              />
+              <div className=" flex flex-col gap-1">
+                <input
+                  type="text"
+                  value={value.key}
+                  onChange={(e) =>
+                    handleChangeValue(index, { ...value, key: e.target.value })
+                  }
+                  placeholder="Type"
+                  className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md"
+                />
+                {errors.productSpecification &&
+                  errors.productSpecification.includes(
+                    `Specification at index ${
+                      index + 1
+                    } must have both a key and value`
+                  ) && (
+                    <span className="text-red-500 text-sm">
+                      This field is required
+                    </span>
+                  )}
+              </div>
+              <div className=" flex flex-col gap-1">
+                <input
+                  type="text"
+                  placeholder="Value"
+                  value={value.value}
+                  onChange={(e) =>
+                    handleChangeValue(index, {
+                      ...value,
+                      value: e.target.value,
+                    })
+                  }
+                  className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md"
+                />
+                {errors.productSpecification &&
+                  errors.productSpecification.includes(
+                    `Specification at index ${
+                      index + 1
+                    } must have both a key and value`
+                  ) && (
+                    <span className="text-red-500 text-sm">
+                      This field is required
+                    </span>
+                  )}
+              </div>
               <button
                 type="button"
                 onClick={handleAddValue}
@@ -905,6 +1026,9 @@ const AddProductForm = ({ editedProduct }) => {
               </div>
             ))}
           </div>
+          {errors.productImage && (
+            <span className="text-red-500 text-sm">{errors.productImage}</span>
+          )}
         </div>
         <div className="flex flex-col gap-8 flex-1">
           <div className="relative w-full h-[3rem] border border-custom-gray-border rounded-md truncate">
@@ -935,6 +1059,9 @@ const AddProductForm = ({ editedProduct }) => {
               <div className="w-full h-[8rem] bg-gray-200 rounded-md flex items-center justify-center text-custom-gray" />
             )}
           </div>
+          {errors.hoverImage && (
+            <span className="text-red-500 text-sm">{errors.hoverImage}</span>
+          )}
         </div>
       </div>
       <div className="flex flex-1 gap-2 items-center">
@@ -974,10 +1101,7 @@ const AddProductForm = ({ editedProduct }) => {
           <button
             className="h-[3rem] flex justify-center items-center w-full border border-custom-blue text-base font-medium text-custom-blue rounded-md"
             type="submit"
-            onClick={(e) => {
-              setIsDrafted(true);
-              handleSubmit(e);
-            }}
+            onClick={(e) => handleSubmit(e, true)}
           >
             {loading ? `Saving...` : `Save As Draft`}
           </button>

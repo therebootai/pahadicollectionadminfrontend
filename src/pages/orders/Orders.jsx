@@ -92,7 +92,7 @@ const Orders = () => {
           Import Orders
         </button>
       </div>
-      <div className="p-4 flex flex-col gap-6">
+      <div className="p-4 xlg:p-8 xl:p-8 flex flex-col gap-6">
         <OrdersTable
           orders={orders}
           fetchOrders={() => fetchOrders({ page: currentOrder, status })}
