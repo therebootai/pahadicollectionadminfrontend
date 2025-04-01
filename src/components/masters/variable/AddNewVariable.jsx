@@ -81,6 +81,7 @@ const AddNewVariable = ({ fetchVariables, variableToEdit }) => {
         <div className="w-full flex flex-col ">
           <input
             type="text"
+            pattern="^\S+$"
             placeholder="Variable Name"
             {...register("variableName", {
               required: "Variable Name is required",
@@ -97,6 +98,7 @@ const AddNewVariable = ({ fetchVariables, variableToEdit }) => {
           <div key={index} className="flex gap-2 items-center">
             <input
               type="text"
+              pattern="^\S+$"
               value={value}
               onChange={(e) => handleChangeValue(index, e.target.value)}
               onInput={handleTextInput}

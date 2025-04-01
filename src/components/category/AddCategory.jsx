@@ -126,6 +126,7 @@ const AddCategory = ({ fetchCategories, categories }) => {
               value={mainCategory}
               onChange={(e) => setMainCategory(e.target.value)}
               placeholder="Enter Main Category Name"
+              pattern="^\S+$"
               className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md"
             />
             <div className="relative w-full h-[3rem] border border-[#CCCCCC] rounded-md truncate">
@@ -175,7 +176,10 @@ const AddCategory = ({ fetchCategories, categories }) => {
           </div>
           {subcategory && (
             <div className="flex flex-col gap-6">
-              <form className="flex flex-row gap-4">
+              <form
+                className="flex flex-row gap-4"
+                onSubmit={handleAddSubCategory}
+              >
                 <div className="flex flex-col gap-4 w-[80%]">
                   <select
                     className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md"
@@ -194,6 +198,7 @@ const AddCategory = ({ fetchCategories, categories }) => {
                   <input
                     type="text"
                     value={subCategoryName}
+                    pattern="^\S+$"
                     onChange={(e) => setSubCategoryName(e.target.value)}
                     placeholder="Enter Sub Category Name"
                     className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md"
@@ -201,8 +206,7 @@ const AddCategory = ({ fetchCategories, categories }) => {
                 </div>
                 <div className="w-[20%]">
                   <button
-                    type="button"
-                    onClick={handleAddSubCategory}
+                    type="submit"
                     disabled={loading}
                     className="h-[3rem] flex justify-center items-center w-full bg-custom-blue text-base font-medium text-white rounded-md"
                   >
@@ -217,7 +221,10 @@ const AddCategory = ({ fetchCategories, categories }) => {
                 Add Sub-Sub Category
               </div>
               {subsubcategory && (
-                <form className="flex flex-row gap-4">
+                <form
+                  className="flex flex-row gap-4"
+                  onSubmit={handleAddSubSubCategory}
+                >
                   <div className="flex flex-col gap-4 w-[80%]">
                     <select
                       className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md"
@@ -240,6 +247,7 @@ const AddCategory = ({ fetchCategories, categories }) => {
 
                     <input
                       type="text"
+                      pattern="^\S+$"
                       value={subSubCategoryName}
                       onChange={(e) => setSubSubCategoryName(e.target.value)}
                       placeholder="Enter Sub Sub Category Name"
@@ -248,8 +256,7 @@ const AddCategory = ({ fetchCategories, categories }) => {
                   </div>
                   <div className="w-[20%]">
                     <button
-                      type="button"
-                      onClick={handleAddSubSubCategory}
+                      type="submit"
                       disabled={loading}
                       className="h-[3rem] flex justify-center items-center w-full bg-custom-blue text-base font-medium text-white rounded-md"
                     >

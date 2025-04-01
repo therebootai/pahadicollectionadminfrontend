@@ -152,6 +152,7 @@ const UserTable = ({ fetchUsers, users, setUsers }) => {
                   {editingUser === user.userId ? (
                     <input
                       type="text"
+                      pattern="^\S+$"
                       name="name"
                       value={updatedUser.name}
                       onChange={handleInputChange}
@@ -169,7 +170,7 @@ const UserTable = ({ fetchUsers, users, setUsers }) => {
                 <div className="flex-1">
                   {editingUser === user.userId ? (
                     <input
-                      type="text"
+                      type="email"
                       name="email"
                       value={updatedUser.email}
                       onChange={handleInputChange}
@@ -186,7 +187,8 @@ const UserTable = ({ fetchUsers, users, setUsers }) => {
                 <div className="flex-1">
                   {editingUser === user.userId ? (
                     <input
-                      type="text"
+                      type="tel"
+                      pattern="[0-9]{10}"
                       name="phone"
                       value={updatedUser.phone}
                       onChange={handleInputChange}
@@ -207,6 +209,7 @@ const UserTable = ({ fetchUsers, users, setUsers }) => {
                       <input
                         type="text"
                         name="password"
+                        pattern="^\S+$"
                         value={updatedUser.password}
                         onChange={handleInputChange}
                         className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md w-full"

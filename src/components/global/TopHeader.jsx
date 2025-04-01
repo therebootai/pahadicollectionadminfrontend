@@ -41,6 +41,7 @@ const TopHeader = () => {
         <div className="border border-custom-border flex justify-between flex-1 items-center px-6 py-3 rounded-full">
           <input
             placeholder="Search"
+            pattern="^\S+$"
             className="flex-1 focus-within:outline-none bg-transparent"
           />
           <button type="button" className="text-2xl text-custom-border">

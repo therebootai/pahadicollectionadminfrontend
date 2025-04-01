@@ -53,6 +53,7 @@ const AddPickUpForm = ({ fetchPickups }) => {
       <div>
         <input
           type="text"
+          pattern="^\S+$"
           {...register("pickupPointName", {
             required: "This field is required",
           })}
@@ -70,6 +71,7 @@ const AddPickUpForm = ({ fetchPickups }) => {
       <div>
         <input
           type="text"
+          pattern="^\S+$"
           {...register("pickupPointLocation", {
             required: "This field is required",
           })}
@@ -87,6 +89,8 @@ const AddPickUpForm = ({ fetchPickups }) => {
       <div>
         <input
           type="number"
+          minLength={6}
+          maxLength={6}
           {...register("pickupPointPinCode", {
             required: "This field is required",
           })}
