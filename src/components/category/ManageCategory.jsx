@@ -237,6 +237,7 @@ const ManageCategory = ({ categories, setCategories, fetchCategories }) => {
                       editingCategory.categoryId === category.categoryId ? (
                         <input
                           type="text"
+                          pattern="^\S+$"
                           value={editingCategory.mainCategory}
                           onChange={(e) =>
                             handleInputChange(e, "main", category.categoryId)
@@ -316,6 +317,7 @@ const ManageCategory = ({ categories, setCategories, fetchCategories }) => {
                           editingCategory.categoryId === category.categoryId ? (
                             <input
                               type="text"
+                              pattern="^\S+$"
                               value={
                                 editingCategory.subcategories.find(
                                   (subEdit) => subEdit._id === sub._id
@@ -363,6 +365,7 @@ const ManageCategory = ({ categories, setCategories, fetchCategories }) => {
                                   category.categoryId ? (
                                   <input
                                     type="text"
+                                    pattern="^\S+$"
                                     value={
                                       editingCategory.subcategories
                                         .find(

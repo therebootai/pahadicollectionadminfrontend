@@ -96,7 +96,7 @@ const AttributeTable = ({ attributes, setAttributes, fetchAttributes }) => {
             <div className="flex-1">
               {editedAttribute.attributeId === attribute.attributeId ? (
                 <input
-                  type="text"
+                  type="text" pattern="^\S+$"
                   name="attribute_title"
                   {...register("attribute_title", {
                     required: "Attribute title is required",
