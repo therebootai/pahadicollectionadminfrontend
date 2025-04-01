@@ -7,6 +7,7 @@ import { useSearchParams } from "react-router-dom";
 import CouponTable from "../../components/marketing/coupon/CouponTable";
 import ViewCoupon from "../../components/marketing/coupon/ViewCoupon";
 import axiosFetch from "../../config/axios.config";
+import Loader from "../../components/global/Loader";
 
 const AddAndManageCoupon = () => {
   const [searchParams] = useSearchParams();
@@ -17,6 +18,7 @@ const AddAndManageCoupon = () => {
   const [pagination, setPagination] = useState({});
   const [modalFor, setModalFor] = useState("add-coupon");
   const [currentCoupon, setCurrentCoupon] = useState({});
+  const [loading, setLoading] = useState(false);
 
   const handleAddCoupon = (type, coupon) => {
     if (type !== "add-coupon" && !coupon) {
@@ -37,6 +39,7 @@ const AddAndManageCoupon = () => {
   };
 
   async function fetchAllCoupons() {
+    setLoading(true);
     try {
       const response = await axiosFetch.get(`/coupons?page=${currentPage}`);
       const { coupons, pagination } = response.data;
@@ -44,6 +47,8 @@ const AddAndManageCoupon = () => {
       setPagination(pagination);
     } catch (error) {
       console.error("Error fetching coupons:", error);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -68,13 +73,16 @@ const AddAndManageCoupon = () => {
               <h1 className="text-xl font-medium text-custom-black">
                 Coupon Manage
               </h1>
-
-              <CouponTable
-                coupons={coupons}
-                setCoupons={setCoupons}
-                fetchAllCoupons={fetchAllCoupons}
-                handleAddCoupon={handleAddCoupon}
-              />
+              {loading ? (
+                <Loader />
+              ) : (
+                <CouponTable
+                  coupons={coupons}
+                  setCoupons={setCoupons}
+                  fetchAllCoupons={fetchAllCoupons}
+                  handleAddCoupon={handleAddCoupon}
+                />
+              )}
             </div>
           </div>
           <PaginationBox

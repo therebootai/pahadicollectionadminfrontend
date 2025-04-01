@@ -3,10 +3,10 @@ import DisplayTable from "../global/DisplayTable";
 
 const PaymentTable = ({ payments }) => {
   const tableHeader = [
-    "id",
     "Customer Name",
     "Payment Date",
     "Payment Mode",
+    "Mobile No",
     "Amount",
     "Status",
     "Order id",
@@ -19,16 +19,16 @@ const PaymentTable = ({ payments }) => {
           payments.map((payment) => (
             <div
               key={payment._id}
-              className="flex flex-row p-2 border-b border-custom-gray-border text-base"
+              className="flex flex-row p-2 py-4 border-b border-custom-gray-border text-base"
             >
-              <div className="flex-1">{payment.paymentId}</div>
+              <div className="flex-1">{payment.customerId?.name}</div>
               <div className="flex-1">
                 {new Date(payment.createdAt).toDateString()}
               </div>
-              <div className="flex-1">{payment.customerId?.name}</div>
+              <div className="flex-1">{payment.paymentMode}</div>
+
               <div className="flex-1">{payment.customerId?.mobile}</div>
               <div className="flex-1">{payment.amount}</div>
-              <div className="flex-1">{payment.paymentMode}</div>
               <div className="flex-1">{payment.paymentStatus}</div>
               <div className="flex-1">{payment.orderId?.orderId}</div>
               <div className="flex  items-center gap-3 flex-1">

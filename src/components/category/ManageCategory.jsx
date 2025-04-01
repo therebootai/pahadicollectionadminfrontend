@@ -217,7 +217,7 @@ const ManageCategory = ({ categories, setCategories, fetchCategories }) => {
   return (
     <div className="p-4 flex flex-col gap-6">
       <div className="flex flex-col border border-custom-gray-border rounded-md shadow-custom-lite">
-        <div className="flex flex-row p-2 bg-custom-offwhite rounded-t-md text-base font-medium">
+        <div className="flex flex-row p-4 bg-custom-offwhite rounded-t-md text-base font-medium">
           <div className="w-[35%]">Main Category Name</div>
           <div className="w-[25%]">Sub Category Name</div>
           <div className="w-[25%]">Sub-Sub Category Name</div>

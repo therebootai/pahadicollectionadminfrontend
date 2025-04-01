@@ -4,6 +4,7 @@ import { useSearchParams } from "react-router-dom";
 import PaginationBox from "../../components/global/PaginationBox";
 import axiosFetch from "../../config/axios.config";
 import WishListsTable from "../../components/marketing/wishlists/WishListsTable";
+import Loader from "../../components/global/Loader";
 
 const WishList = () => {
   const [wishLists, setWishLists] = useState([]);
@@ -60,12 +61,19 @@ const WishList = () => {
       <div className="flex flex-col gap-6 ">
         <div className="flex flex-row gap-6 items-center border-b border-custom-gray-border xl:px-8 px-6 p-4"></div>
       </div>
-      <div className="p-4 flex flex-col gap-6">
-        <WishListsTable
-          wishLists={wishLists}
-          fetchWishlists={fetchWishlists}
-          loading={loading}
-        />
+      <div className="p-4 flex flex-col gap-6 ">
+        <div className=" flex flex-col gap-4 p-4 bg-custom-offwhite shadow-custom-lite rounded-md">
+          <h1 className="text-xl font-medium text-custom-black">Wishlist</h1>
+          {loading ? (
+            <Loader />
+          ) : (
+            <WishListsTable
+              wishLists={wishLists}
+              fetchWishlists={fetchWishlists}
+              loading={loading}
+            />
+          )}
+        </div>
         <PaginationBox pagination={pagination} prefix="/wishlist" />
       </div>
     </MainPageTemplate>
