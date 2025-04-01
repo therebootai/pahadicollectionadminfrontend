@@ -29,12 +29,12 @@ const AddAndManageCategory = () => {
     <MainPageTemplate>
       <div className="flex flex-col gap-8 ">
         <div className="flex flex-row gap-6 items-center border-b border-custom-gray-border xl:px-8 px-6 p-4">
-          <button className="h-[3rem] px-8 flex justify-center items-center bg-custom-violet rounded-md text-lg font-medium text-white">
+          <button className="h-[3rem] xlg:px-6 px-4 xl:px-8 flex justify-center items-center bg-custom-violet rounded-md text-base xlg:text-lg font-medium text-white">
             Import Category
           </button>
           <button
             onClick={handleAddCategory}
-            className="h-[3rem] px-8 flex justify-center items-center bg-custom-violet rounded-md text-lg font-medium text-white"
+            className="h-[3rem] xlg:px-6 px-4 xl:px-8 flex justify-center items-center bg-custom-violet rounded-md text-base xlg:text-lg font-medium text-white"
           >
             Add Category
           </button>

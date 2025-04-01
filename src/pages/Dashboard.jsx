@@ -117,7 +117,7 @@ const Dashboard = () => {
   return (
     <MainPageTemplate>
       <div className="flex flex-row gap-6 items-center border-b border-custom-gray-border xl:px-8 px-6 p-4"></div>
-      <div className="p-4 flex flex-col gap-6 no-scrollbar">
+      <div className="p-4 flex flex-col gap-6 overflow-hidden ">
         <div className="flex gap-6">
           {topRowCardData.map((card, key) => (
             <DashboardCard key={key} basis={card.basis}>

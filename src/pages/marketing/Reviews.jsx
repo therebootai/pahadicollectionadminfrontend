@@ -4,10 +4,12 @@ import PaginationBox from "../../components/global/PaginationBox";
 import ReviewTable from "../../components/marketing/reviews/ReviewTable";
 import axiosFetch from "../../config/axios.config";
 import { useSearchParams } from "react-router-dom";
+import Loader from "../../components/global/Loader";
 
 const Reviews = () => {
   const [pagination, setPagination] = useState({});
   const [reviews, setReviews] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -16,6 +18,7 @@ const Reviews = () => {
     let query = {};
 
     if (filter) query = { ...filter, ...query };
+    setLoading(true);
 
     try {
       const response = await axiosFetch.get(`/reviews`, {
@@ -26,6 +29,8 @@ const Reviews = () => {
       setReviews(reviews);
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -58,7 +63,11 @@ const Reviews = () => {
         <h1 className="text-2xl font-medium text-custom-black">
           Reviews Manage
         </h1>
-        <ReviewTable reviews={reviews} setReviews={setReviews} />
+        {loading ? (
+          <Loader />
+        ) : (
+          <ReviewTable reviews={reviews} setReviews={setReviews} />
+        )}
         <PaginationBox pagination={pagination} prefix="/reviews" />
       </div>
     </MainPageTemplate>

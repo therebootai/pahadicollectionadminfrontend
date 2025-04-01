@@ -60,7 +60,7 @@ const CouponTable = ({
           coupons.map((coupon) => (
             <div
               key={coupon._id}
-              className="flex flex-row p-2 border-b border-custom-gray-border text-base"
+              className="flex flex-row p-2 py-4 border-b border-custom-gray-border text-base"
             >
               <div className="flex-1">{coupon.couponName}</div>
               <div className="flex-1">
