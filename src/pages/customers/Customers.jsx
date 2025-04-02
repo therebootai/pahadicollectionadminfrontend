@@ -18,6 +18,8 @@ const Customers = () => {
 
   const currentPage = searchParams.get("page") || 1;
 
+  const customer = searchParams.get("customer");
+
   const fetchCustomers = async () => {
     try {
       const response = await axiosFetch.get(`/customers/?page=${currentPage}`);

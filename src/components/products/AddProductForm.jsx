@@ -160,8 +160,8 @@ const AddProductForm = ({ editedProduct }) => {
       const response = await axiosFetch.get(
         `/products/find?limit=1000&page=1&search=${query}`
       );
-      const { data } = response.data;
-      setAllMainProducts(data);
+      const { products } = response.data;
+      setAllMainProducts(products);
       setDropdownVisible(true);
     } catch (error) {
       console.error("Failed to fetch products:", error);
@@ -576,6 +576,7 @@ const AddProductForm = ({ editedProduct }) => {
 
   const handleProductSearchChange = (e) => {
     const value = e.target.value;
+    setMainProduct((prev) => ({ ...prev, title: value }));
     fetchMainProducts(value);
   };
 
