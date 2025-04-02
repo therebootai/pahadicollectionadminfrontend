@@ -20,13 +20,22 @@ const Orders = () => {
 
   const status = searchParams.get("status");
 
+  const order = searchParams.get("order");
+
   const handleOpenModal = (type, coupon) => {
+    const params = new URLSearchParams(searchParams);
+
+    params.set("order", coupon.orderId);
+    setSearchParams(params);
     setModalFor(type);
     setCurrentOrder(coupon);
     setShowAddOrder(true);
   };
 
   const handleClose = () => {
+    const params = new URLSearchParams(searchParams);
+    params.delete("order");
+    setSearchParams(params);
     setModalFor("");
     setShowAddOrder(false);
     setCurrentOrder({});
@@ -70,6 +79,14 @@ const Orders = () => {
     }
     fetchOrders(query);
   }, [currentPage, status]);
+
+  useEffect(() => {
+    if (order && orders.length > 0) {
+      setCurrentOrder(orders.find((item) => item.orderId === order));
+      setModalFor("view-order");
+      setShowAddOrder(true);
+    }
+  }, [order, orders]);
 
   return (
     <MainPageTemplate>

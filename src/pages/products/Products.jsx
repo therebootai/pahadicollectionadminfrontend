@@ -24,6 +24,8 @@ const Products = () => {
 
   const is_drafted = searchParams.get("is_drafted");
 
+  const product = searchParams.get("product");
+
   const fetchProducts = async (filter) => {
     let query = {
       page: currentPage,
@@ -56,10 +58,20 @@ const Products = () => {
 
   const handleClose = () => {
     setViewBox(false);
+    const newParams = new URLSearchParams(searchParams);
+
+    newParams.delete("product");
+
+    setSearchParams(newParams);
   };
 
-  const handelView = () => {
+  const handelView = (id) => {
     setViewBox(true);
+    const newParams = new URLSearchParams(searchParams);
+
+    newParams.set("product", id);
+
+    setSearchParams(newParams);
   };
 
   useEffect(() => {
@@ -83,6 +95,13 @@ const Products = () => {
 
     fetchProducts(query);
   }, [currentPage, type, status, tags, is_drafted]);
+
+  useEffect(() => {
+    if (product && products.length > 0) {
+      setSelectedProduct(products.find((item) => item.productId === product));
+      setViewBox(true);
+    }
+  }, [product, products]);
 
   return (
     <MainPageTemplate>
