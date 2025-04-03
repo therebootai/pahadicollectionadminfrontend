@@ -26,6 +26,10 @@ const AddCategory = ({ fetchCategories, categories }) => {
   // Create main category
   const handleCreateCategory = async (e) => {
     e.preventDefault();
+    if (categoryData.mainCategory === "") {
+      alert("Please enter a main category name.");
+      return;
+    }
     setLoading(true);
 
     try {
@@ -57,6 +61,10 @@ const AddCategory = ({ fetchCategories, categories }) => {
   // Add subcategory to the selected main category
   const handleAddSubCategory = async (e) => {
     e.preventDefault();
+    if (subCategoryName === "") {
+      alert("Please enter a subcategory name.");
+      return;
+    }
     setLoading(true);
     try {
       const newSubcategory = {
@@ -83,6 +91,10 @@ const AddCategory = ({ fetchCategories, categories }) => {
   // Add sub-subcategory to the selected subcategory
   const handleAddSubSubCategory = async (e) => {
     e.preventDefault();
+    if (subSubCategoryName === "") {
+      alert("Please enter a sub-subcategory name.");
+      return;
+    }
     setLoading(true);
     try {
       const newSubSubCategory = {
@@ -124,9 +136,8 @@ const AddCategory = ({ fetchCategories, categories }) => {
             <input
               type="text"
               value={mainCategory}
-              onChange={(e) => setMainCategory(e.target.value)}
+              onChange={(e) => setMainCategory(e.target.value.trimStart())}
               placeholder="Enter Main Category Name"
-              pattern="^\S+$"
               className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md"
             />
             <div className="relative w-full h-[3rem] border border-[#CCCCCC] rounded-md truncate">
@@ -198,8 +209,9 @@ const AddCategory = ({ fetchCategories, categories }) => {
                   <input
                     type="text"
                     value={subCategoryName}
-                    pattern="^\S+$"
-                    onChange={(e) => setSubCategoryName(e.target.value)}
+                    onChange={(e) =>
+                      setSubCategoryName(e.target.value.trimStart())
+                    }
                     placeholder="Enter Sub Category Name"
                     className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md"
                   />
@@ -247,9 +259,10 @@ const AddCategory = ({ fetchCategories, categories }) => {
 
                     <input
                       type="text"
-                      pattern="^\S+$"
                       value={subSubCategoryName}
-                      onChange={(e) => setSubSubCategoryName(e.target.value)}
+                      onChange={(e) =>
+                        setSubSubCategoryName(e.target.value.trimStart())
+                      }
                       placeholder="Enter Sub Sub Category Name"
                       className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md"
                     />

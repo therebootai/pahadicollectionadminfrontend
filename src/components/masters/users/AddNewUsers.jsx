@@ -31,6 +31,10 @@ const AddNewUsers = ({ fetchUsers }) => {
   };
 
   const onSubmit = async (data) => {
+    if (data.name.trim() === "") {
+      alert("Please enter a valid name.");
+      return;
+    }
     try {
       const response = await axiosFetch.post(`/users/users`, data);
       reset();
@@ -67,7 +71,6 @@ const AddNewUsers = ({ fetchUsers }) => {
         <input
           type="text"
           placeholder="Name"
-          pattern="^\S+$"
           {...register("name", { required: "Name is required" })}
           className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md w-full"
         />

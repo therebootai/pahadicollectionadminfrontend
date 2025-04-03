@@ -112,6 +112,24 @@ const ManageCategory = ({ categories, setCategories, fetchCategories }) => {
   };
 
   const handleSave = async () => {
+    if (editingCategory.mainCategory === "") {
+      alert("Please enter a main category name.");
+      return;
+    }
+    if (
+      editingCategory.subcategories.some((sub) => sub.subcategoriesname === "")
+    ) {
+      alert("Please enter a subcategory name.");
+      return;
+    }
+    if (
+      editingCategory.subcategories.some((sub) =>
+        sub.subsubcategories.some((ssc) => ssc.subsubcategoriesname === "")
+      )
+    ) {
+      alert("Please enter a sub-subcategory name.");
+      return;
+    }
     setLoading(true);
     try {
       const categoryPayload = {
@@ -186,13 +204,15 @@ const ManageCategory = ({ categories, setCategories, fetchCategories }) => {
     if (level === "main") {
       setEditingCategory({
         ...editingCategory,
-        mainCategory: value,
+        mainCategory: value.trimStart(),
       });
     } else if (level === "subcategory") {
       setEditingCategory({
         ...editingCategory,
         subcategories: editingCategory.subcategories.map((sub) =>
-          sub._id === subcategoryId ? { ...sub, subcategoriesname: value } : sub
+          sub._id === subcategoryId
+            ? { ...sub, subcategoriesname: value.trimStart() }
+            : sub
         ),
       });
     } else if (level === "subsubcategory") {
@@ -204,7 +224,7 @@ const ManageCategory = ({ categories, setCategories, fetchCategories }) => {
                 ...sub,
                 subsubcategories: sub.subsubcategories.map((ssc) =>
                   ssc._id === subsubcategoryId
-                    ? { ...ssc, subsubcategoriesname: value }
+                    ? { ...ssc, subsubcategoriesname: value.trimStart() }
                     : ssc
                 ),
               }
@@ -212,30 +232,6 @@ const ManageCategory = ({ categories, setCategories, fetchCategories }) => {
         ),
       });
     }
-  };
-
-  const handelDeleteSubCategory = (id) => {
-    setEditingCategory((prev) => ({
-      ...prev,
-      subcategories: prev.subcategories.filter((sub) => sub._id !== id),
-    }));
-    console.log("updated");
-  };
-
-  const handelDeleteSubSubCategory = (subId, subSubId) => {
-    setEditingCategory((prev) => ({
-      ...prev,
-      subcategories: prev.subcategories.map((sub) =>
-        sub._id === subId
-          ? {
-              ...sub,
-              subsubcategories: sub.subsubcategories.filter(
-                (ssc) => ssc._id !== subSubId
-              ),
-            }
-          : sub
-      ),
-    }));
   };
 
   return (
@@ -261,7 +257,6 @@ const ManageCategory = ({ categories, setCategories, fetchCategories }) => {
                       editingCategory.categoryId === category.categoryId ? (
                         <input
                           type="text"
-                          pattern="^\S+$"
                           value={editingCategory.mainCategory}
                           onChange={(e) =>
                             handleInputChange(e, "main", category.categoryId)
@@ -341,7 +336,6 @@ const ManageCategory = ({ categories, setCategories, fetchCategories }) => {
                           editingCategory.categoryId === category.categoryId ? (
                             <input
                               type="text"
-                              pattern="^\S+$"
                               value={
                                 editingCategory.subcategories.find(
                                   (subEdit) => subEdit._id === sub._id
@@ -389,7 +383,6 @@ const ManageCategory = ({ categories, setCategories, fetchCategories }) => {
                                   category.categoryId ? (
                                   <input
                                     type="text"
-                                    pattern="^\S+$"
                                     value={
                                       editingCategory.subcategories
                                         .find(
