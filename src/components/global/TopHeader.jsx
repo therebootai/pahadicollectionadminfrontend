@@ -32,6 +32,17 @@ const TopHeader = () => {
       alert("Failed to logout");
     }
   };
+
+  async function handelSearch(query) {
+    let url = `${pathname}/find?search=${query}&limit=8`;
+    try {
+      const res = await axiosFetch(url);
+      console.log(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
     <nav className="flex flex-col shadow-custom bg-white">
       <div className="h-[4.5rem] flex flex-row justify-between items-center px-4 xl:px-8 gap-8 border-b">
@@ -41,6 +52,8 @@ const TopHeader = () => {
         <div className="border border-custom-border flex justify-between flex-1 items-center px-6 py-3 rounded-full">
           <input
             placeholder="Search"
+            pattern="^\S+$"
+            onChange={(e) => handelSearch(e.target.value)}
             className="flex-1 focus-within:outline-none bg-transparent"
           />
           <button type="button" className="text-2xl text-custom-border">

@@ -2,7 +2,7 @@ import React from "react";
 
 const ViewOrder = ({ order }) => {
   return (
-    <section className="flex flex-col gap-4">
+    <section className="flex flex-col gap-4 bg-white p-4 rounded-md shadow-custom-lite">
       <h1 className="text-2xl font-bold text-custom-black">Order Details</h1>
       <div className="grid grid-cols-2 gap-2 items-center border p-1 border-custom-gray">
         <h3 className="text-lg font-semibold text-custom-black">Order Id :</h3>

@@ -96,7 +96,7 @@ const ProductTable = ({
                   <div className="flex  items-center gap-3">
                     <button
                       onClick={() => {
-                        handelView();
+                        handelView(product.productId);
                         setSelectedProduct(product);
                       }}
                       className="text-base font-medium text-custom-violet"

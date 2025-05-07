@@ -46,6 +46,7 @@ const AddNewComponent = ({ pageType, fetchComponents }) => {
         </select>
         <input
           type="text"
+          pattern="^\S+$"
           value={componentName}
           onChange={(e) => setComponentName(e.target.value)}
           required

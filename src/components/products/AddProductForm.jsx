@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { IoClose } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import axiosFetch from "../../config/axios.config";
+import { set } from "react-hook-form";
 
 const AddProductForm = ({ editedProduct }) => {
   const [productName, setProductName] = useState("");
@@ -159,8 +160,8 @@ const AddProductForm = ({ editedProduct }) => {
       const response = await axiosFetch.get(
         `/products/find?limit=1000&page=1&search=${query}`
       );
-      const { data } = response.data;
-      setAllMainProducts(data);
+      const { products } = response.data;
+      setAllMainProducts(products);
       setDropdownVisible(true);
     } catch (error) {
       console.error("Failed to fetch products:", error);
@@ -309,6 +310,11 @@ const AddProductForm = ({ editedProduct }) => {
 
       if (!prize) {
         setErrors((prev) => ({ ...prev, prize: "Price is required" }));
+        isValid = false;
+      }
+
+      if (!discount) {
+        setErrors((prev) => ({ ...prev, discount: "Discount is required" }));
         isValid = false;
       }
 
@@ -570,6 +576,7 @@ const AddProductForm = ({ editedProduct }) => {
 
   const handleProductSearchChange = (e) => {
     const value = e.target.value;
+    setMainProduct((prev) => ({ ...prev, title: value }));
     fetchMainProducts(value);
   };
 
@@ -590,6 +597,7 @@ const AddProductForm = ({ editedProduct }) => {
         <div className=" flex flex-col gap-1">
           <input
             type="text"
+            pattern="^\S+$"
             value={productName}
             onChange={(e) => setProductName(e.target.value)}
             placeholder="Enter Product Title"
@@ -599,7 +607,7 @@ const AddProductForm = ({ editedProduct }) => {
             <span className="text-red-500 text-sm">{errors.productName}</span>
           )}
         </div>
-        <div className=" flex flex-col gap-1">
+        <div className="flex flex-col gap-1">
           <select
             value={category}
             onChange={(e) => {
@@ -691,9 +699,18 @@ const AddProductForm = ({ editedProduct }) => {
           placeholder="Discount"
           value={discount}
           onChange={(e) => {
-            setDiscount(e.target.value);
+            let value = e.target.value;
+
+            // Remove non-numeric characters
+            value = value.replace(/\D/g, "");
+
+            // Restrict to two digits
+            if (value.length > 2) value = value.slice(0, 2);
+
+            setDiscount(value);
+
             let currentPrice =
-              parseInt(mrp) - parseInt(mrp) * (parseInt(e.target.value) / 100);
+              parseInt(mrp) - parseInt(mrp) * (parseInt(value) / 100);
             setPrize(currentPrice || "");
           }}
           className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md"
@@ -702,6 +719,7 @@ const AddProductForm = ({ editedProduct }) => {
           <div className="flex flex-col gap-2 relative">
             <input
               type="text"
+              pattern="^\S+$"
               value={mainProduct.title}
               className="h-[3rem] px-2 border border-custom-gray-border outline-none placeholder:text-custom-gray text-custom-black rounded-md"
               onChange={handleProductSearchChange}
@@ -904,6 +922,7 @@ const AddProductForm = ({ editedProduct }) => {
               <div className=" flex flex-col gap-1">
                 <input
                   type="text"
+                  pattern="^\S+$"
                   value={value.key}
                   onChange={(e) =>
                     handleChangeValue(index, { ...value, key: e.target.value })
@@ -925,6 +944,7 @@ const AddProductForm = ({ editedProduct }) => {
               <div className=" flex flex-col gap-1">
                 <input
                   type="text"
+                  pattern="^\S+$"
                   placeholder="Value"
                   value={value.value}
                   onChange={(e) =>

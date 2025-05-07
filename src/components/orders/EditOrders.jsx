@@ -164,6 +164,7 @@ const EditOrders = ({ fetchOrders, order }) => {
             <div className="grid grid-cols-3 gap-4">
               <input
                 type="text"
+                pattern="^\S+$"
                 value={productInput}
                 className="h-[3rem] px-2 border border-custom-gray-border outline-none placeholder:text-custom-gray text-custom-black rounded-md"
                 onChange={handleSearchChange}
@@ -171,6 +172,7 @@ const EditOrders = ({ fetchOrders, order }) => {
               />
               <input
                 type="text"
+                pattern="^\S+$"
                 value={quantityInput}
                 className="h-[3rem] px-2 border border-custom-gray-border outline-none placeholder:text-custom-gray text-custom-black rounded-md"
                 onChange={(e) => setQuantityInput(e.target.value)}

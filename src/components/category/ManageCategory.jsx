@@ -214,6 +214,30 @@ const ManageCategory = ({ categories, setCategories, fetchCategories }) => {
     }
   };
 
+  const handelDeleteSubCategory = (id) => {
+    setEditingCategory((prev) => ({
+      ...prev,
+      subcategories: prev.subcategories.filter((sub) => sub._id !== id),
+    }));
+    console.log("updated");
+  };
+
+  const handelDeleteSubSubCategory = (subId, subSubId) => {
+    setEditingCategory((prev) => ({
+      ...prev,
+      subcategories: prev.subcategories.map((sub) =>
+        sub._id === subId
+          ? {
+              ...sub,
+              subsubcategories: sub.subsubcategories.filter(
+                (ssc) => ssc._id !== subSubId
+              ),
+            }
+          : sub
+      ),
+    }));
+  };
+
   return (
     <div className="p-4 flex flex-col gap-6">
       <div className="flex flex-col border border-custom-gray-border rounded-md shadow-custom-lite">
@@ -237,6 +261,7 @@ const ManageCategory = ({ categories, setCategories, fetchCategories }) => {
                       editingCategory.categoryId === category.categoryId ? (
                         <input
                           type="text"
+                          pattern="^\S+$"
                           value={editingCategory.mainCategory}
                           onChange={(e) =>
                             handleInputChange(e, "main", category.categoryId)
@@ -311,11 +336,12 @@ const ManageCategory = ({ categories, setCategories, fetchCategories }) => {
                         key={`${sub._id}-${sub.subcategoriesname}`}
                         className="flex flex-row border-b py-2"
                       >
-                        <div className=" w-[50%] flex gap-2">
+                        <div className=" w-[50%] flex gap-2 items-center">
                           {editingCategory &&
                           editingCategory.categoryId === category.categoryId ? (
                             <input
                               type="text"
+                              pattern="^\S+$"
                               value={
                                 editingCategory.subcategories.find(
                                   (subEdit) => subEdit._id === sub._id
@@ -334,7 +360,7 @@ const ManageCategory = ({ categories, setCategories, fetchCategories }) => {
                           ) : (
                             sub.subcategoriesname
                           )}
-                          <label className="switch">
+                          <label className="switch self-center">
                             <input
                               type="checkbox"
                               checked={sub.isActive}
@@ -356,13 +382,14 @@ const ManageCategory = ({ categories, setCategories, fetchCategories }) => {
                             {sub.subsubcategories.map((ssc) => (
                               <div
                                 key={`${ssc._id}-${ssc.subsubcategoriesname}`}
-                                className="flex gap-2"
+                                className="flex gap-2 items-center"
                               >
                                 {editingCategory &&
                                 editingCategory.categoryId ===
                                   category.categoryId ? (
                                   <input
                                     type="text"
+                                    pattern="^\S+$"
                                     value={
                                       editingCategory.subcategories
                                         .find(

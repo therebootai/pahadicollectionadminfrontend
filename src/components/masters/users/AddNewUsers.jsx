@@ -67,6 +67,7 @@ const AddNewUsers = ({ fetchUsers }) => {
         <input
           type="text"
           placeholder="Name"
+          pattern="^\S+$"
           {...register("name", { required: "Name is required" })}
           className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md w-full"
         />
@@ -74,13 +75,17 @@ const AddNewUsers = ({ fetchUsers }) => {
       </div>
       <div>
         <input
-          type="text"
+          type="tel"
           placeholder="Mobile No."
           {...register("phone", {
             required: "Phone is required",
             minLength: {
               value: 10,
               message: "Phone must be at least 10 digits",
+            },
+            maxLength: {
+              value: 10,
+              message: "Phone must be at most 10 digits",
             },
           })}
           maxLength={10}
@@ -90,7 +95,7 @@ const AddNewUsers = ({ fetchUsers }) => {
       </div>
       <div>
         <input
-          type="text"
+          type="email"
           placeholder="Email"
           {...register("email", { required: "Email is required" })}
           className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md w-full"
@@ -100,6 +105,7 @@ const AddNewUsers = ({ fetchUsers }) => {
       <div className="flex items-center gap-2">
         <input
           type="text"
+          pattern="^\S+$"
           placeholder="Password"
           value={password}
           {...register("password", { required: "Password is required" })}

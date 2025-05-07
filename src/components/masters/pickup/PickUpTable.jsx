@@ -146,6 +146,7 @@ const PickUpTable = ({ fetchPickups, pickups, setPickups }) => {
                   {editingPickup === pickup.pickupId ? (
                     <input
                       type="text"
+                      pattern="^\S+$"
                       name="pickupPointName"
                       value={updatedPickup.pickupPointName}
                       onChange={handleInputChange}
@@ -166,6 +167,7 @@ const PickUpTable = ({ fetchPickups, pickups, setPickups }) => {
                   {editingPickup === pickup.pickupId ? (
                     <input
                       type="text"
+                      pattern="^\S+$"
                       name="pickupPointLocation"
                       value={updatedPickup.pickupPointLocation}
                       onChange={handleInputChange}
@@ -186,6 +188,7 @@ const PickUpTable = ({ fetchPickups, pickups, setPickups }) => {
                   {editingPickup === pickup.pickupId ? (
                     <input
                       type="text"
+                      pattern="^\S+$"
                       name="pickupPointPinCode"
                       value={updatedPickup.pickupPointPinCode}
                       onChange={handleInputChange}
@@ -205,7 +208,10 @@ const PickUpTable = ({ fetchPickups, pickups, setPickups }) => {
                 <div className="flex-1">
                   {editingPickup === pickup.pickupId ? (
                     <input
-                      type="text"
+                      type="tel"
+                      pattern="[0-9]{10}"
+                      maxLength={10}
+                      minLength={10}
                       name="pickupPointMobileno"
                       value={updatedPickup.pickupPointMobileno}
                       onChange={handleInputChange}

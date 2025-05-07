@@ -32,6 +32,7 @@ const AddAttribute = ({ fetchAttributes }) => {
       <div className="flex-1">
         <input
           type="text"
+          pattern="^\S+$"
           {...register("attribute_title", {
             required: "Attribute title is required",
           })}

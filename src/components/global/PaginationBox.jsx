@@ -27,7 +27,7 @@ const PaginationBox = ({ pagination, prefix }) => {
         {currentPage === 1 ? null : (
           <Link
             className="flex items-center gap-1 cursor-pointer"
-            to={`/${prefix}?page=${currentPage - 1}`}
+            to={`${prefix}?page=${currentPage - 1}`}
           >
             <MdOutlineKeyboardDoubleArrowLeft /> Prev
           </Link>
@@ -52,7 +52,7 @@ const PaginationBox = ({ pagination, prefix }) => {
         {currentPage === totalPages ? null : (
           <Link
             className="flex items-center gap-1 cursor-pointer"
-            to={`/${prefix}?page=${currentPage + 1}`}
+            to={`${prefix}?page=${currentPage + 1}`}
           >
             Next <MdOutlineKeyboardDoubleArrowRight />
           </Link>
