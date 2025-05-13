@@ -69,6 +69,10 @@ const AttributeTable = ({ attributes, setAttributes, fetchAttributes }) => {
   }
 
   async function handelUpdate(data) {
+    if (data.attribute_title.trim() === "") {
+      alert("Please enter a valid attribute title.");
+      return;
+    }
     try {
       const response = await axiosFetch.put(
         `/attributes/${editedAttribute.attributeId}`,
@@ -96,7 +100,7 @@ const AttributeTable = ({ attributes, setAttributes, fetchAttributes }) => {
             <div className="flex-1">
               {editedAttribute.attributeId === attribute.attributeId ? (
                 <input
-                  type="text" pattern="^\S+$"
+                  type="text"
                   name="attribute_title"
                   {...register("attribute_title", {
                     required: "Attribute title is required",

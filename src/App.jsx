@@ -17,14 +17,16 @@ import Payment from "./pages/payments/Payment";
 import WishList from "./pages/marketing/WishList";
 import Attributes from "./pages/masters/Attributes";
 import Reviews from "./pages/marketing/Reviews";
+import ProtectedRoute from "./context/ProtectedRoutes";
 
 function App() {
   return (
-    <>
-      <Routes>
-        {/* Login Route */}
-        <Route path="/login" element={<Login />} />
-        {/* Admin Panel */}
+    <Routes>
+      {/* Public Route */}
+      <Route path="/login" element={<Login />} />
+
+      {/* Protected Routes */}
+      <Route element={<ProtectedRoute />}>
         <Route path="/" element={<Dashboard />} />
         <Route path="/add-manage-category" element={<AddAndManageCategory />} />
 
@@ -58,8 +60,8 @@ function App() {
 
         {/* Payments Routes */}
         <Route path="/payments" element={<Payment />} />
-      </Routes>
-    </>
+      </Route>
+    </Routes>
   );
 }
 

@@ -12,6 +12,10 @@ const AddAttribute = ({ fetchAttributes }) => {
 
   const [loading, setLoading] = useState(false);
   const onSubmit = async (data) => {
+    if (data.attribute_title.trim() === "") {
+      alert("Please enter a valid attribute title.");
+      return;
+    }
     setLoading(true);
     try {
       const response = await axiosFetch.post(`/attributes`, data);
@@ -32,7 +36,6 @@ const AddAttribute = ({ fetchAttributes }) => {
       <div className="flex-1">
         <input
           type="text"
-          pattern="^\S+$"
           {...register("attribute_title", {
             required: "Attribute title is required",
           })}

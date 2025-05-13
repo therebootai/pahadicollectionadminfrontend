@@ -13,6 +13,14 @@ const AddPickUpForm = ({ fetchPickups }) => {
   const [serverError, setServerError] = useState("");
   const [loading, setLoading] = useState(false);
   const onSubmit = async (data) => {
+    if (data.pickupPointName.trim() === "") {
+      alert("Please enter a valid name.");
+      return;
+    }
+    if (data.pickupPointLocation.trim() === "") {
+      alert("Please enter a valid location.");
+      return;
+    }
     setLoading(true);
     try {
       const response = await axiosFetch.post(`/pickups/create`, data);
@@ -53,7 +61,6 @@ const AddPickUpForm = ({ fetchPickups }) => {
       <div>
         <input
           type="text"
-          pattern="^\S+$"
           {...register("pickupPointName", {
             required: "This field is required",
           })}
@@ -71,7 +78,6 @@ const AddPickUpForm = ({ fetchPickups }) => {
       <div>
         <input
           type="text"
-          pattern="^\S+$"
           {...register("pickupPointLocation", {
             required: "This field is required",
           })}

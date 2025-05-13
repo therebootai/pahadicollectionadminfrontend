@@ -57,7 +57,7 @@ const UserTable = ({ fetchUsers, users, setUsers }) => {
   const handleInputChange = (e) => {
     setUpdatedUser({
       ...updatedUser,
-      [e.target.name]: e.target.value,
+      [e.target.name]: e.target.value.trimStart(),
     });
   };
 
@@ -152,7 +152,6 @@ const UserTable = ({ fetchUsers, users, setUsers }) => {
                   {editingUser === user.userId ? (
                     <input
                       type="text"
-                      pattern="^\S+$"
                       name="name"
                       value={updatedUser.name}
                       onChange={handleInputChange}

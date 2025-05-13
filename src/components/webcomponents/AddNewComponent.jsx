@@ -46,9 +46,8 @@ const AddNewComponent = ({ pageType, fetchComponents }) => {
         </select>
         <input
           type="text"
-          pattern="^\S+$"
           value={componentName}
-          onChange={(e) => setComponentName(e.target.value)}
+          onChange={(e) => setComponentName(e.target.value.trimStart())}
           required
           placeholder={`${componentType} Name`}
           className="px-2 h-[3rem] border border-custom-gray-border outline-none placeholder:text-custom-gray rounded-md flex-1 capitalize placeholder:capitalize"

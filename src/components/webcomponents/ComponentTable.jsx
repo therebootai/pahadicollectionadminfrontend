@@ -152,9 +152,10 @@ const ComponentTable = ({ components, fetchComponents, setComponents }) => {
                   >
                     <input
                       type="text"
-                      pattern="^\S+$"
                       value={editedName}
-                      onChange={(e) => setEditedName(e.target.value)}
+                      onChange={(e) =>
+                        setEditedName(e.target.value.trimStart())
+                      }
                       className="px-2 h-8 border border-custom-gray-border outline-none placeholder:text-custom-gray rounded-md flex-1"
                     />
                     <div className="relative flex-1 h-8 border border-custom-gray-border rounded-md truncate">
