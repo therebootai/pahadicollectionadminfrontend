@@ -487,6 +487,11 @@ const AddProductForm = ({ editedProduct }) => {
           alert("Main Product is required");
           return;
         }
+
+        if (Object.keys(selectedVariable).length === 0) {
+          alert("Variable is required");
+          return;
+        }
       }
     }
 
@@ -575,13 +580,13 @@ const AddProductForm = ({ editedProduct }) => {
   const subSubCategories = selectedSubCategory?.subsubcategories || [];
 
   const handleProductSearchChange = (e) => {
-    const value = e.target.value;
+    const value = e.target.value.trimStart();
     setMainProduct((prev) => ({ ...prev, title: value }));
     fetchMainProducts(value);
   };
 
   const handleVariableChange = (e) => {
-    const variableId = e.target.value;
+    const variableId = e.target.value.trimStart();
     const variable = allVariables.find((item) => item._id === variableId);
 
     setSelectedVariable(variable);
@@ -597,9 +602,8 @@ const AddProductForm = ({ editedProduct }) => {
         <div className=" flex flex-col gap-1">
           <input
             type="text"
-            pattern="^\S+$"
             value={productName}
-            onChange={(e) => setProductName(e.target.value)}
+            onChange={(e) => setProductName(e.target.value.trimStart())}
             placeholder="Enter Product Title"
             className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md"
           />
@@ -719,7 +723,6 @@ const AddProductForm = ({ editedProduct }) => {
           <div className="flex flex-col gap-2 relative">
             <input
               type="text"
-              pattern="^\S+$"
               value={mainProduct.title}
               className="h-[3rem] px-2 border border-custom-gray-border outline-none placeholder:text-custom-gray text-custom-black rounded-md"
               onChange={handleProductSearchChange}
@@ -922,10 +925,12 @@ const AddProductForm = ({ editedProduct }) => {
               <div className=" flex flex-col gap-1">
                 <input
                   type="text"
-                  pattern="^\S+$"
                   value={value.key}
                   onChange={(e) =>
-                    handleChangeValue(index, { ...value, key: e.target.value })
+                    handleChangeValue(index, {
+                      ...value,
+                      key: e.target.value.trimStart(),
+                    })
                   }
                   placeholder="Type"
                   className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md"
@@ -944,13 +949,12 @@ const AddProductForm = ({ editedProduct }) => {
               <div className=" flex flex-col gap-1">
                 <input
                   type="text"
-                  pattern="^\S+$"
                   placeholder="Value"
                   value={value.value}
                   onChange={(e) =>
                     handleChangeValue(index, {
                       ...value,
-                      value: e.target.value,
+                      value: e.target.value.trimStart(),
                     })
                   }
                   className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md"

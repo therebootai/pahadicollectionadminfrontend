@@ -64,6 +64,14 @@ const AddCoupon = ({ fetchAllCoupons, coupon }) => {
 
   // Handle form submission
   const onSubmit = async (data) => {
+    if (data.discount > 100) {
+      alert("Discount cannot be greater than 100%");
+      return;
+    }
+    if (data.couponName.trim() === "") {
+      alert("Please enter a coupon name.");
+      return;
+    }
     const payload = {
       ...data,
       startDate,
@@ -110,7 +118,6 @@ const AddCoupon = ({ fetchAllCoupons, coupon }) => {
         <div className="flex gap-4">
           <input
             type="text"
-            pattern="^\S+$"
             placeholder="Coupon Name"
             {...register("couponName", { required: true })}
             className="h-[3rem] px-2 border border-custom-gray-border outline-none placeholder:text-custom-gray text-custom-black rounded-md flex-1"
@@ -126,14 +133,12 @@ const AddCoupon = ({ fetchAllCoupons, coupon }) => {
         <div className="flex gap-4">
           <input
             type="text"
-            pattern="^\S+$"
             placeholder="Minimum Value"
             {...register("minimumAmount", { required: true })}
             className="h-[3rem] px-2 border border-custom-gray-border outline-none placeholder:text-custom-gray text-custom-black rounded-md flex-1"
           />
           <input
             type="text"
-            pattern="^\S+$"
             placeholder="Discount Up To"
             {...register("upToAmount", { required: true })}
             className="h-[3rem] px-2 border border-custom-gray-border outline-none placeholder:text-custom-gray text-custom-black rounded-md flex-1"
@@ -169,7 +174,6 @@ const AddCoupon = ({ fetchAllCoupons, coupon }) => {
         <div className="flex flex-col gap-2 relative">
           <input
             type="text"
-            pattern="^\S+$"
             value={productInput}
             className="h-[3rem] px-2 border border-custom-gray-border outline-none placeholder:text-custom-gray text-custom-black rounded-md"
             onChange={handleSearchChange}

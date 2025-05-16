@@ -3,10 +3,17 @@ import {
   MdOutlineKeyboardDoubleArrowLeft,
   MdOutlineKeyboardDoubleArrowRight,
 } from "react-icons/md";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const PaginationBox = ({ pagination, prefix }) => {
   const { currentPage = 1, totalPages = 1 } = pagination;
+  const location = useLocation();
+
+  const createPageLink = (page) => {
+    const searchParams = new URLSearchParams(location.search);
+    searchParams.set("page", page);
+    return `${prefix}?${searchParams.toString()}`;
+  };
 
   const pageNumbers = [];
   const maxVisiblePages = 5;
@@ -27,7 +34,7 @@ const PaginationBox = ({ pagination, prefix }) => {
         {currentPage === 1 ? null : (
           <Link
             className="flex items-center gap-1 cursor-pointer"
-            to={`${prefix}?page=${currentPage - 1}`}
+            to={createPageLink(currentPage - 1)}
           >
             <MdOutlineKeyboardDoubleArrowLeft /> Prev
           </Link>
@@ -37,7 +44,7 @@ const PaginationBox = ({ pagination, prefix }) => {
           {pageNumbers.map((pageNumber) => (
             <Link
               key={pageNumber}
-              to={`${prefix}?page=${pageNumber}`}
+              to={createPageLink(pageNumber)}
               className={`size-8 rounded-md ${
                 pageNumber === currentPage
                   ? "bg-custom-violet text-white"
@@ -52,7 +59,7 @@ const PaginationBox = ({ pagination, prefix }) => {
         {currentPage === totalPages ? null : (
           <Link
             className="flex items-center gap-1 cursor-pointer"
-            to={`${prefix}?page=${currentPage + 1}`}
+            to={createPageLink(currentPage + 1)}
           >
             Next <MdOutlineKeyboardDoubleArrowRight />
           </Link>

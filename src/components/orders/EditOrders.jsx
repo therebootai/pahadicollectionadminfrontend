@@ -57,7 +57,7 @@ const EditOrders = ({ fetchOrders, order }) => {
     setDropdownVisible(false);
   };
 
-  const addProduct = (product) => {
+  const addProduct = () => {
     if (selectedProduct && quantityInput) {
       const alreadyAdded = products.find((p) => p.id === selectedProduct._id);
       if (!alreadyAdded) {
@@ -84,23 +84,23 @@ const EditOrders = ({ fetchOrders, order }) => {
   };
 
   const handleSearchChange = (e) => {
-    const value = e.target.value;
+    const value = e.target.value.trimStart();
     setProductInput(value);
     fetchAllProducts(value);
   };
 
-  const handleAddValue = () => {
-    setDeliveryAddress({
-      ...deliveryAddress,
-      "": "",
-    });
-  };
+  // const handleAddValue = () => {
+  //   setDeliveryAddress({
+  //     ...deliveryAddress,
+  //     "": "",
+  //   });
+  // };
 
-  const handleRemoveValue = (key) => {
-    const updatedAddress = { ...deliveryAddress };
-    delete updatedAddress[key];
-    setDeliveryAddress(updatedAddress);
-  };
+  // const handleRemoveValue = (key) => {
+  //   const updatedAddress = { ...deliveryAddress };
+  //   delete updatedAddress[key];
+  //   setDeliveryAddress(updatedAddress);
+  // };
 
   const handleChangeValue = (oldKey, newKey, newValue) => {
     const updatedAddress = { ...deliveryAddress };
@@ -164,7 +164,6 @@ const EditOrders = ({ fetchOrders, order }) => {
             <div className="grid grid-cols-3 gap-4">
               <input
                 type="text"
-                pattern="^\S+$"
                 value={productInput}
                 className="h-[3rem] px-2 border border-custom-gray-border outline-none placeholder:text-custom-gray text-custom-black rounded-md"
                 onChange={handleSearchChange}
@@ -172,10 +171,9 @@ const EditOrders = ({ fetchOrders, order }) => {
               />
               <input
                 type="text"
-                pattern="^\S+$"
                 value={quantityInput}
                 className="h-[3rem] px-2 border border-custom-gray-border outline-none placeholder:text-custom-gray text-custom-black rounded-md"
-                onChange={(e) => setQuantityInput(e.target.value)}
+                onChange={(e) => setQuantityInput(e.target.value.trimStart())}
                 placeholder="Quantity"
               />
               <button
