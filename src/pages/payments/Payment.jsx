@@ -28,7 +28,6 @@ const Payment = () => {
 
     setSearchParams(newParams);
   };
-  
 
   async function fetchPayments(filter) {
     let query = {};
@@ -57,7 +56,7 @@ const Payment = () => {
     }
 
     if (mode) {
-      query = { ...query, mode };
+      query = { ...query, paymentMode: mode };
     }
 
     fetchPayments(query);
