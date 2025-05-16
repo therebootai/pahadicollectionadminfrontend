@@ -52,7 +52,7 @@ const OrdersTable = ({ orders, fetchOrders, handleOpenModal }) => {
                 .join(", ")}
             </div>
             <div className="flex-1">{order.totalAmount}</div>
-            <div className="flex-1">{order.paymentId.paymentMode}</div>
+            <div className="flex-1">{order.paymentId?.paymentMode}</div>
             <div className="flex-1">{order.status}</div>
             <div className="flex  items-center gap-3 flex-1">
               <button

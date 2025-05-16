@@ -101,7 +101,7 @@ const Orders = () => {
           <option value="shipped">Shipped</option>
           <option value="out_for_delivery">Out For Delivery</option>
           <option value="delivered">Delivered</option>
-          <option value="cancelled">Cancelled</option>
+          <option value="canceled">Canceled</option>
           <option value="refund_generated">Refund Generated</option>
           <option value="refunded">Refunded</option>
         </select>
