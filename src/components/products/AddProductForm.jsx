@@ -843,7 +843,7 @@ const AddProductForm = ({ editedProduct }) => {
                 let currentPrice =
                   parseInt(e.target.value) -
                   parseInt(e.target.value) * (parseInt(discount) / 100);
-                setPrize(currentPrice || "");
+                setPrize(Math.floor(currentPrice) || "");
               }}
               className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md"
             />
