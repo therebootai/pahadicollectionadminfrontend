@@ -1,4 +1,3 @@
-import React from "react";
 import DisplayTable from "../global/DisplayTable";
 
 const PaymentTable = ({ payments }) => {
@@ -31,7 +30,7 @@ const PaymentTable = ({ payments }) => {
               <div className="flex-1">{payment.amount}</div>
               <div className="flex-1">{payment.paymentStatus}</div>
               <div className="flex-1 break-all">
-                {payment.orderId.map((order) => order.orderId)}
+                {payment.orderId.map((order) => order.orderId + " , ")}
               </div>
               <div className="flex  items-center gap-3 flex-1">
                 <button

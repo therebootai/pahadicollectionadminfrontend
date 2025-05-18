@@ -77,7 +77,7 @@ const Orders = () => {
       query = { ...query, status };
     }
     fetchOrders(query);
-  }, [currentPage, status, pagination]);
+  }, [currentPage, status]);
 
   return (
     <MainPageTemplate>

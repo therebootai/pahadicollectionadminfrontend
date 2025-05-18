@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useEffect, useState } from "react";
+import { set, useForm } from "react-hook-form";
 import axiosFetch from "../../config/axios.config";
 
 const EditOrders = ({ fetchOrders, order }) => {
@@ -32,6 +32,13 @@ const EditOrders = ({ fetchOrders, order }) => {
         price: order.products.productId.price,
       });
 
+      setDeliveryAddress(
+        Object.keys(order.delivery_location).reduce((acc, key) => {
+          acc[key] = order.delivery_location[key] || deliveryAddress[key];
+          return acc;
+        }, {})
+      );
+
       reset({
         status: order.status || "",
       });
@@ -59,24 +66,25 @@ const EditOrders = ({ fetchOrders, order }) => {
   };
 
   const addProduct = () => {
-    if (selectedProduct && quantityInput) {
-      const alreadyAdded = products.find((p) => p.id === selectedProduct._id);
-      if (!alreadyAdded) {
-        setProducts([
-          ...products,
-          {
-            id: selectedProduct._id,
-            title: selectedProduct.title,
-            quantity: quantityInput,
-          },
-        ]);
-        setProductInput("");
-        setQuantityInput("");
-        setSelectedProduct(null);
-      }
-    } else {
-      alert("Please select a product and enter quantity.");
+    console.log("called add");
+    if (products.quantity === products.stock) {
+      return;
     }
+    setProducts((prevProducts) => ({
+      ...prevProducts,
+      quantity: prevProducts.quantity + 1,
+    }));
+  };
+
+  const removeProduct = () => {
+    console.log("called remove");
+    if (products.quantity === 1) {
+      return;
+    }
+    setProducts((prevProducts) => ({
+      ...prevProducts,
+      quantity: prevProducts.quantity - 1,
+    }));
   };
 
   const handleSearchChange = (e) => {
@@ -85,18 +93,18 @@ const EditOrders = ({ fetchOrders, order }) => {
     fetchAllProducts(value);
   };
 
-  // const handleAddValue = () => {
-  //   setDeliveryAddress({
-  //     ...deliveryAddress,
-  //     "": "",
-  //   });
-  // };
+  const handleAddValue = () => {
+    setDeliveryAddress({
+      ...deliveryAddress,
+      "": "",
+    });
+  };
 
-  // const handleRemoveValue = (key) => {
-  //   const updatedAddress = { ...deliveryAddress };
-  //   delete updatedAddress[key];
-  //   setDeliveryAddress(updatedAddress);
-  // };
+  const handleRemoveValue = (key) => {
+    const updatedAddress = { ...deliveryAddress };
+    delete updatedAddress[key];
+    setDeliveryAddress(updatedAddress);
+  };
 
   const handleChangeValue = (oldKey, newKey, newValue) => {
     const updatedAddress = { ...deliveryAddress };
@@ -109,6 +117,7 @@ const EditOrders = ({ fetchOrders, order }) => {
     const payload = {
       ...data,
       products: {
+        ...order.products,
         quantity: products.quantity,
       }, // Send product IDs only
       delivery_location: deliveryAddress,
@@ -164,48 +173,55 @@ const EditOrders = ({ fetchOrders, order }) => {
           </select>
         </div>
 
+        <div className="flex flex-col gap-3">
+          <h3 className="text-base font-medium text-custom-black">
+            Delivery Address
+          </h3>
+          <div className="flex flex-col gap-4">
+            {Object.entries(deliveryAddress).map(([key, value], index) => (
+              <div key={index} className="grid grid-cols-4 gap-4">
+                <input
+                  type="text"
+                  value={key}
+                  onChange={(e) =>
+                    handleChangeValue(key, e.target.value, value)
+                  }
+                  placeholder="Type"
+                  className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md"
+                />
+                <input
+                  type="text"
+                  value={value}
+                  onChange={(e) => handleChangeValue(key, key, e.target.value)}
+                  placeholder="Value"
+                  className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md"
+                />
+                <button
+                  type="button"
+                  onClick={handleAddValue}
+                  className="bg-custom-lite-gray border border-custom-gray-border text-custom-black h-12 rounded-md"
+                >
+                  Add more
+                </button>
+
+                {Object.keys(deliveryAddress).length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveValue(key)}
+                    className="bg-custom-lite-gray border border-custom-gray-border text-custom-black h-12 rounded-md"
+                  >
+                    Remove
+                  </button>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
         <div className="flex flex-col gap-2">
           <h3 className="text-base font-medium text-custom-black">
             Ordered Products
           </h3>
-          {/* <div className="flex flex-col gap-4 relative">
-            <div className="grid grid-cols-3 gap-4">
-              <input
-                type="text"
-                value={productInput}
-                className="h-[3rem] px-2 border border-custom-gray-border outline-none placeholder:text-custom-gray text-custom-black rounded-md"
-                onChange={handleSearchChange}
-                placeholder="Search and select product"
-              />
-              <input
-                type="text"
-                value={quantityInput}
-                className="h-[3rem] px-2 border border-custom-gray-border outline-none placeholder:text-custom-gray text-custom-black rounded-md"
-                onChange={(e) => setQuantityInput(e.target.value.trimStart())}
-                placeholder="Quantity"
-              />
-              <button
-                type="button"
-                onClick={addProduct}
-                className="h-12 text-custom-black px-2 bg-custom-lite-gray rounded-md border border-custom-gray-border"
-              >
-                Add
-              </button>
-            </div>
-            {dropdownVisible && filteredProducts.length > 0 && (
-              <ul className="absolute z-10 bg-white border border-gray-300 rounded-md shadow-lg max-h-40 overflow-y-auto w-full top-full">
-                {filteredProducts.map((product) => (
-                  <li
-                    key={product._id}
-                    onClick={() => handleSelectProduct(product)}
-                    className="px-4 py-2 cursor-pointer hover:bg-gray-100"
-                  >
-                    {product.title}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div> */}
 
           {/* Selected Products List */}
           <ul className="space-y-2 flex flex-col gap-3">
@@ -230,9 +246,26 @@ const EditOrders = ({ fetchOrders, order }) => {
                 <span className="text-custom-black capitalize font-semibold">
                   Product stocks - {products.stock}
                 </span>
-                <span className="text-custom-black capitalize font-semibold">
-                  Quantity - {products.quantity}
-                </span>
+                <div className="text-custom-black capitalize font-semibold flex items-center gap-2">
+                  Quantity -{" "}
+                  <button
+                    type="button"
+                    className="text-custom-blue font-medium"
+                    onClick={addProduct}
+                  >
+                    +
+                  </button>{" "}
+                  <span className="p-1 border rounded text-custom-blue bg-white aspect-square">
+                    {products.quantity}{" "}
+                  </span>
+                  <button
+                    type="button"
+                    className="text-custom-gray font-medium"
+                    onClick={removeProduct}
+                  >
+                    -
+                  </button>
+                </div>
               </div>
             </li>
             {order.cancel_message?.cancel_reason && (
