@@ -1,4 +1,3 @@
-import React from "react";
 import DisplayTable from "../global/DisplayTable";
 import axiosFetch from "../../config/axios.config";
 
@@ -38,9 +37,9 @@ const OrdersTable = ({ orders, fetchOrders, handleOpenModal }) => {
         orders.map((order) => (
           <div
             key={order._id}
-            className="flex flex-row p-2 py-4 border-b border-custom-gray-border text-base"
+            className="flex flex-row p-2 py-4 border-b border-custom-gray-border text-base gap-2"
           >
-            <div className="flex-1">{order.orderId}</div>
+            <div className="flex-1 break-all">{order.orderId}</div>
             <div className="flex-1">
               {new Date(order.createdAt).toDateString()}
             </div>
@@ -51,25 +50,25 @@ const OrdersTable = ({ orders, fetchOrders, handleOpenModal }) => {
                 .map(([key, value]) => `${key}: ${value ?? "Not available"}`)
                 .join(", ")}
             </div>
-            <div className="flex-1">{order.totalAmount}</div>
+            <div className="flex-1">{Math.round(order.totalAmount)}</div>
             <div className="flex-1">{order.paymentId?.paymentMode}</div>
-            <div className="flex-1">{order.status}</div>
+            <div className="flex-1 break-all">{order.status}</div>
             <div className="flex  items-center gap-3 flex-1">
               <button
-                className="text-base font-medium text-custom-violet"
+                className="text-base font-medium text-custom-violet inline-flex"
                 onClick={() => handleOpenModal("view-order", order)}
               >
                 View
               </button>
               <button
                 onClick={() => handleOpenModal("edit-order", order)}
-                className="text-base font-medium text-custom-blue"
+                className="text-base font-medium text-custom-blue inline-flex"
               >
                 Edit
               </button>
               <button
                 onClick={() => handleDeleteConfirm(order._id)}
-                className="text-base font-medium text-red-500"
+                className="text-base font-medium text-red-500 inline-flex"
               >
                 Delete
               </button>

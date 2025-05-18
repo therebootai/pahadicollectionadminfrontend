@@ -62,29 +62,27 @@ const ViewOrder = ({ order }) => {
         <h1 className="text-lg font-semibold text-custom-black">
           Ordered Products:
         </h1>
-        {order.products.map((prod) => (
-          <div
-            key={prod.productId.productId}
-            className="flex flex-col p-2 m-2 border border-custom-gray"
-          >
-            <div className="grid grid-cols-2 gap-2 items-center">
-              <h3 className="text-lg font-semibold text-custom-black">
-                Product Name :
-              </h3>
-              <p className="text-lg font-semibold text-custom-blue">
-                {prod.productId?.title}
-              </p>
-            </div>
-            <div className="grid grid-cols-2 gap-2 items-center">
-              <h3 className="text-lg font-semibold text-custom-black">
-                Quantity :
-              </h3>
-              <p className="text-lg font-semibold text-custom-blue">
-                {prod.quantity}
-              </p>
-            </div>
+        <div
+          key={order.products.productId.productId}
+          className="flex flex-col p-2 m-2 border border-custom-gray"
+        >
+          <div className="grid grid-cols-2 gap-2 items-center">
+            <h3 className="text-lg font-semibold text-custom-black">
+              Product Name :
+            </h3>
+            <p className="text-lg font-semibold text-custom-blue">
+              {order.products.productId?.title}
+            </p>
           </div>
-        ))}
+          <div className="grid grid-cols-2 gap-2 items-center">
+            <h3 className="text-lg font-semibold text-custom-black">
+              Quantity :
+            </h3>
+            <p className="text-lg font-semibold text-custom-blue">
+              {order.products.quantity}
+            </p>
+          </div>
+        </div>
       </div>
       <div className="flex flex-col gap-4 border p-1 border-custom-gray">
         <h1 className="text-lg font-semibold text-custom-black">

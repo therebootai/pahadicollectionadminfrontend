@@ -22,13 +22,12 @@ const Orders = () => {
 
   const order = searchParams.get("order");
 
-  const handleOpenModal = (type, coupon) => {
+  const handleOpenModal = (type, order) => {
     const params = new URLSearchParams(searchParams);
-
-    params.set("order", coupon.orderId);
+    params.set("order", order.orderId);
     setSearchParams(params);
     setModalFor(type);
-    setCurrentOrder(coupon);
+    setCurrentOrder(order);
     setShowAddOrder(true);
   };
 
@@ -78,15 +77,7 @@ const Orders = () => {
       query = { ...query, status };
     }
     fetchOrders(query);
-  }, [currentPage, status]);
-
-  useEffect(() => {
-    if (order && orders.length > 0) {
-      setCurrentOrder(orders.find((item) => item.orderId === order));
-      setModalFor("view-order");
-      setShowAddOrder(true);
-    }
-  }, [order, orders]);
+  }, [currentPage, status, pagination]);
 
   return (
     <MainPageTemplate>
@@ -101,9 +92,13 @@ const Orders = () => {
           <option value="shipped">Shipped</option>
           <option value="out_for_delivery">Out For Delivery</option>
           <option value="delivered">Delivered</option>
+          <option value="cancel_initiated">Cancel Initiated</option>
           <option value="canceled">Canceled</option>
-          <option value="refund_generated">Refund Generated</option>
-          <option value="refunded">Refunded</option>
+          <option value="cancel_initiated_and_refund_generated">
+            Cancel Initiated and Refund Generated
+          </option>
+          <option value="canceled_and_refunded">Canceled and Refunded</option>
+          <option value="return_and_refunded">Return and Refunded</option>
         </select>
         <button className="h-[3rem] px-8 flex justify-center items-center bg-custom-violet rounded-md text-lg font-medium text-white">
           Import Orders
