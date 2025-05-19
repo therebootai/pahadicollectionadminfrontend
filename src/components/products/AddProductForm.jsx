@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { IoClose } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import axiosFetch from "../../config/axios.config";
-import { set } from "react-hook-form";
 
 const AddProductForm = ({ editedProduct }) => {
   const [productName, setProductName] = useState("");
@@ -713,8 +712,9 @@ const AddProductForm = ({ editedProduct }) => {
 
             setDiscount(value);
 
-            let currentPrice =
-              parseInt(mrp) - parseInt(mrp) * (parseInt(value) / 100);
+            let currentPrice = Math.round(
+              parseInt(mrp) - parseInt(mrp) * (parseInt(value) / 100)
+            );
             setPrize(currentPrice || "");
           }}
           className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md"
@@ -840,9 +840,10 @@ const AddProductForm = ({ editedProduct }) => {
               value={mrp}
               onChange={(e) => {
                 setMrp(e.target.value);
-                let currentPrice =
+                let currentPrice = Math.round(
                   parseInt(e.target.value) -
-                  parseInt(e.target.value) * (parseInt(discount) / 100);
+                    parseInt(e.target.value) * (parseInt(discount) / 100)
+                );
                 setPrize(Math.floor(currentPrice) || "");
               }}
               className="px-2 h-[3rem] border border-[#CCCCCC] outline-none placeholder:text-custom-gray rounded-md"
