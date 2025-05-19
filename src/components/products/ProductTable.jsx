@@ -78,7 +78,7 @@ const ProductTable = ({
 
                 <div className="flex-1">{product.discount} %</div>
                 <div className="flex-1">{product.mrp}</div>
-                <div className="flex-1">{product.price}</div>
+                <div className="flex-1">{Math.round(product.price)}</div>
                 <div className="flex-1">{product.in_stock}</div>
                 <div className="flex-1">
                   <label className="switch">

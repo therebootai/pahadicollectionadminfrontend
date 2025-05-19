@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import AddCoupon from "../../components/marketing/coupon/AddCoupon";
 import MainPageTemplate from "../../template/MainPageTemplate";
 import PaginationBox from "../../components/global/PaginationBox";
@@ -13,6 +13,8 @@ const AddAndManageCoupon = () => {
   const [searchParams] = useSearchParams();
 
   const currentPage = searchParams.get("page") || 1;
+  const couponId = searchParams.get("couponId");
+
   const [showAddCoupon, setShowAddCoupon] = useState(false);
   const [coupons, setCoupons] = useState([]);
   const [pagination, setPagination] = useState({});
@@ -38,10 +40,15 @@ const AddAndManageCoupon = () => {
     setShowAddCoupon(false);
   };
 
-  async function fetchAllCoupons() {
+  async function fetchAllCoupons(filter) {
     setLoading(true);
     try {
-      const response = await axiosFetch.get(`/coupons?page=${currentPage}`);
+      let query = {};
+
+      if (filter) query = { ...filter, ...query };
+      const response = await axiosFetch.get(`/coupons`, {
+        params: query,
+      });
       const { coupons, pagination } = response.data;
       setCoupons(coupons);
       setPagination(pagination);
@@ -53,8 +60,16 @@ const AddAndManageCoupon = () => {
   }
 
   useEffect(() => {
-    fetchAllCoupons();
-  }, [currentPage]);
+    let query = {
+      page: currentPage || 1,
+    };
+
+    if (couponId) {
+      query = { ...query, couponId };
+    }
+
+    fetchAllCoupons(query);
+  }, [currentPage, couponId]);
 
   return (
     <MainPageTemplate>

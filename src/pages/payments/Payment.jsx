@@ -17,6 +17,8 @@ const Payment = () => {
 
   const mode = searchParams.get("mode");
 
+  const paymentId = searchParams.get("paymentId");
+
   const handleQueryParam = (key, value) => {
     const newParams = new URLSearchParams(searchParams);
 
@@ -59,8 +61,12 @@ const Payment = () => {
       query = { ...query, paymentMode: mode };
     }
 
+    if (paymentId) {
+      query = { ...query, paymentId };
+    }
+
     fetchPayments(query);
-  }, [currentPage, status, mode]);
+  }, [currentPage, status, mode, paymentId]);
 
   return (
     <MainPageTemplate>

@@ -1,10 +1,9 @@
-import React, { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { FaRegBell } from "react-icons/fa";
 import { IoSearchSharp } from "react-icons/io5";
-import { LuMessageSquareText } from "react-icons/lu";
 import { PiUserCircleFill } from "react-icons/pi";
 import { NavLinkData } from "../../lib/NavLink";
-import { Link, NavLink, useLocation } from "react-router-dom";
+import { Link, NavLink, useLocation, useSearchParams } from "react-router-dom";
 import { IoIosArrowDown, IoIosLogOut } from "react-icons/io";
 import { AuthContext } from "../../context/AuthContextProvider";
 import axiosFetch from "../../config/axios.config";
@@ -12,13 +11,54 @@ import axiosFetch from "../../config/axios.config";
 const TopHeader = () => {
   const pathname = useLocation().pathname;
 
+  const [searchPath, setSearchPath] = useState("");
+
+  const [searchInput, setSearchInput] = useState("");
+
+  const [searchResult, setSearchResult] = useState([]);
+
   const { user, logout } = useContext(AuthContext);
+
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const orderId = searchParams.get("orderId");
+
+  const customerId = searchParams.get("customerId");
+
+  const productId = searchParams.get("productId");
+
+  const paymentId = searchParams.get("paymentId");
+
+  const couponId = searchParams.get("couponId");
 
   const isActive = (path) => {
     return pathname === path || pathname.includes(path.split("/")[1])
       ? true
       : false;
   };
+
+  useEffect(() => {
+    switch (pathname) {
+      case "/orders":
+        setSearchPath("/orders");
+        break;
+      case "/customers":
+        setSearchPath("/customers");
+        break;
+      case "/products":
+        setSearchPath("/products");
+        break;
+      case "/payments":
+        setSearchPath("/payments");
+        break;
+      case "/marketing/add-manage-coupon":
+        setSearchPath("/coupons");
+        break;
+
+      default:
+        break;
+    }
+  }, [pathname]);
 
   const handelLogout = async () => {
     try {
@@ -34,14 +74,73 @@ const TopHeader = () => {
   };
 
   async function handelSearch(query) {
-    let url = `${pathname}/find?search=${query}&limit=8`;
+    if (query === "") {
+      const newParams = new URLSearchParams(searchParams);
+
+      if (newParams.has("orderId")) {
+        newParams.delete("orderId");
+        setSearchParams(newParams);
+      }
+      if (newParams.has("customerId")) {
+        newParams.delete("customerId");
+        setSearchParams(newParams);
+      }
+      if (newParams.has("productId")) {
+        newParams.delete("productId");
+        setSearchParams(newParams);
+      }
+      if (newParams.has("paymentId")) {
+        newParams.delete("paymentId");
+        setSearchParams(newParams);
+      }
+      if (newParams.has("couponId")) {
+        newParams.delete("couponId");
+        setSearchParams(newParams);
+      }
+      return;
+    }
+    let url = `${searchPath}/find?search=${query}&limit=8`;
     try {
-      const res = await axiosFetch(url);
+      const res = await axiosFetch.get(url);
       console.log(res.data);
+      const { orders, customers, products, payments, coupons } = res.data;
+      if (orders) {
+        setSearchResult(orders);
+      }
+      if (customers) {
+        setSearchResult(customers);
+      }
+      if (products) {
+        setSearchResult(products);
+      }
+      if (payments) {
+        setSearchResult(payments);
+      }
+      if (coupons) {
+        setSearchResult(coupons);
+      }
     } catch (error) {
       console.log(error);
     }
   }
+
+  useEffect(() => {
+    if (orderId) {
+      setSearchInput(orderId);
+    }
+    if (customerId) {
+      setSearchInput(customerId);
+    }
+    if (productId) {
+      setSearchInput(productId);
+    }
+    if (paymentId) {
+      setSearchInput(paymentId);
+    }
+    if (couponId) {
+      setSearchInput(couponId);
+    }
+  }, [orderId, customerId, productId, paymentId, couponId]);
 
   return (
     <nav className="flex flex-col shadow-custom bg-white">
@@ -49,21 +148,95 @@ const TopHeader = () => {
         <Link to="/" className="">
           <img src="/images/pahadicollectionlogo.png" className="h-[2rem]" />
         </Link>
-        <div className="border border-custom-border flex justify-between flex-1 items-center px-6 py-3 rounded-full">
-          <input
-            placeholder="Search"
-            type="search"
-            onChange={(e) => handelSearch(e.target.value.trimStart())}
-            className="flex-1 focus-within:outline-none bg-transparent"
-          />
-          <button type="button" className="text-2xl text-custom-border">
-            <IoSearchSharp />
-          </button>
-        </div>
+        {searchPath !== "" && (
+          <div className="border border-custom-border flex justify-between flex-1 items-center px-6 py-3 rounded-full relative">
+            <input
+              placeholder="Search"
+              type="search"
+              value={searchInput}
+              onChange={(e) => {
+                setSearchInput(e.target.value);
+                handelSearch(e.target.value.trimStart());
+              }}
+              className="flex-1 focus-within:outline-none bg-transparent"
+            />
+            <button type="button" className="text-2xl text-custom-border">
+              <IoSearchSharp />
+            </button>
+            {searchResult.length > 0 && (
+              <div className="absolute top-full left-0 w-full flex flex-col gap-2 bg-white p-2 rounded-b-md z-50">
+                {searchResult.map((result) => {
+                  if (result.orderId && !Array.isArray(result.orderId)) {
+                    return (
+                      <Link
+                        to={`/orders?page=1&orderId=${result.orderId}`}
+                        onClick={() => setSearchResult([])}
+                        key={result._id}
+                        className="p-2 border-b border-custom-gray-border last:border-0 flex justify-between"
+                      >
+                        <span>{result.orderId}</span>
+                        <span className="capitalize">
+                          {result.status.split("_").join(" ")}
+                        </span>
+                      </Link>
+                    );
+                  } else if (result.customerId) {
+                    return (
+                      <Link
+                        to={`/customers?page=1&customerId=${result.customerId}`}
+                        onClick={() => setSearchResult([])}
+                        key={result._id}
+                        className="p-2 border-b border-custom-gray-border last:border-0 flex justify-between"
+                      >
+                        <span>{result.name}</span>
+                      </Link>
+                    );
+                  } else if (result.productId) {
+                    return (
+                      <Link
+                        to={`/products?page=1&productId=${result.productId}`}
+                        onClick={() => setSearchResult([])}
+                        key={result._id}
+                        className="p-2 border-b border-custom-gray-border last:border-0 flex justify-between"
+                      >
+                        <span>{result.title}</span>
+                        <span className="capitalize">
+                          {result.category.mainCategory}
+                        </span>
+                      </Link>
+                    );
+                  } else if (result.paymentId) {
+                    return (
+                      <Link
+                        to={`/payments?page=1&paymentId=${result.paymentId}`}
+                        onClick={() => setSearchResult([])}
+                        key={result._id}
+                        className="p-2 border-b border-custom-gray-border last:border-0 flex justify-between"
+                      >
+                        <span>{result.paymentId}</span>
+                        <span className="capitalize">{result.paymentMode}</span>
+                      </Link>
+                    );
+                  } else if (result.couponId) {
+                    return (
+                      <Link
+                        to={`/marketing/add-manage-coupon?page=1&couponId=${result.couponId}`}
+                        onClick={() => setSearchResult([])}
+                        key={result._id}
+                        className="p-2 border-b border-custom-gray-border last:border-0 flex justify-between"
+                      >
+                        <span>{result.couponName}</span>
+                      </Link>
+                    );
+                  } else {
+                    return null;
+                  }
+                })}
+              </div>
+            )}
+          </div>
+        )}
         <div className="flex items-center gap-5">
-          <button type="button" className="text-custom-black text-2xl">
-            <LuMessageSquareText />
-          </button>
           <button type="button" className="text-custom-black text-2xl">
             <FaRegBell />
           </button>

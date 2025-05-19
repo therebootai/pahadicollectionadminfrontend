@@ -26,6 +26,8 @@ const Products = () => {
 
   const product = searchParams.get("product");
 
+  const productId = searchParams.get("productId");
+
   const fetchProducts = async (filter) => {
     let query = {
       page: currentPage,
@@ -93,8 +95,12 @@ const Products = () => {
       query = { ...query, is_drafted: is_drafted };
     }
 
+    if (productId) {
+      query = { ...query, productId: productId };
+    }
+
     fetchProducts(query);
-  }, [currentPage, type, status, tags, is_drafted]);
+  }, [currentPage, type, status, tags, is_drafted, productId]);
 
   useEffect(() => {
     if (product && products.length > 0) {
