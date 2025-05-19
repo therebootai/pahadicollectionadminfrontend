@@ -20,7 +20,7 @@ const Orders = () => {
 
   const status = searchParams.get("status");
 
-  const order = searchParams.get("order");
+  const orderId = searchParams.get("orderId");
 
   const handleOpenModal = (type, order) => {
     const params = new URLSearchParams(searchParams);
@@ -76,8 +76,12 @@ const Orders = () => {
     if (status) {
       query = { ...query, status };
     }
+
+    if (orderId) {
+      query = { ...query, orderId };
+    }
     fetchOrders(query);
-  }, [currentPage, status]);
+  }, [currentPage, status, orderId]);
 
   return (
     <MainPageTemplate>

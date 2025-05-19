@@ -18,11 +18,16 @@ const Customers = () => {
 
   const currentPage = searchParams.get("page") || 1;
 
-  const customer = searchParams.get("customer");
+  const customerId = searchParams.get("customerId");
 
-  const fetchCustomers = async () => {
+  const fetchCustomers = async (filter) => {
+    let query = {};
+
+    if (filter) query = { ...filter, ...query };
     try {
-      const response = await axiosFetch.get(`/customers/?page=${currentPage}`);
+      const response = await axiosFetch.get(`/customers`, {
+        params: query,
+      });
       const { customers, pagination } = response.data;
       setCustomers(customers);
       setPagination(pagination);
@@ -43,8 +48,15 @@ const Customers = () => {
   };
 
   useEffect(() => {
-    fetchCustomers();
-  }, [currentPage]);
+    let query = {
+      page: currentPage || 1,
+    };
+
+    if (customerId) {
+      query = { ...query, customerId };
+    }
+    fetchCustomers(query);
+  }, [currentPage, customerId]);
 
   return (
     <MainPageTemplate>
